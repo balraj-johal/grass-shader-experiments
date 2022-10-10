@@ -36,26 +36,26 @@ export default class GrassGeometry extends InstancedBufferGeometry {
     for (let i = 0; i < GRASS_COUNT; i++) {
       refs.push(i);
 
-      // scales.push(0.2 + Math.random() * (1.5 - 0.2));
-      scales.push(0.2);
+      scales.push(0.2 + Math.random() * (0.5 - 0.2));
 
-      angles.push(Math.PI * 2 * Math.random());
+      // angles.push(Math.PI * 2 * Math.random());
 
-      offsets.push((Math.random() * 2 - 1) * 3.0); //x
-      offsets.push(1.0);  //y
-      // offsets.push(Math.random() * 5.0);  //y
-      offsets.push((Math.random() * 2 - 1) * 2.0); //z
-      console.log(offsets);
+      //x
+      offsets.push((Math.random() * 2 - 1) * 3.0); 
+      //y
+      offsets.push(0.0);  
+      //z
+      offsets.push((Math.random() * 2 - 1) * 2.0);
 
-      const color = returnRGB(
-        colourPalette[
-          Math.floor(Math.random() * colourPalette.length)
-        ].toString()
-      );
+      // const color = returnRGB(
+      //   colourPalette[
+      //     Math.floor(Math.random() * colourPalette.length)
+      //   ].toString()
+      // );
 
-      colors.push(color.r);
-      colors.push(color.g);
-      colors.push(color.b);
+      // colors.push(color.r);
+      // colors.push(color.g);
+      // colors.push(color.b);
     }
 
     this.instanceCount = GRASS_COUNT;

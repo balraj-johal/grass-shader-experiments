@@ -39,14 +39,22 @@ const vertexShader = glslify(/* GLSL */`
   #define PI 3.1415926
 
   void main () {
-    
-	  vec3 transformed = position + offset;
-    vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 );
 
+
+    // apply z/y/z offset
+	  vec3 transformed = position + offset;
+    vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); //modelViewPosition
+
+    // apply scale
     float s = scale * 1.0;
     mvPosition.xyz += position * s;
+
+    // apply sin wave displacement
+    float timeScale = 2.5;
+    float wavePower = 0.25;
+    // uv.y ensures displacement is not applied to root
+    mvPosition.x += sin(time/timeScale) * wavePower * uv.y;
     
-    // gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
   	gl_Position = projectionMatrix * mvPosition;
 
     vUv = uv;
