@@ -139,8 +139,9 @@ const vertexShader = glslify(/* GLSL */ `
     // apply simplex noise displacement
     vec3 displacement = vec3(0.0);
     float noiseScale = 2.5;
-    float timeScale = 0.5;
-    displacement = vec3(snoise(st * noiseScale + (u_time * timeScale))*0.500+0.5);
+    float noiseTimeScale = 0.5;
+    // displacement = vec3(snoise(st * noiseScale + (time * noiseTimeScale))*0.500+0.5);
+    displacement = vec3(snoise(uv * noiseScale + (time * noiseTimeScale))*0.500+0.5);
 
     //TODO: displacement is same on all channels, mix two noise textures?
     
