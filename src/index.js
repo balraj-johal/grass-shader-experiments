@@ -119,8 +119,6 @@ const vertexShader = glslify(/* GLSL */ `
 
 
   void main () {
-
-
     // apply z/y/z offset
 	  vec3 transformed = position + offset;
     vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); //modelViewPosition
@@ -133,7 +131,8 @@ const vertexShader = glslify(/* GLSL */ `
     float timeScale = 2.5;
     float wavePower = 0.25;
     // uv.y ensures displacement is not applied to root
-    mvPosition.x += sin(time/timeScale) * wavePower * uv.y;
+    float bendScale = 1.5;
+    mvPosition.x += sin(time/timeScale) * wavePower * pow(uv.y, bendScale);
 
 
     // apply simplex noise displacement
@@ -142,9 +141,8 @@ const vertexShader = glslify(/* GLSL */ `
     float noiseTimeScale = 0.5;
     // displacement = vec3(snoise(st * noiseScale + (time * noiseTimeScale))*0.500+0.5);
     displacement = vec3(snoise(uv * noiseScale + (time * noiseTimeScale))*0.500+0.5);
-
     //TODO: displacement is same on all channels, mix two noise textures?
-    
+
   	gl_Position = projectionMatrix * mvPosition;
 
     vUv = uv;
