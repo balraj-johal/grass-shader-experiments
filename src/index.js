@@ -143,7 +143,7 @@ const vertexShader = glslify(/* GLSL */ `
 
     // -- generate simplex noise displacement
     vec3 displacement = vec3(0.0);
-    float noiseScale = 0.0525;
+    float noiseScale = 0.0825;
     float noiseTimeScale = 0.25;
     displacement = vec3(snoise(mvPosition.xz * noiseScale + (time * noiseTimeScale))*0.500);
 
@@ -177,6 +177,8 @@ const groundMeshBasic = (width, height, color) => {
   mesh.rotateX(-Math.PI / 2);
   return mesh;
 };
+
+const GRASS_COUNT = 2000;
 
 const sketch = ({ context }) => {
   // Create a renderer
@@ -218,7 +220,7 @@ const sketch = ({ context }) => {
     uniforms: { time: { value: 0 } },
     side: THREE.DoubleSide,
   });
-  const baseGrassMesh = new THREE.InstancedMesh(geometry, grassMaterial, 500);
+  const baseGrassMesh = new THREE.InstancedMesh(geometry, grassMaterial, GRASS_COUNT);
   baseGrassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
   scene.add(baseGrassMesh);
 
