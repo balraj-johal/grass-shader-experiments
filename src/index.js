@@ -119,30 +119,38 @@ const vertexShader = glslify(/* GLSL */ `
 
 
   void main () {
-    // apply z/y/z offset
+    // -- apply z/y/z offset
 	  vec3 transformed = position + offset;
     vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); //modelViewPosition
 
-    // apply scale
+    // -- apply scale
     float s = scale * 1.0;
     mvPosition.xyz += position * s;
 
-    // apply sin wave displacement
-    float timeScale = 2.5;
-    float wavePower = 0.25;
-    // uv.y ensures displacement is not applied to root
+
+    //
     float bendScale = 1.5;
-    mvPosition.x += sin(time/timeScale) * wavePower * pow(uv.y, bendScale);
+    float yInfluence = pow(uv.y, bendScale);
+
+    // -- sin wave displacement
+    // float timeScale = 2.5;
+    // float wavePower = 0.25;
+    // uv.y ensures displacement is not applied to root
+    // mvPosition.x += sin(time/timeScale) * wavePower * yInfluence;
 
 
-    // apply simplex noise displacement
-    vec3 displacement = vec3(0.0);
-    float noiseScale = 2.5;
-    float noiseTimeScale = 0.5;
-    // displacement = vec3(snoise(st * noiseScale + (time * noiseTimeScale))*0.500+0.5);
-    displacement = vec3(snoise(uv * noiseScale + (time * noiseTimeScale))*0.500+0.5);
     //TODO: displacement is same on all channels, mix two noise textures?
 
+    // -- generate simplex noise displacement
+    vec3 displacement = vec3(0.0);
+    float noiseScale = 0.0525;
+    float noiseTimeScale = 0.25;
+    displacement = vec3(snoise(mvPosition.xz * noiseScale + (time * noiseTimeScale))*0.500);
+
+    // -- apply displacement
+    mvPosition.xz += displacement.x * yInfluence;
+
+    // -- finalise position
   	gl_Position = projectionMatrix * mvPosition;
 
     vUv = uv;
@@ -190,13 +198,14 @@ const sketch = ({ context }) => {
   // Setup your scene
   const scene = new THREE.Scene();
 
-  const ground = groundMeshBasic(3, 3, 0x009900);
+  const ground = groundMeshBasic(10, 10, 0x009900);
   ground.position.setY(0);
   scene.add(ground);
 
   // Grass stuff
   const geometry = new GrassGeometry();
-  // geometry.computeVertexNormals()
+  geometry.computeVertexNormals(); // TODO: is this useful?
+
   geometry.attributes["offset"].needsUpdate;
   geometry.attributes["scale"].needsUpdate;
   geometry.attributes["color"].needsUpdate;
