@@ -19,8 +19,8 @@ varying vec2 vUv;
 #define PI 3.1415926
 
 void main () {
+  // -- displace 
   vec3 displaced = position;
-  // due to rotation z here is the vertical axis
   displaced.z -= texture2D(noiseTex, uv).z;
 
   // -- finalise position
