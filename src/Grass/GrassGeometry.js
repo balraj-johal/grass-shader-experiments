@@ -3,15 +3,16 @@ import {
   InstancedBufferGeometry,
 } from "three";
 
+const AREA_SIZE = 20;
 export default class GrassGeometry extends InstancedBufferGeometry {
   constructor() {
     super();
 
-    const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 4);
+    const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 2);
 
     this.copy(geometry);
 
-    const GRASS_COUNT = 5000;
+    const GRASS_COUNT = 10000;
     const refs = [];
     const offsets = [];
     const scales = [];
@@ -33,7 +34,6 @@ export default class GrassGeometry extends InstancedBufferGeometry {
       };
     }
 
-    const AREA_SIZE = 10;
     const MIN_HEIGHT = 1.0;
     const HEIGHT_RANGE_FACTOR = 0.8;
     for (let i = 0; i < GRASS_COUNT; i++) {

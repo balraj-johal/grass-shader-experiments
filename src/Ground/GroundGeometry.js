@@ -1,6 +1,6 @@
 import { InstancedBufferAttribute, InstancedBufferGeometry } from "three";
 
-const AREA_SIZE = 10;
+const AREA_SIZE = 20;
 const RESOLUTION = 2;
 export default class GroundGeometry extends InstancedBufferGeometry {
   constructor() {

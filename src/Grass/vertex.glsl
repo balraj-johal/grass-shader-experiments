@@ -5,6 +5,7 @@ attribute float angle;
 attribute float color;
 
 uniform float time;
+uniform sampler2D noiseTex;
 uniform float count;
 
 varying vec3 vViewPosition;
@@ -17,8 +18,6 @@ varying float vAngle;
 varying float vStreak;
 
 #define PI 3.1415926
-
-
 
 // SIMPLEX NOISE
 // https://thebookofshaders.com/edit.php#11/2d-snoise-clear.frag
@@ -103,6 +102,10 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = scaled + offset;
+  
+  // -- displace grass blades vertically to follow terrain
+  float sinkIntoGround = 0.1; // ensures bottom vertices hidden
+  transformed.y += texture2D(noiseTex, transformed.xz).z - sinkIntoGround;
 
   //TODO:  mix two noise textures?
 

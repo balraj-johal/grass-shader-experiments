@@ -22,7 +22,7 @@ const settings = {
   context: "webgl",
 };
 
-const GRASS_COUNT = 5000;
+const GRASS_COUNT = 10000;
 
 const sketch = async ({ context }) => {
   // -- SETUP
@@ -71,7 +71,10 @@ const sketch = async ({ context }) => {
   const grassMaterial = new THREE.ShaderMaterial({
     vertexShader: grassVert,
     fragmentShader: grassFrag,
-    uniforms: { time: { value: 0 } },
+    uniforms: { 
+      time: { value: 0 },
+      noiseTex: { value: noiseTex }, 
+    },
     side: THREE.DoubleSide,
   });
   grassMaterial.clipping = false;
@@ -81,7 +84,7 @@ const sketch = async ({ context }) => {
     GRASS_COUNT
   );
   grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
-  // scene.add(grassMesh);
+  scene.add(grassMesh);
 
 
   // -- RENDER LOOP
