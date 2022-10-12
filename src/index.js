@@ -66,6 +66,7 @@ const sketch = ({ context }) => {
     side: THREE.DoubleSide,
   });
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
+  groundMesh.rotateX(Math.PI / 2);
   scene.add(groundMesh);
 
   // Grass stuff
