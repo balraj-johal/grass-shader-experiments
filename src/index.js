@@ -22,57 +22,43 @@ const settings = {
   context: "webgl",
 };
 
-const groundMeshBasic = (width, height, color) => {
-  const geometry = new THREE.PlaneGeometry(width, height, width, height);
-
-  // Setup a material
-  const material = new THREE.MeshBasicMaterial({
-    color: color,
-    side: THREE.DoubleSide,
-  });
-  const mesh = new THREE.Mesh(geometry, material);
-  // Setup a mesh with geometry + material
-  mesh.rotateX(-Math.PI / 2);
-  return mesh;
-};
-
 const GRASS_COUNT = 5000;
 
-const sketch = ({ context }) => {
+const sketch = async ({ context }) => {
+  // -- SETUP
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
     canvas: context.canvas,
   });
-
   // WebGL background color
   renderer.setClearColor("#fff", 1);
-
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
   camera.position.set(-1, 6, -12);
   camera.lookAt(new THREE.Vector3());
-
   // Setup camera controller
   // const controls = new THREE.OrbitControls(camera, context.canvas);
-
-  // Setup your scene
   const scene = new THREE.Scene();
 
-  // const ground = groundMeshBasic(10, 10, 0x009900);
-  // ground.position.setY(0);
-  // scene.add(ground);
+
+  // -- GROUND
   const groundGeometry = new GroundGeometry();
+  const noiseTex = new THREE.TextureLoader().load( "./textures/noiseTexture.png" );
   const groundMaterial = new THREE.ShaderMaterial({
     vertexShader: groundVert,
     fragmentShader: groundFrag,
-    uniforms: { time: { value: 0 } },
+    uniforms: {
+      noiseTex: { value: noiseTex },
+    },
     side: THREE.DoubleSide,
   });
+  groundMaterial.uniformsNeedUpdate = true;
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
   groundMesh.rotateX(Math.PI / 2);
   scene.add(groundMesh);
 
-  // Grass stuff
+
+  // -- GRASS
   const grassGeometry = new GrassGeometry();
   grassGeometry.computeVertexNormals(); // TODO: is this useful?
 
@@ -88,6 +74,7 @@ const sketch = ({ context }) => {
     uniforms: { time: { value: 0 } },
     side: THREE.DoubleSide,
   });
+  grassMaterial.clipping = false;
   const grassMesh = new THREE.InstancedMesh(
     grassGeometry,
     grassMaterial,
@@ -96,7 +83,8 @@ const sketch = ({ context }) => {
   grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
   // scene.add(grassMesh);
 
-  // draw each frame
+
+  // -- RENDER LOOP
   return {
     // Handle resize events here
     resize({ pixelRatio, viewportWidth, viewportHeight }) {

@@ -4,7 +4,7 @@ attribute vec3 offset;
 attribute float angle;
 attribute float color;
 
-uniform float time;
+uniform sampler2D noiseTex;
 uniform float count;
 
 varying vec3 vViewPosition;
@@ -97,8 +97,12 @@ float snoise(vec2 v) {
 
 
 void main () {
+  vec3 displaced = position;
+  // due to rotation z here is the vertical axis
+  displaced.z -= texture2D(noiseTex, uv).z;
+
   // -- finalise position
-  vec4 mvPosition = modelViewMatrix * vec4( position.xyz, 1.0 ); //modelViewPosition
+  vec4 mvPosition = modelViewMatrix * vec4( displaced.xyz, 1.0 ); //modelViewPosition
   gl_Position = projectionMatrix * mvPosition;
 
   vUv = uv;
