@@ -16,7 +16,7 @@ varying vec2 vUv;
 // varying float vAngle;
 // varying float vStreak;
 
-#define PI 3.1415926
+#define PI 3.1415926;
 
 void main () {
   // -- displace 

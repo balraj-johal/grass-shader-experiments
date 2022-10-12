@@ -14,6 +14,7 @@ import GrassGeometry from "./Grass/GrassGeometry";
 import groundFrag from "./Ground/fragment.glsl";
 import groundVert from "./Ground/vertex.glsl";
 import GroundGeometry from "./Ground/GroundGeometry";
+import RenderTexture from "./Interaction/RenderTexture";
 
 const settings = {
   // Make the loop animated
@@ -25,6 +26,9 @@ const settings = {
 const GRASS_COUNT = 10000;
 
 const sketch = async ({ context }) => {
+
+
+
   // -- SETUP
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({
@@ -34,21 +38,44 @@ const sketch = async ({ context }) => {
   renderer.setClearColor("#fff", 1);
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
-  camera.position.set(-1, 6, -12);
+  camera.position.set(0, 10, -14);
   camera.lookAt(new THREE.Vector3());
   // Setup camera controller
   // const controls = new THREE.OrbitControls(camera, context.canvas);
   const scene = new THREE.Scene();
 
 
+
+
+  // -- INTERACTION
+  let touchTracker = new RenderTexture();
+
+  // get raycaster
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+
+  function onPointerMove( event ) {
+    // calculate pointer position in normalized device coordinates
+    // (-1 to +1) for both components
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  }
+  window.addEventListener( 'pointermove', onPointerMove );
+
+
+  
+
+
   // -- GROUND
   const groundGeometry = new GroundGeometry();
+  // groundGeometry.computeVertexNormals();
   const noiseTex = new THREE.TextureLoader().load( "./textures/noiseTexture.png" );
   const groundMaterial = new THREE.ShaderMaterial({
     vertexShader: groundVert,
     fragmentShader: groundFrag,
     uniforms: {
       noiseTex: { value: noiseTex },
+      touchTex: { value: touchTracker.texture }
     },
     side: THREE.DoubleSide,
   });
@@ -56,6 +83,8 @@ const sketch = async ({ context }) => {
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
   groundMesh.rotateX(Math.PI / 2);
   scene.add(groundMesh);
+
+
 
 
   // -- GRASS
@@ -74,10 +103,14 @@ const sketch = async ({ context }) => {
     uniforms: { 
       time: { value: 0 },
       noiseTex: { value: noiseTex }, 
+      touchTex: { value: touchTracker.texture }
     },
     side: THREE.DoubleSide,
   });
+
   grassMaterial.clipping = false;
+  grassMaterial.uniformsNeedUpdate = true;
+
   const grassMesh = new THREE.InstancedMesh(
     grassGeometry,
     grassMaterial,
@@ -85,6 +118,27 @@ const sketch = async ({ context }) => {
   );
   grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
   scene.add(grassMesh);
+
+
+
+
+  // -- INTERSECTION BOX
+
+  /* 
+    Fake box is needed as I can't raycast against my ground mesh,
+    probably partly because it's displaced in a vertex shader, but
+    also for some other reason as commenting out displacement 
+    doesn't fix it.
+  */
+  const boxGeom = new THREE.BoxGeometry(20, 0, 20);
+  const boxMat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+  boxMat.transparent = true;
+  boxMat.opacity = 0;
+  const boxMesh = new THREE.Mesh(boxGeom, boxMat);
+  boxMesh.translateY(0.5);
+  scene.add(boxMesh);
+
+
 
 
   // -- RENDER LOOP
@@ -99,7 +153,25 @@ const sketch = async ({ context }) => {
     // Update & render your scene here
     render({ time }) {
       grassMaterial.uniforms.time.value = time;
-      grassMaterial.uniformsNeedUpdate = true;
+
+      touchTracker.update();
+
+      // -- CHECK RAYCAST
+      // update the ray with the camera and pointer position
+      raycaster.setFromCamera( pointer, camera );
+
+      // calculate objects intersecting the ray
+      const intersects = raycaster.intersectObjects( scene.children );
+      for ( let i = 0; i < intersects.length; i ++ ) {
+        if (intersects[i]) {
+          const uvCoords = {
+            x: intersects[i].uv.x,
+            y: 1 - intersects[i].uv.y,
+          }
+          touchTracker.addTouch(uvCoords);
+        }
+      }
+
 
       // controls.update();
       renderer.render(scene, camera);

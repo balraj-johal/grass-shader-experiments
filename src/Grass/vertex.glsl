@@ -6,6 +6,7 @@ attribute float color;
 
 uniform float time;
 uniform sampler2D noiseTex;
+uniform sampler2D touchTex;
 uniform float count;
 
 varying vec3 vViewPosition;
