@@ -49,7 +49,7 @@ const sketch = ({ context }) => {
 
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
-  camera.position.set(-1, 3, -6);
+  camera.position.set(-1, 6, -12);
   camera.lookAt(new THREE.Vector3());
 
   // Setup camera controller
