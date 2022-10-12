@@ -8,7 +8,9 @@ global.THREE = THREE;
 import canvasSketch from "canvas-sketch";
 import glslify from "glslify";
 
-import GrassGeometry from "./GrassGeometry/GrassGeometry";
+import fragmentShader from "./Grass/fragment.glsl";
+import vertexShader from "./Grass/vertex.glsl";
+import GrassGeometry from "./Grass/GrassGeometry";
 
 const settings = {
   // Make the loop animated
@@ -17,7 +19,7 @@ const settings = {
   context: "webgl",
 };
 
-const vertexShader = glslify(/* GLSL */ `
+const vertexShaderOLD = glslify(/* GLSL */ `
   attribute float ref;
   attribute float scale;
   attribute vec3 offset;
@@ -156,7 +158,7 @@ const vertexShader = glslify(/* GLSL */ `
     vUv = uv;
   }
 `);
-const fragmentShader = glslify(/* GLSL */ `
+const fragmentShaderOLD = glslify(/* GLSL */ `
   varying vec2 vUv;
 
   void main () {
@@ -225,7 +227,11 @@ const sketch = ({ context }) => {
     uniforms: { time: { value: 0 } },
     side: THREE.DoubleSide,
   });
-  const baseGrassMesh = new THREE.InstancedMesh(geometry, grassMaterial, GRASS_COUNT);
+  const baseGrassMesh = new THREE.InstancedMesh(
+    geometry,
+    grassMaterial,
+    GRASS_COUNT
+  );
   baseGrassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
   scene.add(baseGrassMesh);
 
