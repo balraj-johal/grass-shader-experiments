@@ -7,9 +7,12 @@ global.THREE = THREE;
 
 import canvasSketch from "canvas-sketch";
 
-import fragmentShader from "./Grass/fragment.glsl";
-import vertexShader from "./Grass/vertex.glsl";
+import grassFrag from "./Grass/fragment.glsl";
+import grassVert from "./Grass/vertex.glsl";
 import GrassGeometry from "./Grass/GrassGeometry";
+
+import groundFrag from "./Ground/fragment.glsl";
+import groundVert from "./Ground/vertex.glsl";
 import GroundGeometry from "./Ground/GroundGeometry";
 
 const settings = {
@@ -60,8 +63,8 @@ const sketch = ({ context }) => {
   // scene.add(ground);
   const groundGeometry = new GroundGeometry();
   const groundMaterial = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
+    vertexShader: groundVert,
+    fragmentShader: groundFrag,
     uniforms: { time: { value: 0 } },
     side: THREE.DoubleSide,
   });
@@ -80,8 +83,8 @@ const sketch = ({ context }) => {
 
   grassGeometry.translate(0, 0.5, 0);
   const grassMaterial = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
+    vertexShader: grassVert,
+    fragmentShader: grassFrag,
     uniforms: { time: { value: 0 } },
     side: THREE.DoubleSide,
   });

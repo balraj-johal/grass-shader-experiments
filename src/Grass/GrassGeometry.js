@@ -34,11 +34,12 @@ export default class GrassGeometry extends InstancedBufferGeometry {
     }
 
     const AREA_SIZE = 10;
-    const MIN_HEIGHT = 1;
+    const MIN_HEIGHT = 0;
+    const HEIGHT_RANGE_FACTOR = 0.2;
     for (let i = 0; i < GRASS_COUNT; i++) {
       refs.push(i);
 
-      scales.push(MIN_HEIGHT + (Math.random() / 2));
+      scales.push(MIN_HEIGHT + (Math.random() * HEIGHT_RANGE_FACTOR));
 
       // angles.push(Math.PI * 2 * Math.random());
 
