@@ -97,38 +97,8 @@ float snoise(vec2 v) {
 
 
 void main () {
-  // -- apply z/y/z offset
-  vec3 transformed = position + offset;
-  vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); //modelViewPosition
-
-  // -- apply scale
-  float s = scale * 1.0;
-  mvPosition.xyz += position * s;
-
-
-  //
-  float bendScale = 1.5;
-  float yInfluence = pow(uv.y, bendScale);
-
-  // -- sin wave displacement
-  // float timeScale = 2.5;
-  // float wavePower = 0.25;
-  // uv.y ensures displacement is not applied to root
-  // mvPosition.x += sin(time/timeScale) * wavePower * yInfluence;
-
-
-  //TODO: displacement is same on all channels, mix two noise textures?
-
-  // -- generate simplex noise displacement
-  vec3 displacement = vec3(0.0);
-  float noiseScale = 0.0825;
-  float noiseTimeScale = 0.25;
-  displacement = vec3(snoise(mvPosition.xz * noiseScale + (time * noiseTimeScale))*0.500);
-
-  // -- apply displacement
-  mvPosition.xz += displacement.x * yInfluence;
-
   // -- finalise position
+  vec4 mvPosition = modelViewMatrix * vec4( position.xyz, 1.0 ); //modelViewPosition
   gl_Position = projectionMatrix * mvPosition;
 
   vUv = uv;

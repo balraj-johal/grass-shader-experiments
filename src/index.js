@@ -88,13 +88,13 @@ const sketch = ({ context }) => {
     uniforms: { time: { value: 0 } },
     side: THREE.DoubleSide,
   });
-  const baseGrassMesh = new THREE.InstancedMesh(
+  const grassMesh = new THREE.InstancedMesh(
     grassGeometry,
     grassMaterial,
     GRASS_COUNT
   );
-  baseGrassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
-  scene.add(baseGrassMesh);
+  grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+  // scene.add(grassMesh);
 
   // draw each frame
   return {

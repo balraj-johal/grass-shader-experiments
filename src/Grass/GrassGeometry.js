@@ -62,7 +62,6 @@ export default class GrassGeometry extends InstancedBufferGeometry {
       // colors.push(color.g);
       // colors.push(color.b);
     }
-    console.log(scales)
 
     this.instanceCount = GRASS_COUNT;
     
