@@ -18,8 +18,6 @@ varying float vStreak;
 
 #define PI 3.1415926
 
-
-
 // SIMPLEX NOISE
 // https://thebookofshaders.com/edit.php#11/2d-snoise-clear.frag
 
@@ -95,6 +93,7 @@ float snoise(vec2 v) {
     g.yz = a0.yz * vec2(x1.x,x2.x) + h.yz * vec2(x1.y,x2.y);
     return 130.0 * dot(m, g);
 }
+
 
 
 void main () {

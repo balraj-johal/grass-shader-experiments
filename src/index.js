@@ -10,6 +10,7 @@ import canvasSketch from "canvas-sketch";
 import fragmentShader from "./Grass/fragment.glsl";
 import vertexShader from "./Grass/vertex.glsl";
 import GrassGeometry from "./Grass/GrassGeometry";
+import GroundGeometry from "./Ground/GroundGeometry";
 
 const settings = {
   // Make the loop animated
@@ -54,20 +55,29 @@ const sketch = ({ context }) => {
   // Setup your scene
   const scene = new THREE.Scene();
 
-  const ground = groundMeshBasic(10, 10, 0x009900);
-  ground.position.setY(0);
-  scene.add(ground);
+  // const ground = groundMeshBasic(10, 10, 0x009900);
+  // ground.position.setY(0);
+  // scene.add(ground);
+  const groundGeometry = new GroundGeometry();
+  const groundMaterial = new THREE.ShaderMaterial({
+    vertexShader,
+    fragmentShader,
+    uniforms: { time: { value: 0 } },
+    side: THREE.DoubleSide,
+  });
+  const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
+  scene.add(groundMesh);
 
   // Grass stuff
-  const geometry = new GrassGeometry();
-  geometry.computeVertexNormals(); // TODO: is this useful?
+  const grassGeometry = new GrassGeometry();
+  grassGeometry.computeVertexNormals(); // TODO: is this useful?
 
-  geometry.attributes["offset"].needsUpdate;
-  geometry.attributes["scale"].needsUpdate;
-  geometry.attributes["color"].needsUpdate;
-  geometry.attributes["angle"].needsUpdate;
+  grassGeometry.attributes["offset"].needsUpdate;
+  grassGeometry.attributes["scale"].needsUpdate;
+  grassGeometry.attributes["color"].needsUpdate;
+  grassGeometry.attributes["angle"].needsUpdate;
 
-  geometry.translate(0, 0.5, 0);
+  grassGeometry.translate(0, 0.5, 0);
   const grassMaterial = new THREE.ShaderMaterial({
     vertexShader,
     fragmentShader,
@@ -75,7 +85,7 @@ const sketch = ({ context }) => {
     side: THREE.DoubleSide,
   });
   const baseGrassMesh = new THREE.InstancedMesh(
-    geometry,
+    grassGeometry,
     grassMaterial,
     GRASS_COUNT
   );
