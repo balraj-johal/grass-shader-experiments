@@ -36,7 +36,7 @@ const groundMeshBasic = (width, height, color) => {
   return mesh;
 };
 
-const GRASS_COUNT = 2000;
+const GRASS_COUNT = 5000;
 
 const sketch = ({ context }) => {
   // Create a renderer

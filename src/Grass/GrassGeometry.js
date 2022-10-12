@@ -11,7 +11,7 @@ export default class GrassGeometry extends InstancedBufferGeometry {
 
     this.copy(geometry);
 
-    const GRASS_COUNT = 2000;
+    const GRASS_COUNT = 5000;
     const refs = [];
     const offsets = [];
     const scales = [];
@@ -34,12 +34,14 @@ export default class GrassGeometry extends InstancedBufferGeometry {
     }
 
     const AREA_SIZE = 10;
-    const MIN_HEIGHT = 0;
-    const HEIGHT_RANGE_FACTOR = 0.2;
+    const MIN_HEIGHT = 1.0;
+    const HEIGHT_RANGE_FACTOR = 0.8;
     for (let i = 0; i < GRASS_COUNT; i++) {
       refs.push(i);
 
+      scales.push(1.0);
       scales.push(MIN_HEIGHT + (Math.random() * HEIGHT_RANGE_FACTOR));
+      scales.push(1.0);
 
       // angles.push(Math.PI * 2 * Math.random());
 
@@ -70,7 +72,7 @@ export default class GrassGeometry extends InstancedBufferGeometry {
     );
     this.setAttribute(
       "scale",
-      new InstancedBufferAttribute(new Float32Array(scales), 1, false)
+      new InstancedBufferAttribute(new Float32Array(scales), 3, false)
     );
     this.setAttribute(
       "ref",
