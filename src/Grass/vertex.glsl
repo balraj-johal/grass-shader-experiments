@@ -120,8 +120,11 @@ void main () {
   float noisePower = 0.25;
   displacement = vec3(snoise(transformed.xz * noiseScale + (time * noiseTimeScale))*noisePower);
 
+  float touchInfluence = texture2D(touchTex, uv).r;
+
   // -- apply displacement
-  transformed.xz += displacement.x * yInfluence;
+  // transformed.xz += displacement.x * yInfluence;
+  transformed.xyz += touchInfluence;
 
   vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); //modelViewPosition
 
