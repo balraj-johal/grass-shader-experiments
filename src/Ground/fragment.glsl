@@ -10,10 +10,10 @@ void main () {
   vec3 touchTex = texture2D(touchTex, vUv).rgb;
 
   //mix noise texture to fake shadows
-  // color = mix(color, noiseTex, 0.15);
+  color = mix(color2, noiseTex, 0.15);
 
-  // show touch tex
-  color = mix(color, touchTex, 0.5);
+  // // show touch tex
+  // color = mix(color, touchTex, 0.5);
 
   gl_FragColor = vec4(color, 1.0);
 }

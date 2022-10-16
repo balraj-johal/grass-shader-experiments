@@ -135,7 +135,8 @@ void main () {
   // -- add mouse affects to displacement
   float touchInfluencePower = 4.0;
   float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r * touchInfluencePower;
-  touchInfluence = touchInfluence + 1.0; // ensure touch influence is additional to simplex, rather than allow displacement to 0 out if no touchInfluence
+  // ensure touch influence is additional to simplex, rather than allow displacement to 0 out if no touchInfluence
+  touchInfluence = touchInfluence + 1.0;
   displacement *= touchInfluence;
   
 

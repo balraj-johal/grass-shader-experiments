@@ -1,17 +1,26 @@
 import * as THREE from 'three';
 
-// import { easeOutQuad, easeInOutQuad, easeOutSine, easeInOutSine } from '../../utils/easing.utils';
-
-const easeOutSine = (t, b, c, d) => {
-	return c * Math.sin(t/d * (Math.PI/2)) + b;
+const easingDuration = 4;
+const easingChange = 1; // ?
+const easeOutSine = (t, b, c) => {
+	return c * Math.sin(t/easingDuration * (Math.PI/2)) + b;
 };
+const easeInOutQuad = (t, b, c) => {
+	t /= easingDuration / 2;
+	if (t < 1) return c / 2 * t * t + b;
+	t--;
+	return -c/2 * (t * (t - 2) - 1) + b;
+};
+// const easeInOutSine = (t, b, c) => {
+// 	return -c / 2 * (Math.cos(Math.PI * t / easingDuration) - 1) + b;
+// };
 
 export default class RenderTexture {
 	constructor(parent) {
 		this.parent = parent;
 		this.size = 64;
 		this.maxAge = 120;
-		this.radius = 0.15;
+		this.radius = 0.15 * 3;
 		this.trail = [];
 
 		this.initTexture();
@@ -74,9 +83,9 @@ export default class RenderTexture {
 
 		let intensity = 1;
 		if (point.age < this.maxAge * 0.3) {
-			intensity = easeOutSine(point.age / (this.maxAge * 0.3), 0, 1, 1);
+			intensity = easeOutSine(point.age / (this.maxAge * 0.3), 0, easingChange);
 		} else {
-			intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, 1, 1);
+			intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, easingChange);
 		}
 
 		intensity *= point.force;
