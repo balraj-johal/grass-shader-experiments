@@ -127,18 +127,20 @@ void main () {
   float yInfluence = pow(uv.y, bendScale);
 
   vec3 displacement = vec3(0.0);
-  float noiseScale = 0.0825;
-  float noiseTimeScale = 0.25;
+  float noiseScale = 0.0425;
+  float noiseTimeScale = 0.125;
   float noisePower = 0.25;
   displacement = vec3(snoise(transformed.xz * noiseScale + (time * noiseTimeScale)) * noisePower);
 
-  // -- apply noise displacement
-  transformed.xz += displacement.x * yInfluence;
+  // -- add mouse affects to displacement
+  float touchInfluencePower = 4.0;
+  float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r * touchInfluencePower;
+  touchInfluence = touchInfluence + 1.0; // ensure touch influence is additional to simplex, rather than allow displacement to 0 out if no touchInfluence
+  displacement *= touchInfluence;
+  
 
-
-  // -- get and apply mouse based displacement
-  float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r;
-  transformed.xz += touchInfluence * yInfluence;
+  // -- apply displacement
+  transformed.xz += displacement.xz * yInfluence;
 
   vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); // modelViewPosition
 
