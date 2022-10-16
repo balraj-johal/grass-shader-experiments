@@ -11,6 +11,7 @@ uniform float count;
 
 varying vec3 vViewPosition;
 varying vec2 vUv;
+varying vec3 vGroundPosition;
 varying vec3 vNormal;
 varying vec2 vPosUV;
 varying float vOpacity;
@@ -38,7 +39,6 @@ vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
 
 float snoise(vec2 v) {
-
     // Precompute values for skewed triangular grid
     const vec4 C = vec4(0.211324865405187,
                         // (3.0-sqrt(3.0))/6.0
@@ -96,17 +96,29 @@ float snoise(vec2 v) {
     return 130.0 * dot(m, g);
 }
 
-
 void main () {
   // -- apply scale
   vec3 scaled = position * scale;
 
   // -- apply z/y/z offset
   vec3 transformed = scaled + offset;
+  vGroundPosition = transformed;
   
   // -- displace grass blades vertically to follow terrain
   float sinkIntoGround = 0.1; // ensures bottom vertices hidden
-  transformed.y += texture2D(noiseTex, transformed.xz).z - sinkIntoGround;
+
+  /* 
+    ok this is some real dodgy stuff
+    as I'm sampling from the noise texture using the ground mesh's UV's
+    I need to make the instanced grass blade's locations map to the ground's UV
+
+    this should be fixed to have them both sample from world space coords but...
+
+    so right now I add half the AREA_SIZE to map from 0-AREA_SIZE, 
+    then divide by AREA_SIZE to get back to 0-1 
+  */
+  vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
+  transformed.y += texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0 - sinkIntoGround;
 
   //TODO:  mix two noise textures?
 
@@ -118,15 +130,17 @@ void main () {
   float noiseScale = 0.0825;
   float noiseTimeScale = 0.25;
   float noisePower = 0.25;
-  displacement = vec3(snoise(transformed.xz * noiseScale + (time * noiseTimeScale))*noisePower);
+  displacement = vec3(snoise(transformed.xz * noiseScale + (time * noiseTimeScale)) * noisePower);
 
-  float touchInfluence = texture2D(touchTex, uv).r;
+  // -- apply noise displacement
+  transformed.xz += displacement.x * yInfluence;
 
-  // -- apply displacement
-  // transformed.xz += displacement.x * yInfluence;
-  transformed.xyz += touchInfluence;
 
-  vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); //modelViewPosition
+  // -- get and apply mouse based displacement
+  float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r;
+  transformed.xz += touchInfluence * yInfluence;
+
+  vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); // modelViewPosition
 
   // -- finalise position
   gl_Position = projectionMatrix * mvPosition;
