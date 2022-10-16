@@ -138,7 +138,7 @@ void main () {
 
   // -- get and apply mouse based displacement
   float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r;
-  transformed.xz += touchInfluence * yInfluence;
+  transformed.xz *= touchInfluence * yInfluence;
 
   vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); // modelViewPosition
 
