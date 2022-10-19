@@ -127,8 +127,8 @@ void main () {
   float yInfluence = pow(uv.y, bendScale);
 
   vec3 displacement = vec3(0.0);
-  float noiseScale = 0.0425;
-  float noiseTimeScale = 0.125;
+  float noiseScale = 0.0825;
+  float noiseTimeScale = 0.15;
   float noisePower = 0.25;
   displacement = vec3(snoise(transformed.xz * noiseScale + (time * noiseTimeScale)) * noisePower);
 

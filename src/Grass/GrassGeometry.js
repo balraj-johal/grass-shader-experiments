@@ -12,7 +12,7 @@ export default class GrassGeometry extends InstancedBufferGeometry {
 
     this.copy(geometry);
 
-    const GRASS_COUNT = 10000;
+    const GRASS_COUNT = 25000;
     const refs = [];
     const offsets = [];
     const scales = [];
@@ -35,7 +35,7 @@ export default class GrassGeometry extends InstancedBufferGeometry {
     }
 
     const MIN_HEIGHT = 1.0;
-    const HEIGHT_RANGE_FACTOR = 0.8;
+    const HEIGHT_RANGE_FACTOR = 1.8;
     for (let i = 0; i < GRASS_COUNT; i++) {
       refs.push(i);
 
