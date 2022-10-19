@@ -133,7 +133,7 @@ void main () {
   displacement = vec3(snoise(transformed.xz * noiseScale + (time * noiseTimeScale)) * noisePower);
 
   // -- add mouse affects to displacement
-  float touchInfluencePower = 4.0;
+  float touchInfluencePower = 3.0;
   float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r * touchInfluencePower;
 
   // -- displace radially around mouse points

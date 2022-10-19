@@ -82,11 +82,12 @@ export default class RenderTexture {
 		};
 
 		let intensity = 1;
-		if (point.age < this.maxAge * 0.3) {
-			intensity = easeOutSine(point.age / (this.maxAge * 0.3), 0, easingChange);
-		} else {
-			intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, easingChange);
-		}
+		intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, easingChange);
+		// if (point.age < this.maxAge * 0.3) {
+		// 	intensity = easeOutSine(point.age / (this.maxAge * 0.3), 0, easingChange);
+		// } else {
+		// 	intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, easingChange);
+		// }
 
 		intensity *= point.force;
 
