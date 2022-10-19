@@ -20,6 +20,7 @@ export default class RenderTexture {
 		this.parent = parent;
 		this.size = 64;
 		this.maxAge = 40;
+		this.agingRate = 1;
 		this.radius = 0.15 * 3;
 		this.trail = [];
 
@@ -44,7 +45,7 @@ export default class RenderTexture {
 
 		// age points
 		this.trail.forEach((point, i) => {
-			point.age++;
+			point.age += this.agingRate;
 			// remove old
 			if (point.age > this.maxAge) {
 				this.trail.splice(i, 1);
@@ -82,12 +83,13 @@ export default class RenderTexture {
 		};
 
 		let intensity = 1;
-		intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, easingChange);
-		// if (point.age < this.maxAge * 0.3) {
-		// 	intensity = easeOutSine(point.age / (this.maxAge * 0.3), 0, easingChange);
-		// } else {
-		// 	intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, easingChange);
-		// }
+		if (point.age < this.maxAge * 0.3) {
+			// TODO; very strong falloff here
+			intensity = easeOutSine(point.age / (this.maxAge * 0.3), 0, easingChange);
+		} else {
+			// TODO; much weaker falloff here
+			intensity = easeOutSine(1 - (point.age - this.maxAge * 0.3) / (this.maxAge * 0.7), 0, easingChange);
+		}
 
 		intensity *= point.force;
 
