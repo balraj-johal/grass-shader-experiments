@@ -135,9 +135,18 @@ void main () {
   // -- add mouse affects to displacement
   float touchInfluencePower = 4.0;
   float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r * touchInfluencePower;
-  // ensure touch influence is additional to simplex, rather than allow displacement to 0 out if no touchInfluence
-  touchInfluence = touchInfluence + 1.0;
-  displacement *= touchInfluence;
+
+  // -- displace radially around mouse points
+  float sampleRes = 0.005; // how granularly to check around a point for mapping touchTex gradient > displacement
+  float zTouchDisplacement = texture2D(touchTex, mappedToGroundUV.xz).r - texture2D(touchTex, mappedToGroundUV.xz + vec2(0.0, sampleRes)).r;
+  float xTouchDisplacement = texture2D(touchTex, mappedToGroundUV.xz).r - texture2D(touchTex, mappedToGroundUV.xz + vec2(sampleRes, 0.0)).r;
+  vec3 totalTouchDisplacement = vec3(xTouchDisplacement, 0.0, zTouchDisplacement);
+  totalTouchDisplacement *= touchInfluencePower;
+
+  displacement += totalTouchDisplacement;
+  // // ensure touch influence is additional to simplex, rather than allow displacement to 0 out if no touchInfluence
+  // touchInfluence = touchInfluence + 1.0;
+  // displacement *= touchInfluence;
   
 
   // -- apply displacement
