@@ -141,7 +141,7 @@ void main () {
   vec3 scaled = position * scale;
 
   // -- apply y rotation
-  vec3 rotated = applyRotationTransform(scaled, vec2(1.0, 30.0));
+  vec3 rotated = applyRotationTransform(scaled, vec2(0.0, angle));
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
