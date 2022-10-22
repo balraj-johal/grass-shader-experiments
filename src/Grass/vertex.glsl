@@ -107,7 +107,8 @@ void main () {
   // -- displace grass blades vertically to follow terrain
   float sinkIntoGround = 0.1; // ensures bottom vertices hidden
 
-  /* 
+  /* -- ensure grass y position matches the displaced ground position
+
     ok this is some real dodgy stuff
     as I'm sampling from the noise texture using the ground mesh's UV's
     I need to make the instanced grass blade's locations map to the ground's UV
@@ -120,43 +121,37 @@ void main () {
   vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
   transformed.y += texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0 - sinkIntoGround;
 
-  //TODO:  mix two noise textures?
-
   // -- generate simplex noise displacement
-  float bendScale = 2.0;
-  float yInfluence = pow(uv.y, bendScale);
-
   vec3 displacement = vec3(0.0);
   float noiseScale = 0.045;
   float noiseTimeScale = 0.15;
   float noisePower = 0.5;
   float noiseTimeFactor = (time * noiseTimeScale);
   vec2 windVector = vec2(0.0, 0.0);
+
+  // -- apply noise displacement
   displacement = vec3(snoise(transformed.xz * noiseScale + noiseTimeFactor));
   displacement += 0.5; // Try ensure wind only pushes forwards
   displacement *= noisePower;
 
-  // -- add mouse affects to displacement
+  // -- get mouse displacement amount
   float touchInfluencePower = 3.0;
   float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r * touchInfluencePower;
 
-  // -- displace radially around mouse points
+  // -- apply radial displacement around mouse points
   float sampleRes = 0.005; // how granularly to check around a point for mapping touchTex gradient > displacement
   float zTouchDisplacement = texture2D(touchTex, mappedToGroundUV.xz).r - texture2D(touchTex, mappedToGroundUV.xz + vec2(0.0, sampleRes)).r;
   float xTouchDisplacement = texture2D(touchTex, mappedToGroundUV.xz).r - texture2D(touchTex, mappedToGroundUV.xz + vec2(sampleRes, 0.0)).r;
   vec3 totalTouchDisplacement = vec3(xTouchDisplacement, 0.0, zTouchDisplacement);
   totalTouchDisplacement *= touchInfluencePower;
 
-  // displacement += totalTouchDisplacement;
-  // // ensure touch influence is additional to simplex, rather than allow displacement to 0 out if no touchInfluence
-  // touchInfluence = touchInfluence + 1.0;
-  // displacement *= touchInfluence;
-  
-
-  // -- apply displacement
+  // -- apply total displacement - primarily to uv top, none to bottom
+  float bendScale = 2.0;
+  float yInfluence = pow(uv.y, bendScale);
   transformed.xz += displacement.xz * yInfluence;
 
-  vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); // modelViewPosition
+  // -- get modelViewPosition
+  vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); 
 
   // -- finalise position
   gl_Position = projectionMatrix * mvPosition;
