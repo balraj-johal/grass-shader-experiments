@@ -96,12 +96,55 @@ float snoise(vec2 v) {
     return 130.0 * dot(m, g);
 }
 
+// -- rotation helpers
+vec4 quatFromAxisAngle(vec3 axis, float angle) {
+  vec4 qr;
+  float half_angle = (angle * 0.5) * 3.14159 / 180.0;
+  qr.x = axis.x * sin(half_angle);
+  qr.y = axis.y * sin(half_angle);
+  qr.z = axis.z * sin(half_angle);
+  qr.w = cos(half_angle);
+  return qr;
+}
+vec4 quatConj(vec4 q) {
+  return vec4(-q.x, -q.y, -q.z, q.w);
+}
+vec4 quatMultiply(vec4 q1, vec4 q2)
+{
+  vec4 qr;
+  qr.x = (q1.w * q2.x) + (q1.x * q2.w) + (q1.y * q2.z) - (q1.z * q2.y);
+  qr.y = (q1.w * q2.y) - (q1.x * q2.z) + (q1.y * q2.w) + (q1.z * q2.x);
+  qr.z = (q1.w * q2.z) + (q1.x * q2.y) - (q1.y * q2.x) + (q1.z * q2.w);
+  qr.w = (q1.w * q2.w) - (q1.x * q2.x) - (q1.y * q2.y) - (q1.z * q2.z);
+  return qr;
+}
+// build quaternion tranformation
+vec3 rotateVertexPosition(vec3 position, vec3 axis, float angle) {
+  vec4 qr = quatFromAxisAngle(axis, angle);
+  vec4 qr_conj = quatConj(qr);
+  vec4 q_pos = vec4(position.x, position.y, position.z, 0);
+
+  vec4 q_tmp = quatMultiply(qr, q_pos);
+  qr = quatMultiply(q_tmp, qr_conj);
+
+  return vec3(qr.x, qr.y, qr.z);
+}
+// apply rotation in degrees
+vec3 applyRotationTransform( vec3 position, vec2 rotation ) {
+  vec3 pos = position;
+  pos = rotateVertexPosition(pos, vec3(0.0, 1.0, 0.0), rotation.y);
+  return pos;
+}
+
 void main () {
   // -- apply scale
   vec3 scaled = position * scale;
 
+  // -- apply y rotation
+  vec3 rotated = applyRotationTransform(scaled, vec2(1.0, 30.0));
+
   // -- apply z/y/z offset
-  vec3 transformed = scaled + offset;
+  vec3 transformed = rotated + offset;
   vGroundPosition = transformed;
   
   // -- displace grass blades vertically to follow terrain
