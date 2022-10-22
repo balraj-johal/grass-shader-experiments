@@ -123,14 +123,18 @@ void main () {
   //TODO:  mix two noise textures?
 
   // -- generate simplex noise displacement
-  float bendScale = 1.25;
+  float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale);
 
   vec3 displacement = vec3(0.0);
-  float noiseScale = 0.0825;
+  float noiseScale = 0.045;
   float noiseTimeScale = 0.15;
-  float noisePower = 0.25;
-  displacement = vec3(snoise(transformed.xz * noiseScale + (time * noiseTimeScale)) * noisePower);
+  float noisePower = 0.5;
+  float noiseTimeFactor = (time * noiseTimeScale);
+  vec2 windVector = vec2(0.0, 0.0);
+  displacement = vec3(snoise(transformed.xz * noiseScale + noiseTimeFactor));
+  displacement += 0.5; // Try ensure wind only pushes forwards
+  displacement *= noisePower;
 
   // -- add mouse affects to displacement
   float touchInfluencePower = 3.0;
@@ -143,7 +147,7 @@ void main () {
   vec3 totalTouchDisplacement = vec3(xTouchDisplacement, 0.0, zTouchDisplacement);
   totalTouchDisplacement *= touchInfluencePower;
 
-  displacement += totalTouchDisplacement;
+  // displacement += totalTouchDisplacement;
   // // ensure touch influence is additional to simplex, rather than allow displacement to 0 out if no touchInfluence
   // touchInfluence = touchInfluence + 1.0;
   // displacement *= touchInfluence;

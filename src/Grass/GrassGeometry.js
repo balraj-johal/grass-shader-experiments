@@ -8,7 +8,7 @@ export default class GrassGeometry extends InstancedBufferGeometry {
   constructor() {
     super();
 
-    const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 2);
+    const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 7);
 
     this.copy(geometry);
 
@@ -34,8 +34,8 @@ export default class GrassGeometry extends InstancedBufferGeometry {
       };
     }
 
-    const MIN_HEIGHT = 1.0;
-    const HEIGHT_RANGE_FACTOR = 1.8;
+    const MIN_HEIGHT = 0.2;
+    const HEIGHT_RANGE_FACTOR = 2.0;
     for (let i = 0; i < GRASS_COUNT; i++) {
       refs.push(i);
 
