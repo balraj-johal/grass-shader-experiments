@@ -43,7 +43,7 @@ export default class GrassGeometry extends InstancedBufferGeometry {
       scales.push(MIN_HEIGHT + (Math.random() * HEIGHT_RANGE_FACTOR));
       scales.push(1.0);
 
-      // angles.push(Math.PI * 2 * Math.random());
+      angles.push(Math.PI * 2 * Math.random());
 
       //x
       offsets.push((Math.random() * AREA_SIZE - (AREA_SIZE/2))); 
