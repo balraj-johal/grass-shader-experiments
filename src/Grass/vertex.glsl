@@ -150,8 +150,8 @@ void main () {
   // -- displace grass blades vertically to follow terrain
   float sinkIntoGround = 0.1; // ensures bottom vertices hidden
 
-  /* -- ensure grass y position matches the displaced ground position
-
+  // -- ensure grass y position matches the displaced ground position
+  /* 
     ok this is some real dodgy stuff
     as I'm sampling from the noise texture using the ground mesh's UV's
     I need to make the instanced grass blade's locations map to the ground's UV

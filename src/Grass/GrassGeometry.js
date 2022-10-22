@@ -1,14 +1,23 @@
-import {
-  InstancedBufferAttribute,
-  InstancedBufferGeometry,
-} from "three";
+import * as THREE from "three";
+
+// Ensure ThreeJS is in global scope for the 'examples/'
+global.THREE = THREE;
+
+require('three/examples/js/loaders/GLTFLoader.js');
 
 const AREA_SIZE = 20;
-export default class GrassGeometry extends InstancedBufferGeometry {
+export default class GrassGeometry extends THREE.InstancedBufferGeometry {
   constructor() {
     super();
 
     const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 7);
+     
+    const loader = new THREE.GLTFLoader();
+    loader.load(__dirname + "/GrassBlade2.glb", (gltf) => {
+      const mesh = gltf.scene.children[0];
+      console.log(mesh.geometry);
+      // gltfGeometry.copy(mesh.geometry);
+    });
 
     this.copy(geometry);
 
@@ -69,23 +78,23 @@ export default class GrassGeometry extends InstancedBufferGeometry {
     
     this.setAttribute(
       "color",
-      new InstancedBufferAttribute(new Float32Array(colors), 3, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(colors), 3, false)
     );
     this.setAttribute(
       "scale",
-      new InstancedBufferAttribute(new Float32Array(scales), 3, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(scales), 3, false)
     );
     this.setAttribute(
       "ref",
-      new InstancedBufferAttribute(new Float32Array(refs), 1, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(refs), 1, false)
     );
     this.setAttribute(
       "offset",
-      new InstancedBufferAttribute(new Float32Array(offsets), 3, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3, false)
     );
     this.setAttribute(
       "angle",
-      new InstancedBufferAttribute(new Float32Array(angles), 1, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(angles), 1, false)
     );
   }
 }

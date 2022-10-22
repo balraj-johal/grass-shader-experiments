@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = THREE;
+
+require('three/examples/js/controls/OrbitControls.js');
 
 import canvasSketch from "canvas-sketch";
 
