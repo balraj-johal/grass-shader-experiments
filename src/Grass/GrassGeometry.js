@@ -44,7 +44,6 @@ export default class GrassGeometry extends InstancedBufferGeometry {
       scales.push(1.0);
 
       angles.push(360 * Math.random());
-      // angles.push(Math.PI * 2 * Math.random());
 
       //x
       offsets.push((Math.random() * AREA_SIZE - (AREA_SIZE/2))); 
@@ -53,15 +52,15 @@ export default class GrassGeometry extends InstancedBufferGeometry {
       //z
       offsets.push((Math.random() * AREA_SIZE - (AREA_SIZE/2)));
 
-      // const color = returnRGB(
-      //   colourPalette[
-      //     Math.floor(Math.random() * colourPalette.length)
-      //   ].toString()
-      // );
+      const color = returnRGB(
+        colourPalette[
+          Math.floor(Math.random() * colourPalette.length)
+        ].toString()
+      );
 
-      // colors.push(color.r);
-      // colors.push(color.g);
-      // colors.push(color.b);
+      colors.push(color.r);
+      colors.push(color.g);
+      colors.push(color.b);
     }
 
     this.instanceCount = GRASS_COUNT;
