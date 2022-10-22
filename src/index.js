@@ -26,9 +26,6 @@ const settings = {
 const GRASS_COUNT = 25000;
 
 const sketch = async ({ context }) => {
-
-
-
   // -- SETUP
   // Create a renderer
   const renderer = new THREE.WebGLRenderer({

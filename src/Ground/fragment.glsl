@@ -13,7 +13,7 @@ void main () {
   color = mix(color2, noiseTex, 0.15);
 
   // // show touch tex
-  // color = mix(color, touchTex, 0.5);
+  color = mix(color, touchTex, 0.5);
 
   gl_FragColor = vec4(color, 1.0);
 }
