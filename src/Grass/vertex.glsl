@@ -3,6 +3,7 @@ attribute vec3 scale;
 attribute vec3 offset;
 attribute float angle;
 attribute float color;
+attribute vec2 clumpDistance;
 
 uniform float time;
 uniform sampler2D noiseTex;
@@ -145,6 +146,10 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
+  // the two lines below work 
+  transformed.x += clumpDistance.x;
+  transformed.z += clumpDistance.y;
+
   vGroundPosition = transformed;
   
   // -- displace grass blades vertically to follow terrain

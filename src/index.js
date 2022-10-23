@@ -35,7 +35,7 @@ const sketch = async ({ context }) => {
   renderer.setClearColor("#fff", 1);
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
-  camera.position.set(0, 8, -14);
+  camera.position.set(0, 8, -34);
   camera.lookAt(new THREE.Vector3());
   // Setup camera controller
   // const controls = new THREE.OrbitControls(camera, context.canvas);
