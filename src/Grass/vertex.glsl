@@ -38,7 +38,6 @@ varying float vStreak;
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
-
 float snoise(vec2 v) {
     // Precompute values for skewed triangular grid
     const vec4 C = vec4(0.211324865405187,
@@ -107,6 +106,7 @@ vec4 quatFromAxisAngle(vec3 axis, float angle) {
   qr.w = cos(half_angle);
   return qr;
 }
+// what is this one idek
 vec4 quatConj(vec4 q) {
   return vec4(-q.x, -q.y, -q.z, q.w);
 }
@@ -146,10 +146,9 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
-  // the two lines below work 
   transformed.x += clumpDistance.x;
   transformed.z += clumpDistance.y;
-
+  // pass blade position to the fragment shader using a varying
   vGroundPosition = transformed;
   
   // -- displace grass blades vertically to follow terrain
