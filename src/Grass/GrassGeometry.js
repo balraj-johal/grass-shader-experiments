@@ -7,37 +7,41 @@ require('three/examples/js/loaders/GLTFLoader.js');
 
 const AREA_SIZE = 20;
 const CLUMP_DENSITY = 0.5; //per unit of area
-const CLUMP_STEP = AREA_SIZE / (AREA_SIZE * CLUMP_DENSITY);
+const TILE_SIZE = AREA_SIZE / (AREA_SIZE * CLUMP_DENSITY);
 const tileMap = {};
 
 const roundDownToNearestMultiple = (number, multiple) => {
   return Math.floor(number / multiple) * multiple;
 }
+// given a point, return the tile containing that point
 const assignTile = (pointX, pointZ) => {
-  const tileX = roundDownToNearestMultiple(pointX, CLUMP_STEP);
-  const tileZ = roundDownToNearestMultiple(pointZ, CLUMP_STEP);
+  const tileX = roundDownToNearestMultiple(pointX, TILE_SIZE);
+  const tileZ = roundDownToNearestMultiple(pointZ, TILE_SIZE);
   const tile = tileMap[`${tileX}.${tileZ}`];
-  if (!tile) console.log(pointX, pointZ, tileX, tileZ);
+  if (!tile) console.log("point is not within a registered tile.");
   return tileMap[`${tileX}.${tileZ}`];
 }
+// given a point, randomly offset it, ensuring it stays within it's tile
 const jitterPoint = (point, step) => {
   return point + (Math.random() - 1) * step / 2;
 }
+// gets all the tiles surrounding a given one, including itself.
 const getSurroundingTiles = (tile) => {
   const surroundingTiles = [tile];
   const tilesToCheck = [];
   // top 3
-  tilesToCheck.push([tile.x - CLUMP_STEP, tile.z + CLUMP_STEP], [tile.x, tile.z + CLUMP_STEP], [tile.x + CLUMP_STEP, tile.z + CLUMP_STEP]);
+  tilesToCheck.push([tile.x - TILE_SIZE, tile.z + TILE_SIZE], [tile.x, tile.z + TILE_SIZE], [tile.x + TILE_SIZE, tile.z + TILE_SIZE]);
   // left right
-  tilesToCheck.push([tile.x - CLUMP_STEP, tile.z], [tile.x + CLUMP_STEP, tile.z]);
+  tilesToCheck.push([tile.x - TILE_SIZE, tile.z], [tile.x + TILE_SIZE, tile.z]);
   // bottom 3
-  tilesToCheck.push([tile.x - CLUMP_STEP, tile.z - CLUMP_STEP], [tile.x, tile.z - CLUMP_STEP], [tile.x + CLUMP_STEP, tile.z - CLUMP_STEP]);
+  tilesToCheck.push([tile.x - TILE_SIZE, tile.z - TILE_SIZE], [tile.x, tile.z - TILE_SIZE], [tile.x + TILE_SIZE, tile.z - TILE_SIZE]);
   tilesToCheck.forEach(tileCoords => {
     const nearbyTile = tileMap[`${tileCoords[0]}.${tileCoords[1]}`];
     if (nearbyTile) surroundingTiles.push(nearbyTile);
   })
   return surroundingTiles;
 }
+
 const getDistanceVector = (x1, z1, x2, z2) => {
   return [x1 - x2, z1 - z2];
 }
@@ -47,6 +51,9 @@ const getVectorMagnitude = (vector) => {
   const cSquared = aSquared + bSquared;
   return Math.sqrt(cSquared);
 }
+// given a list of tiles to check, calculates the distance vector 
+// from the given point coords to the clump points of each tile, 
+// returning the closest one (i.e. with the lowest magnitude)
 const getClosestClumpToPoint = (surroundingTiles, pointX, pointZ) => {
   let currentClosest = {
     clump: {},
@@ -109,17 +116,17 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     for (let x = - TILE_MAP_SIZE/2; x < TILE_MAP_SIZE/2; x++) {
       for (let z = - TILE_MAP_SIZE/2; z < TILE_MAP_SIZE/2; z++) {
         // create clump data
-        const worldCoords = { x: x * CLUMP_STEP, z: z * CLUMP_STEP };
+        const worldCoords = { x: x * TILE_SIZE, z: z * TILE_SIZE };
         const initialClumpPoint = {
-          x: worldCoords.x + CLUMP_STEP / 2,
-          z: worldCoords.z + CLUMP_STEP / 2
+          x: worldCoords.x + TILE_SIZE / 2,
+          z: worldCoords.z + TILE_SIZE / 2
         };
         // add to tilemap
         tileMap[`${worldCoords.x}.${worldCoords.z}`] = {
           clump: {
             center: {
-              x: jitterPoint(initialClumpPoint.x, CLUMP_STEP),
-              z: jitterPoint(initialClumpPoint.z, CLUMP_STEP),
+              x: jitterPoint(initialClumpPoint.x, TILE_SIZE),
+              z: jitterPoint(initialClumpPoint.z, TILE_SIZE),
             },
           },
           id: `${worldCoords.x}.${worldCoords.z}`,
@@ -163,16 +170,15 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       colors.push(color.b);
       // assign tile that the blade is in
       const tile = assignTile(positions.x, positions.z);
-      // TODO: find closest clump point
+      // find closest clump point to the blade's current position, 
+      // checking all points in all surrounding tiles
       const closestClump = getClosestClumpToPoint(getSurroundingTiles(tile), positions.x, positions.z);
-      console.log(closestClump.distanceVector);
+      // add the vector from the grass blade to the clump center to
+      // the clumpDistance buffer attribute.
+      // this in theory will be used to push all blades of grass to
+      // their assigned clump point.
       clumpDistances.push(closestClump.distanceVector[0]);
       clumpDistances.push(closestClump.distanceVector[1]);
-      // if (i === 30) {
-      //   const closestClump = getClosestClumpToPoint(getSurroundingTiles(tile), positions.x, positions.z);
-      //   clumpDistances.push(closestClump.distanceVector[0]);
-      //   clumpDistances.push(closestClump.distanceVector[1]);
-      // }
     }
 
     this.instanceCount = GRASS_COUNT;
