@@ -5,7 +5,21 @@ global.THREE = THREE;
 
 require('three/examples/js/loaders/GLTFLoader.js');
 
+function returnRGB(hexColor) {
+  var hex = Math.floor(hexColor);
+  let r = ((hex >> 16) & 255) / 255;
+  let g = ((hex >> 8) & 255) / 255;
+  let b = (hex & 255) / 255;
+
+  return {
+    r,
+    g,
+    b,
+  };
+}
+
 const AREA_SIZE = 20;
+const CLUMP_DENSITY = 1; //per unit of area
 export default class GrassGeometry extends THREE.InstancedBufferGeometry {
   constructor() {
     super();
@@ -18,7 +32,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       console.log(mesh.geometry);
       // gltfGeometry.copy(mesh.geometry);
     });
-
+    console.log(geometry);
     this.copy(geometry);
 
     const GRASS_COUNT = 25000;
@@ -30,45 +44,29 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
 
     const colourPalette = [0xffffff];
 
-    function returnRGB(hexColor) {
-      var hex = Math.floor(hexColor);
-      let r = ((hex >> 16) & 255) / 255;
-      let g = ((hex >> 8) & 255) / 255;
-      let b = (hex & 255) / 255;
-
-      return {
-        r,
-        g,
-        b,
-      };
-    }
-
+    // apply randomness to each instance
     const MIN_HEIGHT = 0.2;
     const HEIGHT_RANGE_FACTOR = 2.0;
     const MIN_WIDTH = 0.6;
     const WIDTH_RANGE_FACTOR = 0.6;
     for (let i = 0; i < GRASS_COUNT; i++) {
       refs.push(i);
-
+      // scaling
       scales.push(MIN_WIDTH + (Math.random() * WIDTH_RANGE_FACTOR));
       scales.push(MIN_HEIGHT + (Math.random() * HEIGHT_RANGE_FACTOR));
       scales.push(1.0);
-
+      // rotation
       angles.push(360 * Math.random());
-
-      //x
-      offsets.push((Math.random() * AREA_SIZE - (AREA_SIZE/2))); 
-      //y
-      offsets.push(0.0);  
-      //z
+      // position (x, y, z)
       offsets.push((Math.random() * AREA_SIZE - (AREA_SIZE/2)));
-
+      offsets.push(0.0);
+      offsets.push((Math.random() * AREA_SIZE - (AREA_SIZE/2)));
+      // colours
       const color = returnRGB(
         colourPalette[
           Math.floor(Math.random() * colourPalette.length)
         ].toString()
       );
-
       colors.push(color.r);
       colors.push(color.g);
       colors.push(color.b);
