@@ -4,6 +4,7 @@ import * as THREE from "three";
 global.THREE = THREE;
 
 require('three/examples/js/controls/OrbitControls.js');
+const threeStats = require('three/examples/js/libs/stats.min.js');
 
 import canvasSketch from "canvas-sketch";
 
@@ -135,8 +136,8 @@ const sketch = async ({ context }) => {
   boxMesh.translateY(0.5);
   scene.add(boxMesh);
 
-
-
+  const stats = threeStats();
+  document.body.appendChild(stats.dom);
 
   // -- RENDER LOOP
   return {
@@ -171,6 +172,7 @@ const sketch = async ({ context }) => {
 
 
       controls.update();
+      stats.update();
       renderer.render(scene, camera);
     },
     // Dispose of events & renderer for cleaner hot-reloading
