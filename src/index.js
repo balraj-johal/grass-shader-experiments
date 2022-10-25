@@ -79,43 +79,83 @@ const sketch = async ({ context }) => {
   groundMaterial.uniformsNeedUpdate = true;
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
   groundMesh.rotateX(Math.PI / 2);
-  scene.add(groundMesh);
+  // scene.add(groundMesh);
+
 
 
 
 
   // -- GRASS
-  const grassGeometry = new GrassGeometry();
-  grassGeometry.computeVertexNormals(); // TODO: is this useful?
+  let grassMaterial;
+  const loader = new THREE.GLTFLoader();
+  loader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
+    const mesh = gltf.scene.children[0];
+    scene.add(gltf.scene);
+    console.log(mesh);
+    const grassGeometry = new GrassGeometry({
+      geometry: mesh.geometry,
+      count: GRASS_COUNT
+    });
+    grassGeometry.computeVertexNormals(); // TODO: is this useful?
 
-  grassGeometry.attributes["offset"].needsUpdate;
-  grassGeometry.attributes["scale"].needsUpdate;
-  grassGeometry.attributes["color"].needsUpdate;
-  grassGeometry.attributes["angle"].needsUpdate;
+    grassGeometry.attributes["offset"].needsUpdate;
+    grassGeometry.attributes["scale"].needsUpdate;
+    grassGeometry.attributes["color"].needsUpdate;
+    grassGeometry.attributes["angle"].needsUpdate;
+    grassGeometry.attributes["clumpDistance"].needsUpdate;
 
-  grassGeometry.translate(0, 0.5, 0);
-  const grassMaterial = new THREE.ShaderMaterial({
-    vertexShader: grassVert,
-    fragmentShader: grassFrag,
-    uniforms: { 
-      time: { value: 0 },
-      noiseTex: { value: noiseTex }, 
-      touchTex: { value: touchTracker.texture }
-    },
-    side: THREE.DoubleSide,
+    grassGeometry.translate(0, 0.5, 0);
+    grassMaterial = new THREE.ShaderMaterial({
+      vertexShader: grassVert,
+      fragmentShader: grassFrag,
+      uniforms: { 
+        time: { value: 0 },
+        noiseTex: { value: noiseTex }, 
+        touchTex: { value: touchTracker.texture }
+      },
+      side: THREE.DoubleSide,
+    });
+
+    grassMaterial.clipping = false;
+    grassMaterial.uniformsNeedUpdate = true;
+
+    const grassMesh = new THREE.InstancedMesh(
+      grassGeometry,
+      grassMaterial,
+      GRASS_COUNT
+    );
+    grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+    // scene.add(grassMesh);
   });
 
-  grassMaterial.clipping = false;
-  grassMaterial.uniformsNeedUpdate = true;
+  // gltfdebug
+  loader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
+    const mesh = gltf.scene.children[0];
+    grassMaterial = new THREE.ShaderMaterial({
+      vertexShader: grassVert,
+      fragmentShader: grassFrag,
+      uniforms: { 
+        time: { value: 0 },
+        noiseTex: { value: noiseTex }, 
+        touchTex: { value: touchTracker.texture }
+      },
+      side: THREE.DoubleSide,
+    });
 
-  const grassMesh = new THREE.InstancedMesh(
-    grassGeometry,
-    grassMaterial,
-    GRASS_COUNT
-  );
-  grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
-  scene.add(grassMesh);
+    grassMaterial.clipping = false;
+    grassMaterial.uniformsNeedUpdate = true;
 
+    const grassMesh = new THREE.InstancedMesh(
+      mesh.geometry,
+      grassMaterial,
+      GRASS_COUNT
+    );
+    grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+    scene.add(grassMesh);
+    // scene.add(gltf.scene);
+
+    console.log(mesh);
+  });
 
 
 
@@ -149,7 +189,7 @@ const sketch = async ({ context }) => {
     },
     // Update & render your scene here
     render({ time }) {
-      grassMaterial.uniforms.time.value = time;
+      if (grassMaterial) grassMaterial.uniforms.time.value = time;
 
       touchTracker.update();
 
