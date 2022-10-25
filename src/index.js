@@ -136,6 +136,7 @@ const sketch = async ({ context }) => {
   boxMesh.translateY(0.5);
   scene.add(boxMesh);
 
+  // -- STATS
   const stats = threeStats();
   document.body.appendChild(stats.dom);
 
