@@ -38,7 +38,7 @@ const sketch = async ({ context }) => {
   camera.position.set(0, 8, -34);
   camera.lookAt(new THREE.Vector3());
   // Setup camera controller
-  // const controls = new THREE.OrbitControls(camera, context.canvas);
+  const controls = new THREE.OrbitControls(camera, context.canvas);
   const scene = new THREE.Scene();
 
 
@@ -170,12 +170,12 @@ const sketch = async ({ context }) => {
       }
 
 
-      // controls.update();
+      controls.update();
       renderer.render(scene, camera);
     },
     // Dispose of events & renderer for cleaner hot-reloading
     unload() {
-      // controls.dispose();
+      controls.dispose();
       renderer.dispose();
     },
   };
