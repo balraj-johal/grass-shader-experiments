@@ -97,6 +97,12 @@ float snoise(vec2 v) {
 }
 
 // -- rotation helpers
+// attrib: https://thebookofshaders.com/08/
+mat2 rotate2d(float _angle){
+    return mat2(cos(_angle),-sin(_angle),
+                sin(_angle),cos(_angle));
+}
+// attrib: rob ty
 vec4 quatFromAxisAngle(vec3 axis, float angle) {
   vec4 qr;
   float half_angle = (angle * 0.5) * 3.14159 / 180.0;
@@ -148,8 +154,6 @@ void main () {
   vec3 transformed = rotated + offset;
   transformed.x += clumpDistance.x;
   transformed.z += clumpDistance.y;
-  // pass blade position to the fragment shader using a varying
-  vGroundPosition = transformed;
   
   // -- displace grass blades vertically to follow terrain
   float sinkIntoGround = 0.1; // ensures bottom vertices hidden
@@ -174,10 +178,12 @@ void main () {
   float noiseTimeScale = 0.15;
   float noisePower = 0.5;
   float noiseTimeFactor = (time * noiseTimeScale);
-  vec2 windVector = vec2(0.0, 0.0);
+  vec2 forwardVector = vec2(0.0, 1.0); // in z
+  vec2 windVector = rotate2d(45.0 * PI / 180.0) * forwardVector;
+  vec2 wind = noiseTimeFactor * windVector;
 
   // -- apply noise displacement
-  displacement = vec3(snoise(transformed.xz * noiseScale + noiseTimeFactor));
+  displacement.xz = vec2(snoise(transformed.xz * noiseScale + noiseTimeFactor)) * windVector;
   displacement += 0.5; // Try ensure wind only pushes forwards
   displacement *= noisePower;
 
@@ -203,5 +209,7 @@ void main () {
   // -- finalise position
   gl_Position = projectionMatrix * mvPosition;
 
+  // pass blade position to the fragment shader using a varying
+  vGroundPosition = transformed;
   vUv = uv;
 }
