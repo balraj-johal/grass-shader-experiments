@@ -156,7 +156,7 @@ void main () {
   transformed.z += clumpDistance.y;
   
   // -- displace grass blades vertically to follow terrain
-  float sinkIntoGround = 0.1; // ensures bottom vertices hidden
+  float sinkIntoGround = 0.05; // ensures bottom vertices hidden
 
   // -- ensure grass y position matches the displaced ground position
   /* 
