@@ -24,6 +24,7 @@ const settings = {
   context: "webgl",
 };
 
+// const GRASS_COUNT = 1;
 const GRASS_COUNT = 25000;
 
 const degreesToRads = (degree) => {
@@ -85,7 +86,7 @@ const sketch = async ({ context }) => {
   scene.add(groundMesh);
 
   // -- GRASS
-  const grassGeometry = new GrassGeometry();
+  const grassGeometry = new GrassGeometry({ grassCount: GRASS_COUNT, scene });
   grassGeometry.computeVertexNormals(); // TODO: is this useful?
 
   grassGeometry.attributes["offset"].needsUpdate;

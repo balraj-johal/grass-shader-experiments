@@ -101,7 +101,7 @@ function returnRGB(hexColor) {
 }
 
 export default class GrassGeometry extends THREE.InstancedBufferGeometry {
-  constructor() {
+  constructor(params) {
     super();
 
     const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 7);
@@ -114,7 +114,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     console.log(geometry);
     this.copy(geometry);
 
-    const GRASS_COUNT = 25000;
+    const GRASS_COUNT = params.grassCount;
     const refs = [];
     const offsets = [];
     const scales = [];
@@ -196,6 +196,20 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       // their assigned clump point.
       clumpDistances.push(closestClump.distanceVector[0]);
       clumpDistances.push(closestClump.distanceVector[1]);
+      if (i === 0) {
+        console.log(closestClump);
+        const box = new THREE.BoxGeometry(0.1, 10, 0.1);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const cube = new THREE.Mesh(box, material);
+        params.scene.add(cube);
+        // put cube on clump pt
+        cube.translateX(closestClump.clump.center.x);
+        cube.translateZ(closestClump.clump.center.z);
+        // move cube to grass blade?
+        // cube.translateX(closestClump.distanceVector[0]);
+        // cube.translateZ(closestClump.distanceVector[1]);
+        // cube.set
+      }
     }
 
     this.instanceCount = GRASS_COUNT;

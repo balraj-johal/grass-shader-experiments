@@ -74,8 +74,8 @@ float snoise(vec2 v) {
                         dot(x2,x2)
                         ), 0.0);
 
-    m = m*m ;
-    m = m*m ;
+    m = m*m;
+    m = m*m;
 
     // Gradients:
     //  41 pts uniformly over a line, mapped onto a diamond
@@ -154,8 +154,10 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
-  transformed.x += clumpDistance.x;
-  transformed.z += clumpDistance.y;
+  // vec3 offset2 = offset + vec3(clumpDistance.x, 0.0, clumpDistance.y);
+  // vec3 transformed = rotated + offset2;
+  transformed.x -= clumpDistance.x;
+  transformed.z -= clumpDistance.y;
   
   // -- displace grass blades vertically to follow terrain
   float sinkIntoGround = 0.05; // ensures bottom vertices hidden
