@@ -154,8 +154,6 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
-  // vec3 offset2 = offset + vec3(clumpDistance.x, 0.0, clumpDistance.y);
-  // vec3 transformed = rotated + offset2;
   transformed.x -= clumpDistance.x;
   transformed.z -= clumpDistance.y;
   
