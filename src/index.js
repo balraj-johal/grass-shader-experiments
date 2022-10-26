@@ -3,8 +3,8 @@ import * as THREE from "three";
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = THREE;
 
-require('three/examples/js/controls/OrbitControls.js');
-const threeStats = require('three/examples/js/libs/stats.min.js');
+require("three/examples/js/controls/OrbitControls.js");
+const threeStats = require("three/examples/js/libs/stats.min.js");
 
 import canvasSketch from "canvas-sketch";
 
@@ -26,6 +26,10 @@ const settings = {
 
 const GRASS_COUNT = 25000;
 
+const degreesToRads = (degree) => {
+  return (degree * Math.PI) / 180;
+};
+
 const sketch = async ({ context }) => {
   // -- SETUP
   // Create a renderer
@@ -40,10 +44,10 @@ const sketch = async ({ context }) => {
   camera.lookAt(new THREE.Vector3());
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
+  // set max vertical camera rotation from top down
+  controls.minPolarAngle = degreesToRads(35);
+  controls.maxPolarAngle = degreesToRads(75);
   const scene = new THREE.Scene();
-
-
-
 
   // -- INTERACTION
   let touchTracker = new RenderTexture();
@@ -52,28 +56,26 @@ const sketch = async ({ context }) => {
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
 
-  function onPointerMove( event ) {
+  function onPointerMove(event) {
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
-    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
   }
-  window.addEventListener( 'pointermove', onPointerMove );
-
-
-  
-
+  window.addEventListener("pointermove", onPointerMove);
 
   // -- GROUND
   const groundGeometry = new GroundGeometry();
   // groundGeometry.computeVertexNormals();
-  const noiseTex = new THREE.TextureLoader().load( "./textures/noiseTexture.png" );
+  const noiseTex = new THREE.TextureLoader().load(
+    "./textures/noiseTexture.png"
+  );
   const groundMaterial = new THREE.ShaderMaterial({
     vertexShader: groundVert,
     fragmentShader: groundFrag,
     uniforms: {
       noiseTex: { value: noiseTex },
-      touchTex: { value: touchTracker.texture }
+      touchTex: { value: touchTracker.texture },
     },
     side: THREE.DoubleSide,
   });
@@ -81,9 +83,6 @@ const sketch = async ({ context }) => {
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
   groundMesh.rotateX(Math.PI / 2);
   scene.add(groundMesh);
-
-
-
 
   // -- GRASS
   const grassGeometry = new GrassGeometry();
@@ -98,10 +97,10 @@ const sketch = async ({ context }) => {
   const grassMaterial = new THREE.ShaderMaterial({
     vertexShader: grassVert,
     fragmentShader: grassFrag,
-    uniforms: { 
+    uniforms: {
       time: { value: 0 },
-      noiseTex: { value: noiseTex }, 
-      touchTex: { value: touchTracker.texture }
+      noiseTex: { value: noiseTex },
+      touchTex: { value: touchTracker.texture },
     },
     side: THREE.DoubleSide,
   });
@@ -116,9 +115,6 @@ const sketch = async ({ context }) => {
   );
   grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
   scene.add(grassMesh);
-
-
-
 
   // -- INTERSECTION BOX
 
@@ -157,20 +153,19 @@ const sketch = async ({ context }) => {
 
       // -- CHECK RAYCAST
       // update the ray with the camera and pointer position
-      raycaster.setFromCamera( pointer, camera );
+      raycaster.setFromCamera(pointer, camera);
 
       // calculate objects intersecting the ray
-      const intersects = raycaster.intersectObjects( scene.children );
-      for ( let i = 0; i < intersects.length; i ++ ) {
+      const intersects = raycaster.intersectObjects(scene.children);
+      for (let i = 0; i < intersects.length; i++) {
         if (intersects[i]) {
           const uvCoords = {
             x: intersects[i].uv.x,
             y: 1 - intersects[i].uv.y,
-          }
+          };
           touchTracker.addTouch(uvCoords);
         }
       }
-
 
       controls.update();
       stats.update();
