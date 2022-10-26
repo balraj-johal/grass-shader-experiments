@@ -20,6 +20,8 @@ varying float vParticleType;
 varying float vAngle;
 varying float vStreak;
 
+const vec2 forwardVector = vec2(0.0, 1.0);
+
 #define PI 3.1415926
 
 // SIMPLEX NOISE
@@ -176,16 +178,14 @@ void main () {
   vec3 displacement = vec3(0.0);
   float noiseScale = 0.045;
   float noiseTimeScale = 0.15;
-  float noisePower = 0.5;
-  float noiseTimeFactor = (time * noiseTimeScale);
-  vec2 forwardVector = vec2(0.0, 1.0); // in z
+  float windPower = 0.5;
+  float scrollByTime = time * noiseTimeScale;
   vec2 windVector = rotate2d(45.0 * PI / 180.0) * forwardVector;
-  vec2 wind = noiseTimeFactor * windVector;
 
   // -- apply noise displacement
-  displacement.xz = vec2(snoise(transformed.xz * noiseScale + noiseTimeFactor)) * windVector;
+  displacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
   displacement += 0.5; // Try ensure wind only pushes forwards
-  displacement *= noisePower;
+  displacement *= windPower;
 
   // -- get mouse displacement amount
   float touchInfluencePower = 3.0;
