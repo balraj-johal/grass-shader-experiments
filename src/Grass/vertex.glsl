@@ -202,7 +202,7 @@ void main () {
 
   // -- apply noise displacement
   displacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
-  displacement += 0.6; // ensure wind only pushes forwards
+  displacement += 0.5; // ensure wind only pushes forwards
   displacement *= windPower;
   displacement *= scale.y; // Make displacement proportional to height
 

@@ -94,7 +94,12 @@ const sketch = async ({ context }) => {
       scene, 
       geometry: gltf.scene.children[0].geometry 
     });
-    grassGeometry.computeVertexNormals();
+    grassGeometry.computeVertexNormals(); 
+  
+    grassGeometry.attributes["offset"].needsUpdate;
+    grassGeometry.attributes["scale"].needsUpdate;
+    grassGeometry.attributes["color"].needsUpdate;
+    grassGeometry.attributes["angle"].needsUpdate;
   
     grassMaterial = new THREE.ShaderMaterial({
       vertexShader: grassVert,
