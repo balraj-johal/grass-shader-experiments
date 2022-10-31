@@ -207,7 +207,7 @@ void main () {
   displacement *= scale.y; // Make displacement proportional to height
 
   // -- get mouse displacement amount
-  float touchInfluencePower = 3.0;
+  float touchInfluencePower = 5.0;
   float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r * touchInfluencePower;
 
   // -- apply radial displacement around mouse points
@@ -216,6 +216,7 @@ void main () {
   float xTouchDisplacement = texture2D(touchTex, mappedToGroundUV.xz).r - texture2D(touchTex, mappedToGroundUV.xz + vec2(sampleRes, 0.0)).r;
   vec3 totalTouchDisplacement = vec3(xTouchDisplacement, 0.0, zTouchDisplacement);
   totalTouchDisplacement *= touchInfluencePower;
+  displacement += totalTouchDisplacement;
 
   // -- apply total displacement - primarily to uv top, none to bottom
   float bendScale = 2.0;

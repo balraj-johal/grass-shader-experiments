@@ -152,7 +152,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     }
 
     // apply randomness to each instance
-    const MIN_HEIGHT = 0.6;
+    const MIN_HEIGHT = 0.8;
     const HEIGHT_RANGE_FACTOR = 0.5;
     const MIN_WIDTH = 0.6;
     const WIDTH_RANGE_FACTOR = 0.6;

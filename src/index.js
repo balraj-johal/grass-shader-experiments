@@ -155,17 +155,15 @@ const sketch = async ({ context }) => {
       // -- CHECK RAYCAST
       // update the ray with the camera and pointer position
       raycaster.setFromCamera(pointer, camera);
-
       // calculate objects intersecting the ray
       const intersects = raycaster.intersectObjects(scene.children);
       for (let i = 0; i < intersects.length; i++) {
-        if (intersects[i]) {
-          const uvCoords = {
-            x: intersects[i].uv.x,
-            y: 1 - intersects[i].uv.y,
-          };
-          touchTracker.addTouch(uvCoords);
-        }
+        if (!intersects[i]) return;
+        const uvCoords = {
+          x: intersects[i].uv.x,
+          y: 1 - intersects[i].uv.y,
+        };
+        touchTracker.addTouch(uvCoords);
       }
 
       controls.update();
