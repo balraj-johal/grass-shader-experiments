@@ -4,6 +4,7 @@ attribute vec3 offset;
 attribute float angle;
 attribute float color;
 attribute vec2 clumpDistance;
+attribute float clumpHeightAddition;
 
 uniform float time;
 uniform sampler2D noiseTex;
@@ -160,10 +161,11 @@ void main () {
   float clumpMaxHeightAddition = 1.5;
   if (distanceToClump < clumpRadius) {
     // TODO: make not linear
-    float normalisedDistanceFromClump = (clumpRadius - distanceToClump) / clumpRadius;
+    float normalisedDistanceFromClump = 
+        (clumpRadius - distanceToClump) / clumpRadius;
     // flatten off the tops of the clumps to make it look more natural
     normalisedDistanceFromClump = clamp(normalisedDistanceFromClump, 0.0, 0.4);
-    float clumpHeightInfluence = clumpMaxHeightAddition * normalisedDistanceFromClump;
+    float clumpHeightInfluence = clumpHeightAddition * normalisedDistanceFromClump;
     scaled.y *= 1.0 + clumpHeightInfluence;
   } 
 
@@ -172,7 +174,9 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
-  // move all blades of glass to the closest clump point
+
+  // -- move all blades of glass to the closest clump point
+  // transformed.z = clumpHeightAddition;
   // transformed.xz -= clumpDistance;
 
   // -- ensure grass y position matches the displaced ground position

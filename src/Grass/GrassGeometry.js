@@ -121,6 +121,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     const colors = [];
     const angles = [];
     const clumpDistances = [];
+    const clumpHeightAdditions = [];
 
     const colourPalette = [0xffffff];
 
@@ -142,6 +143,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
               x: jitterPoint(initialClumpPoint.x, TILE_SIZE),
               z: jitterPoint(initialClumpPoint.z, TILE_SIZE),
             },
+            heightAddition: Math.random() + 0.5,
           },
           id: `${worldCoords.x}.${worldCoords.z}`,
           x: worldCoords.x,
@@ -197,6 +199,8 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       // their assigned clump point.
       clumpDistances.push(closestClump.distanceVector[0]);
       clumpDistances.push(closestClump.distanceVector[1]);
+      console.log(closestClump.clump.heightAddition)
+      clumpHeightAdditions.push(closestClump.clump.heightAddition);
     }
 
     this.instanceCount = GRASS_COUNT;
@@ -226,6 +230,14 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       new THREE.InstancedBufferAttribute(
         new Float32Array(clumpDistances),
         2,
+        false
+      )
+    );
+    this.setAttribute(
+      "clumpHeightAddition",
+      new THREE.InstancedBufferAttribute(
+        new Float32Array(clumpHeightAdditions),
+        1,
         false
       )
     );
