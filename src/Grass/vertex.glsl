@@ -176,7 +176,6 @@ void main () {
   vec3 transformed = rotated + offset;
 
   // -- move all blades of glass to the closest clump point
-  // transformed.z = clumpHeightAddition;
   // transformed.xz -= clumpDistance;
 
   // -- ensure grass y position matches the displaced ground position
@@ -203,7 +202,7 @@ void main () {
 
   // -- apply noise displacement
   displacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
-  displacement += 0.5; // ensure wind only pushes forwards
+  displacement += 0.6; // ensure wind only pushes forwards
   displacement *= windPower;
   displacement *= scale.y; // Make displacement proportional to height
 

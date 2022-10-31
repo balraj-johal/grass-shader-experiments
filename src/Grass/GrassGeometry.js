@@ -129,7 +129,6 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     const TILE_MAP_SIZE = AREA_SIZE * CLUMP_DENSITY;
     for (let x = -TILE_MAP_SIZE / 2; x < TILE_MAP_SIZE / 2; x++) {
       for (let z = -TILE_MAP_SIZE / 2; z < TILE_MAP_SIZE / 2; z++) {
-        console.log(`creating tile at ${x} and ${z}`)
         // create clump data
         const worldCoords = { x: x * TILE_SIZE, z: z * TILE_SIZE };
         const initialClumpPoint = {
@@ -143,7 +142,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
               x: jitterPoint(initialClumpPoint.x, TILE_SIZE),
               z: jitterPoint(initialClumpPoint.z, TILE_SIZE),
             },
-            heightAddition: Math.random() + 0.5,
+            heightAddition: Math.random() + 0.75,
           },
           id: `${worldCoords.x}.${worldCoords.z}`,
           x: worldCoords.x,
@@ -151,10 +150,9 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
         };
       }
     }
-    console.log(tileMap);
 
     // apply randomness to each instance
-    const MIN_HEIGHT = 1.2;
+    const MIN_HEIGHT = 0.6;
     const HEIGHT_RANGE_FACTOR = 0.5;
     const MIN_WIDTH = 0.6;
     const WIDTH_RANGE_FACTOR = 0.6;
@@ -199,7 +197,6 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       // their assigned clump point.
       clumpDistances.push(closestClump.distanceVector[0]);
       clumpDistances.push(closestClump.distanceVector[1]);
-      console.log(closestClump.clump.heightAddition)
       clumpHeightAdditions.push(closestClump.clump.heightAddition);
     }
 
