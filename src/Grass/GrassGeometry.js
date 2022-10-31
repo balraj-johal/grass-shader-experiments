@@ -6,7 +6,7 @@ global.THREE = THREE;
 require("three/examples/js/loaders/GLTFLoader.js");
 
 const AREA_SIZE = 20;
-const CLUMP_DENSITY = 0.5; //per unit of area
+const CLUMP_DENSITY = 0.2; //per unit of area
 const TILE_SIZE = AREA_SIZE / (AREA_SIZE * CLUMP_DENSITY);
 const tileMap = {};
 
@@ -128,6 +128,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     const TILE_MAP_SIZE = AREA_SIZE * CLUMP_DENSITY;
     for (let x = -TILE_MAP_SIZE / 2; x < TILE_MAP_SIZE / 2; x++) {
       for (let z = -TILE_MAP_SIZE / 2; z < TILE_MAP_SIZE / 2; z++) {
+        console.log(`creating tile at ${x} and ${z}`)
         // create clump data
         const worldCoords = { x: x * TILE_SIZE, z: z * TILE_SIZE };
         const initialClumpPoint = {
@@ -151,8 +152,8 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     console.log(tileMap);
 
     // apply randomness to each instance
-    const MIN_HEIGHT = 0.2;
-    const HEIGHT_RANGE_FACTOR = 2.0;
+    const MIN_HEIGHT = 1.2;
+    const HEIGHT_RANGE_FACTOR = 0.5;
     const MIN_WIDTH = 0.6;
     const WIDTH_RANGE_FACTOR = 0.6;
     for (let i = 0; i < GRASS_COUNT; i++) {

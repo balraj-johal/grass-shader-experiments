@@ -144,10 +144,24 @@ vec3 applyRotationTransform( vec3 position, vec2 rotation ) {
   pos = rotateVertexPosition(pos, vec3(0.0, 1.0, 0.0), rotation.y);
   return pos;
 }
+float getVectorMagnitude(vec2 vector) {
+  float aSquared = pow(vector.x, 2.0);
+  float bSquared = pow(vector.y, 2.0);
+  return sqrt(aSquared + bSquared);
+}
 
 void main () {
   // -- apply scale
   vec3 scaled = position * scale;
+
+  // -- apply clump influence on blade height
+  float distanceToClump = getVectorMagnitude(clumpDistance);
+  float clumpRadius = 2.5;
+  if (distanceToClump < clumpRadius) {
+    // TODO: make not linear
+    float clumpHeightInfluence = (clumpRadius - distanceToClump) / clumpRadius;
+    scaled.y *= 1.0 + clumpHeightInfluence;
+  } 
 
   // -- apply y rotation
   vec3 rotated = applyRotationTransform(scaled, vec2(0.0, angle));
@@ -155,10 +169,7 @@ void main () {
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
   // move all blades of glass to the closest clump point
-  transformed.xz -= clumpDistance;
-  
-  // -- displace grass blades vertically to follow terrain
-  float sinkIntoGround = 0.05; // ensures bottom vertices hidden
+  // transformed.xz -= clumpDistance;
 
   // -- ensure grass y position matches the displaced ground position
   /* 
@@ -172,7 +183,7 @@ void main () {
     then divide by AREA_SIZE to get back to 0-1 
   */
   vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
-  transformed.y += texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0 - sinkIntoGround;
+  transformed.y += texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0;
 
   // -- generate simplex noise displacement
   vec3 displacement = vec3(0.0);
@@ -184,7 +195,7 @@ void main () {
 
   // -- apply noise displacement
   displacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
-  displacement += 0.5; // Try ensure wind only pushes forwards
+  displacement += 0.5; // ensure wind only pushes forwards
   displacement *= windPower;
   displacement *= scale.y; // Make displacement proportional to height
 

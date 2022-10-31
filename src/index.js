@@ -25,7 +25,7 @@ const settings = {
 };
 
 // const GRASS_COUNT = 1;
-const GRASS_COUNT = 25000;
+const GRASS_COUNT = 10000;
 
 const degreesToRads = (degree) => {
   return (degree * Math.PI) / 180;
