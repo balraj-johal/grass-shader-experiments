@@ -47,7 +47,7 @@ const sketch = async ({ context }) => {
   const controls = new THREE.OrbitControls(camera, context.canvas);
   // set max vertical camera rotation from top down
   controls.minPolarAngle = degreesToRads(35);
-  controls.maxPolarAngle = degreesToRads(75);
+  // controls.maxPolarAngle = degreesToRads(75);
   const scene = new THREE.Scene();
 
   // -- INTERACTION
@@ -86,39 +86,70 @@ const sketch = async ({ context }) => {
   scene.add(groundMesh);
 
   // -- GRASS
-  const grassGeometry = new GrassGeometry({ grassCount: GRASS_COUNT, scene });
-  grassGeometry.computeVertexNormals(); // TODO: is this useful?
-
-  grassGeometry.attributes["offset"].needsUpdate;
-  grassGeometry.attributes["scale"].needsUpdate;
-  grassGeometry.attributes["color"].needsUpdate;
-  grassGeometry.attributes["angle"].needsUpdate;
-
-  grassGeometry.translate(0, 0.5, 0);
-  const grassMaterial = new THREE.ShaderMaterial({
-    vertexShader: grassVert,
-    fragmentShader: grassFrag,
-    uniforms: {
-      time: { value: 0 },
-      noiseTex: { value: noiseTex },
-      touchTex: { value: touchTracker.texture },
-    },
-    side: THREE.DoubleSide,
+  let grassMaterial;
+  const loader = new THREE.GLTFLoader();
+  loader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
+    const grassGeometry = new GrassGeometry({ 
+      grassCount: GRASS_COUNT, 
+      scene, 
+      geometry: gltf.scene.children[0].geometry 
+    });
+    grassGeometry.computeVertexNormals();
+  
+    grassMaterial = new THREE.ShaderMaterial({
+      vertexShader: grassVert,
+      fragmentShader: grassFrag,
+      uniforms: {
+        time: { value: 0 },
+        noiseTex: { value: noiseTex },
+        touchTex: { value: touchTracker.texture },
+      },
+      side: THREE.DoubleSide,
+    });
+  
+    grassMaterial.clipping = false;
+    grassMaterial.uniformsNeedUpdate = true;
+  
+    const grassMesh = new THREE.InstancedMesh(
+      grassGeometry,
+      grassMaterial,
+      GRASS_COUNT
+    );
+    grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+    scene.add(grassMesh);
   });
+  // const grassGeometry = new GrassGeometry({ grassCount: GRASS_COUNT, scene });
+  // grassGeometry.computeVertexNormals(); // TODO: is this useful?
 
-  grassMaterial.clipping = false;
-  grassMaterial.uniformsNeedUpdate = true;
+  // grassGeometry.attributes["offset"].needsUpdate;
+  // grassGeometry.attributes["scale"].needsUpdate;
+  // grassGeometry.attributes["color"].needsUpdate;
+  // grassGeometry.attributes["angle"].needsUpdate;
 
-  const grassMesh = new THREE.InstancedMesh(
-    grassGeometry,
-    grassMaterial,
-    GRASS_COUNT
-  );
-  grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
-  scene.add(grassMesh);
+  // grassGeometry.translate(0, 0.5, 0);
+  // const grassMaterial = new THREE.ShaderMaterial({
+  //   vertexShader: grassVert,
+  //   fragmentShader: grassFrag,
+  //   uniforms: {
+  //     time: { value: 0 },
+  //     noiseTex: { value: noiseTex },
+  //     touchTex: { value: touchTracker.texture },
+  //   },
+  //   side: THREE.DoubleSide,
+  // });
+
+  // grassMaterial.clipping = false;
+  // grassMaterial.uniformsNeedUpdate = true;
+
+  // const grassMesh = new THREE.InstancedMesh(
+  //   grassGeometry,
+  //   grassMaterial,
+  //   GRASS_COUNT
+  // );
+  // grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+  // scene.add(grassMesh);
 
   // -- INTERSECTION BOX
-
   /* 
     Fake box is needed as I can't raycast against my ground mesh,
     probably partly because it's displaced in a vertex shader, but
@@ -148,7 +179,7 @@ const sketch = async ({ context }) => {
     },
     // Update & render your scene here
     render({ time }) {
-      grassMaterial.uniforms.time.value = time;
+      if (grassMaterial?.uniforms) grassMaterial.uniforms.time.value = time;
 
       touchTracker.update();
 

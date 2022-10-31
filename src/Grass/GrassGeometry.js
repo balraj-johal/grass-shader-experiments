@@ -104,15 +104,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
   constructor(params) {
     super();
 
-    const geometry = new THREE.PlaneGeometry(0.1, 1, 1, 7);
-
-    const loader = new THREE.GLTFLoader();
-    loader.load(__dirname + "/GrassBlade-RoundedNormals.glb", (gltf) => {
-      const mesh = gltf.scene.children[0];
-      // this.copy(mesh.geometry);
-    });
-    console.log(geometry);
-    this.copy(geometry);
+    this.copy(params.geometry);
 
     const GRASS_COUNT = params.grassCount;
     const refs = [];
