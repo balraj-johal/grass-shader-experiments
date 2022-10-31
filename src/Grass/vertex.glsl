@@ -187,6 +187,8 @@ void main () {
   displacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
   displacement += 0.5; // Try ensure wind only pushes forwards
   displacement *= windPower;
+  displacement *= scale.y;
+  // displacement /= (scale.y + 1.0);
 
   // -- get mouse displacement amount
   float touchInfluencePower = 3.0;
