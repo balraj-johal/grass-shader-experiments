@@ -155,8 +155,7 @@ void main () {
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
   // move all blades of glass to the closest clump point
-  transformed.x -= clumpDistance.x;
-  transformed.z -= clumpDistance.y;
+  transformed.xz -= clumpDistance;
   
   // -- displace grass blades vertically to follow terrain
   float sinkIntoGround = 0.05; // ensures bottom vertices hidden
