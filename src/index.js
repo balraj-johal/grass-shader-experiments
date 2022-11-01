@@ -24,7 +24,6 @@ const settings = {
   context: "webgl",
 };
 
-// const GRASS_COUNT = 1;
 const GRASS_COUNT = 10000;
 
 const degreesToRads = (degree) => {
@@ -89,18 +88,18 @@ const sketch = async ({ context }) => {
   let grassMaterial;
   const loader = new THREE.GLTFLoader();
   loader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
-    const grassGeometry = new GrassGeometry({ 
-      grassCount: GRASS_COUNT, 
-      scene, 
-      geometry: gltf.scene.children[0].geometry 
+    const grassGeometry = new GrassGeometry({
+      grassCount: GRASS_COUNT,
+      scene,
+      geometry: gltf.scene.children[0].geometry
     });
-    grassGeometry.computeVertexNormals(); 
-  
+    grassGeometry.computeVertexNormals();
+
     grassGeometry.attributes["offset"].needsUpdate;
     grassGeometry.attributes["scale"].needsUpdate;
     grassGeometry.attributes["color"].needsUpdate;
     grassGeometry.attributes["angle"].needsUpdate;
-  
+
     grassMaterial = new THREE.ShaderMaterial({
       vertexShader: grassVert,
       fragmentShader: grassFrag,
@@ -111,10 +110,10 @@ const sketch = async ({ context }) => {
       },
       side: THREE.DoubleSide,
     });
-  
+
     grassMaterial.clipping = false;
     grassMaterial.uniformsNeedUpdate = true;
-  
+
     const grassMesh = new THREE.InstancedMesh(
       grassGeometry,
       grassMaterial,
