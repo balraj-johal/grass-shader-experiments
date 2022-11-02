@@ -4,7 +4,9 @@ import * as THREE from "three";
 global.THREE = THREE;
 
 require("three/examples/js/controls/OrbitControls.js");
+require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
+import { GUI } from 'dat.gui';
 
 import canvasSketch from "canvas-sketch";
 
@@ -24,7 +26,10 @@ const settings = {
   context: "webgl",
 };
 
-const GRASS_COUNT = 20000;
+// let grassCount = 20000;
+const PARAMS = {
+  grassCount: 20000,
+};
 
 const degreesToRads = (degree) => {
   return (degree * Math.PI) / 180;
@@ -42,11 +47,19 @@ const sketch = async ({ context }) => {
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
   camera.position.set(0, 8, -34);
   camera.lookAt(new THREE.Vector3());
+
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
   // set max vertical camera rotation from top down
   controls.minPolarAngle = degreesToRads(45);
   controls.maxPolarAngle = degreesToRads(85);
+
+  // setup gui
+  const gui = new GUI()
+  const cubeFolder = gui.addFolder('Cube')
+  cubeFolder.add(PARAMS, 'grassCount', 0, 200000);
+  cubeFolder.open()
+
   const scene = new THREE.Scene();
 
   // -- INTERACTION
@@ -89,7 +102,7 @@ const sketch = async ({ context }) => {
   const loader = new THREE.GLTFLoader();
   loader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
     const grassGeometry = new GrassGeometry({
-      grassCount: GRASS_COUNT,
+      grassCount: PARAMS.grassCount,
       scene,
       geometry: gltf.scene.children[0].geometry
     });
@@ -117,7 +130,7 @@ const sketch = async ({ context }) => {
     const grassMesh = new THREE.InstancedMesh(
       grassGeometry,
       grassMaterial,
-      GRASS_COUNT
+      PARAMS.grassCount
     );
     grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
     scene.add(grassMesh);
