@@ -24,7 +24,7 @@ const settings = {
   context: "webgl",
 };
 
-const GRASS_COUNT = 10000;
+const GRASS_COUNT = 20000;
 
 const degreesToRads = (degree) => {
   return (degree * Math.PI) / 180;
