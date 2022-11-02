@@ -27,7 +27,6 @@ const vec2 forwardVector = vec2(0.0, 1.0);
 
 // SIMPLEX NOISE
 // https://thebookofshaders.com/edit.php#11/2d-snoise-clear.frag
-
 //
 // Description : GLSL 2D simplex noise function
 //      Author : Ian McEwan, Ashima Arts
@@ -192,19 +191,36 @@ void main () {
   vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
   transformed.y += texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0;
 
-  // -- generate simplex noise displacement
-  vec3 displacement = vec3(0.0);
+  // -- generate first wind displacement
+  vec3 totalDisplacement = vec3(0.0);
   float noiseScale = 0.045;
   float noiseTimeScale = 0.15;
   float windPower = 0.5;
   float scrollByTime = time * noiseTimeScale;
-  vec2 windVector = rotate2d(45.0 * PI / 180.0) * forwardVector;
+  float primaryWindDirection = 45.0;
+  vec2 windVector = rotate2d(primaryWindDirection * PI / 180.0) * forwardVector;
 
-  // -- apply noise displacement
-  displacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
-  displacement += 0.5; // ensure wind only pushes forwards
-  displacement *= windPower;
-  displacement *= scale.y; // Make displacement proportional to height
+  // -- apply first wind displacement
+  totalDisplacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
+  totalDisplacement += 0.5; // ensure wind only pushes forwards
+  totalDisplacement *= windPower;
+  totalDisplacement *= scale.y; // Make displacement proportional to height
+
+  // -- generate secondary wind displacement
+  // vec3 wind2Displacement = vec3(0.0);
+  // float noise2Scale = 0.045;
+  // float noise2TimeScale = 0.15;
+  // float wind2Power = 0.5;
+  // float scrollByTime2 = time * noise2TimeScale;
+  // float secondaryWindDirection = primaryWindDirection - 180.0;
+  // vec2 wind2Vector = rotate2d(secondaryWindDirection * PI / 180.0) * forwardVector;
+
+  // // -- apply secondary wind displacement
+  // wind2Displacement.xz = vec2(snoise(transformed.xz * noise2Scale + scrollByTime2)) * wind2Vector;
+  // wind2Displacement += 0.5; // ensure wind only pushes forwards
+  // wind2Displacement *= wind2Power;
+  // wind2Displacement *= scale.y; // Make displacement proportional to height
+  // totalDisplacement += wind2Displacement;
 
   // -- get mouse displacement amount
   float touchInfluencePower = 5.0;
@@ -216,12 +232,12 @@ void main () {
   float xTouchDisplacement = texture2D(touchTex, mappedToGroundUV.xz).r - texture2D(touchTex, mappedToGroundUV.xz + vec2(sampleRes, 0.0)).r;
   vec3 totalTouchDisplacement = vec3(xTouchDisplacement, 0.0, zTouchDisplacement);
   totalTouchDisplacement *= touchInfluencePower;
-  displacement += totalTouchDisplacement;
+  totalDisplacement += totalTouchDisplacement;
 
   // -- apply total displacement - primarily to uv top, none to bottom
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale);
-  transformed.xz += displacement.xz * yInfluence;
+  transformed.xz += totalDisplacement.xz * yInfluence;
 
   // -- get modelViewPosition
   vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); 
