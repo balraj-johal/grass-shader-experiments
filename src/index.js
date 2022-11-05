@@ -100,15 +100,22 @@ const sketch = async ({ context }) => {
     grassGeometry.attributes["color"].needsUpdate;
     grassGeometry.attributes["angle"].needsUpdate;
 
+    let uniforms = {
+      time: { value: 0 },
+      noiseTex: { value: noiseTex },
+      touchTex: { value: touchTracker.texture },
+    };
+    uniforms = THREE.UniformsUtils.merge([
+      THREE.UniformsLib["lights"],
+      uniforms
+    ]);
+
     grassMaterial = new THREE.ShaderMaterial({
       vertexShader: grassVert,
       fragmentShader: grassFrag,
-      uniforms: {
-        time: { value: 0 },
-        noiseTex: { value: noiseTex },
-        touchTex: { value: touchTracker.texture },
-      },
+      uniforms,
       side: THREE.DoubleSide,
+      lights: true
     });
 
     grassMaterial.clipping = false;
@@ -122,6 +129,9 @@ const sketch = async ({ context }) => {
     grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
     scene.add(grassMesh);
   });
+
+  const light = new THREE.DirectionalLight();
+  scene.add(light);
 
   // -- INTERSECTION BOX
   /* 
