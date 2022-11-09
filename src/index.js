@@ -48,6 +48,8 @@ const sketch = async ({ context }) => {
   controls.minPolarAngle = degreesToRads(45);
   controls.maxPolarAngle = degreesToRads(85);
   const scene = new THREE.Scene();
+  
+  const loader = new THREE.GLTFLoader();
 
   // -- INTERACTION
   let touchTracker = new RenderTexture();
@@ -82,11 +84,13 @@ const sketch = async ({ context }) => {
   groundMaterial.uniformsNeedUpdate = true;
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
   groundMesh.rotateX(Math.PI / 2);
-  scene.add(groundMesh);
+  // scene.add(groundMesh);
+  loader.load(__dirname + "/Ground/durtcube.glb", (gltf) => {
+    scene.add(gltf.scene);
+  });
 
   // -- GRASS
   let grassMaterial;
-  const loader = new THREE.GLTFLoader();
   loader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
     const grassGeometry = new GrassGeometry({
       grassCount: GRASS_COUNT,
@@ -131,7 +135,11 @@ const sketch = async ({ context }) => {
   });
 
   const light = new THREE.DirectionalLight();
+  light.position.set(-30, 30, -30);
   scene.add(light);
+  const helper = new THREE.DirectionalLightHelper( light, 5 );
+  // scene.add(helper);
+
 
   // -- INTERSECTION BOX
   /* 
