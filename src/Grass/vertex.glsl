@@ -10,6 +10,7 @@ uniform float time;
 uniform sampler2D noiseTex;
 uniform sampler2D touchTex;
 uniform float count;
+uniform mat4 u_world;
 
 varying vec3 vViewPosition;
 varying vec2 vUv;
@@ -170,6 +171,7 @@ void main () {
 
   // -- apply y rotation
   vec3 rotated = applyRotationTransform(scaled, vec2(0.0, angle));
+  vec3 rotatedNormal = applyRotationTransform(normal, vec2(0.0, angle));
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
@@ -206,22 +208,6 @@ void main () {
   totalDisplacement *= windPower;
   totalDisplacement *= scale.y; // Make displacement proportional to height
 
-  // -- generate secondary wind displacement
-  // vec3 wind2Displacement = vec3(0.0);
-  // float noise2Scale = 0.045;
-  // float noise2TimeScale = 0.15;
-  // float wind2Power = 0.5;
-  // float scrollByTime2 = time * noise2TimeScale;
-  // float secondaryWindDirection = primaryWindDirection - 180.0;
-  // vec2 wind2Vector = rotate2d(secondaryWindDirection * PI / 180.0) * forwardVector;
-
-  // // -- apply secondary wind displacement
-  // wind2Displacement.xz = vec2(snoise(transformed.xz * noise2Scale + scrollByTime2)) * wind2Vector;
-  // wind2Displacement += 0.5; // ensure wind only pushes forwards
-  // wind2Displacement *= wind2Power;
-  // wind2Displacement *= scale.y; // Make displacement proportional to height
-  // totalDisplacement += wind2Displacement;
-
   // -- get mouse displacement amount
   float touchInfluencePower = 5.0;
   float touchInfluence = texture2D(touchTex, mappedToGroundUV.xz).r * touchInfluencePower;
@@ -247,5 +233,7 @@ void main () {
 
   // pass blade position to the fragment shader using a varying
   vGroundPosition = transformed;
+  vNormal = normal;
+  // vNormal *= mat3(u_world);
   vUv = uv;
 }
