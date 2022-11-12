@@ -13,6 +13,7 @@ uniform float count;
 uniform mat4 u_world;
 
 varying vec3 vViewPosition;
+varying vec3 vViewDirection;
 varying vec2 vUv;
 varying vec3 vGroundPosition;
 varying vec3 vNormal;
@@ -235,5 +236,6 @@ void main () {
   vGroundPosition = transformed;
   vNormal = normal;
   // vNormal *= mat3(u_world);
+  vViewDirection = normalize(cameraPosition.xyz - transformed.xyz);
   vUv = uv;
 }
