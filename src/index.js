@@ -85,8 +85,20 @@ const sketch = async ({ context }) => {
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
   groundMesh.rotateX(Math.PI / 2);
   // scene.add(groundMesh);
+
+  // -- DIRTCUBE GROUND
+  const textureLoader = new THREE.TextureLoader;
   loader.load(__dirname + "/Ground/durtcube.glb", (gltf) => {
-    scene.add(gltf.scene);
+    const ground = gltf.scene.children[0];
+    textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
+      const ground = gltf.scene.children[0];
+      const groundMaterial2 = new THREE.MeshStandardMaterial({
+        map: texture
+      });
+      const groundMesh2 = new THREE.Mesh(ground.geometry, groundMaterial2);
+      groundMesh2.rotateX(Math.PI);
+      // scene.add(groundMesh2);
+    });
   });
 
   // -- GRASS
@@ -97,7 +109,6 @@ const sketch = async ({ context }) => {
       scene,
       geometry: gltf.scene.children[0].geometry
     });
-    grassGeometry.computeVertexNormals();
 
     grassGeometry.attributes["offset"].needsUpdate;
     grassGeometry.attributes["scale"].needsUpdate;
@@ -135,10 +146,8 @@ const sketch = async ({ context }) => {
   });
 
   const light = new THREE.DirectionalLight();
-  light.position.set(-30, 30, -30);
+  light.position.set(-30, 60, -30);
   scene.add(light);
-  const helper = new THREE.DirectionalLightHelper( light, 5 );
-  // scene.add(helper);
 
 
   // -- INTERSECTION BOX
