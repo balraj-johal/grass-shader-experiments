@@ -179,16 +179,15 @@ const sketch = async ({ context }) => {
   boxMesh.name = "Intersector";
   scene.add(boxMesh);
 
-  // -- RENDER LOOP
   return {
-    // Handle resize events here
+    // Handle resize events
     resize({ pixelRatio, viewportWidth, viewportHeight }) {
       renderer.setPixelRatio(pixelRatio);
       renderer.setSize(viewportWidth, viewportHeight, false);
       camera.aspect = viewportWidth / viewportHeight;
       camera.updateProjectionMatrix();
     },
-    // Update & render your scene here
+    // Update & render scene
     render({ time }) {
       if (grassMaterial?.uniforms) grassMaterial.uniforms.time.value = time;
 
