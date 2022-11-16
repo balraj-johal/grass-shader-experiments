@@ -158,8 +158,7 @@ void main () {
 
   // -- apply clump influence on blade height
   float distanceToClump = getVectorMagnitude(clumpDistance);
-  float clumpRadius = 2.5;
-  float clumpMaxHeightAddition = 1.5;
+  float clumpRadius = 5.0;
   if (distanceToClump < clumpRadius) {
     // TODO: make not linear
     float normalisedDistanceFromClump = 
