@@ -6,10 +6,10 @@ varying vec3 vNormal;
 uniform sampler2D touchTex;
 
 void main () {
-  vec3 color1 = vec3(0.192, 0.431, 0.216);
-  vec3 color2 = vec3(0.247, 0.710, 0.294);
+  vec3 baseColor = vec3(0.192, 0.431, 0.216);
+  vec3 tipColor = vec3(0.296, 0.665, 0.333);
 
-  vec3 color = mix(color1, color2, vUv.y);
+  vec3 gradientColor = mix(baseColor, tipColor, vUv.y);
 
   mediump vec3 lightVector = vec3(0.5, 0.2, 1.0);
 
@@ -17,8 +17,7 @@ void main () {
   lightVector = normalize(lightVector);
   vec3 normal = normalize(vNormal);
 
-  // calculate the dot product of
-  // the lightVector to the vertex normal
+  // calculate the dot product of the lightVector to the vertex normal
   mediump vec3 lightContribution = vec3(0.0);
   mediump float directionalLightContribution = max(0.0, dot(normal, lightVector));
   float ambientLightContribution = 0.6;
@@ -34,7 +33,7 @@ void main () {
   vec3 specularContribution = vec3(pow(clamp(dot(reflection, vViewDirection), 0.0, 1.0), specularPower));
   lightContribution += specularContribution;
 
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = vec4(gradientColor, 1.0);
   // gl_FragColor.rgb *= lightContribution;
   
   gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
