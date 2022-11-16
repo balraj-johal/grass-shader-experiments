@@ -30,8 +30,7 @@ const degreesToRads = (degree) => {
   return (degree * Math.PI) / 180;
 };
 
-const sketch = async ({ context }) => {
-  // -- SETUP
+const _setupScene = (context) => {
   const renderer = new THREE.WebGLRenderer({
     canvas: context.canvas,
   });
@@ -47,12 +46,12 @@ const sketch = async ({ context }) => {
   controls.minPolarAngle = degreesToRads(45);
   controls.maxPolarAngle = degreesToRads(85);
   const scene = new THREE.Scene();
-  
-  const loader = new THREE.GLTFLoader();
 
+  return {scene, renderer, camera, controls};
+}
 
-  // -- INTERACTION
-  let touchTracker = new RenderTexture();
+const _setupTouchTracker = () => {
+  const touchTracker = new RenderTexture();
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   function onPointerMove(event) {
@@ -62,24 +61,43 @@ const sketch = async ({ context }) => {
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
   }
   window.addEventListener("pointermove", onPointerMove);
+  return {touchTracker, raycaster, pointer};
+}
 
+const _setupLighting = (scene) => {
+  const directionalLight = new THREE.DirectionalLight();
+  directionalLight.position.set(-30, 60, -30);
+  scene.add(directionalLight);
+  const ambientLight = new THREE.AmbientLight(0x404040, 2); // soft white light
+  scene.add(ambientLight);
+}
+
+const sketch = async ({ context }) => {
+  const {scene, renderer, camera, controls} = _setupScene(context);
+  const {touchTracker, raycaster, pointer} = _setupTouchTracker();
+  _setupLighting(scene);
+
+  const loader = new THREE.GLTFLoader();
+  
+  const stats = threeStats();
+  document.body.appendChild(stats.dom);
 
   // -- GROUND
   const textureLoader = new THREE.TextureLoader;
   loader.load(__dirname + "/Ground/durtcube.glb", (gltf) => {
     textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
       const ground = gltf.scene.children[0];
-      const groundMaterial2 = new THREE.MeshStandardMaterial({
+      const modelledGroundMat = new THREE.MeshStandardMaterial({
         map: texture,
         side: THREE.DoubleSide
       });
-      const groundMesh2 = new THREE.Mesh(ground.geometry, groundMaterial2);
-      groundMesh2.rotateX(Math.PI);
-      groundMesh2.scale.set(2.1, 2, 2.1);
-      groundMesh2.translateY(2.8);
+      const modelledGroundCube = new THREE.Mesh(ground.geometry, modelledGroundMat);
+      modelledGroundCube.rotateX(Math.PI);
+      modelledGroundCube.scale.set(2.1, 2, 2.1);
+      modelledGroundCube.translateY(2.8);
 
-      groundMesh2.name = "New Ground";
-      scene.add(groundMesh2);
+      modelledGroundCube.name = "New Ground";
+      scene.add(modelledGroundCube);
     });
   });
 
@@ -98,10 +116,10 @@ const sketch = async ({ context }) => {
     side: THREE.DoubleSide,
   });
   groundMaterial.uniformsNeedUpdate = true;
-  const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
-  groundMesh.name = "Old Ground";
-  groundMesh.rotateX(Math.PI / 2);
-  scene.add(groundMesh);
+  const groundPlane = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
+  groundPlane.name = "Old Ground";
+  groundPlane.rotateX(Math.PI / 2);
+  scene.add(groundPlane);
 
   // -- GRASS
   let grassMaterial;
@@ -145,15 +163,6 @@ const sketch = async ({ context }) => {
     scene.add(grassMesh);
   });
 
-
-  // -- LIGHTS
-  const directionalLight = new THREE.DirectionalLight();
-  directionalLight.position.set(-30, 60, -30);
-  scene.add(directionalLight);
-  const ambientLight = new THREE.AmbientLight(0x404040, 2); // soft white light
-  scene.add(ambientLight);
-
-
   // -- INTERSECTION BOX
   /* 
     Fake box is needed as I can't raycast against my ground mesh,
@@ -169,10 +178,6 @@ const sketch = async ({ context }) => {
   boxMesh.translateY(0.5);
   boxMesh.name = "Intersector";
   scene.add(boxMesh);
-
-  // -- STATS
-  const stats = threeStats();
-  document.body.appendChild(stats.dom);
 
   // -- RENDER LOOP
   return {
