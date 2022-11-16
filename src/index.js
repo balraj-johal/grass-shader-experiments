@@ -32,7 +32,6 @@ const degreesToRads = (degree) => {
 
 const sketch = async ({ context }) => {
   // -- SETUP
-  // Create a renderer
   const renderer = new THREE.WebGLRenderer({
     canvas: context.canvas,
   });
@@ -51,13 +50,11 @@ const sketch = async ({ context }) => {
   
   const loader = new THREE.GLTFLoader();
 
+
   // -- INTERACTION
   let touchTracker = new RenderTexture();
-
-  // get raycaster
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
-
   function onPointerMove(event) {
     // calculate pointer position in normalized device coordinates
     // (-1 to +1) for both components
@@ -66,9 +63,28 @@ const sketch = async ({ context }) => {
   }
   window.addEventListener("pointermove", onPointerMove);
 
+
   // -- GROUND
+  const textureLoader = new THREE.TextureLoader;
+  loader.load(__dirname + "/Ground/durtcube.glb", (gltf) => {
+    textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
+      const ground = gltf.scene.children[0];
+      const groundMaterial2 = new THREE.MeshStandardMaterial({
+        map: texture,
+        side: THREE.DoubleSide
+      });
+      const groundMesh2 = new THREE.Mesh(ground.geometry, groundMaterial2);
+      groundMesh2.rotateX(Math.PI);
+      groundMesh2.scale.set(2.1, 2, 2.1);
+      groundMesh2.translateY(2.8);
+
+      groundMesh2.name = "New Ground";
+      scene.add(groundMesh2);
+    });
+  });
+
+  // -- GROUND OLD
   const groundGeometry = new GroundGeometry();
-  // groundGeometry.computeVertexNormals();
   const noiseTex = new THREE.TextureLoader().load(
     "./textures/noiseTexture.png"
   );
@@ -83,23 +99,9 @@ const sketch = async ({ context }) => {
   });
   groundMaterial.uniformsNeedUpdate = true;
   const groundMesh = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
+  groundMesh.name = "Old Ground";
   groundMesh.rotateX(Math.PI / 2);
-  // scene.add(groundMesh);
-
-  // -- DIRTCUBE GROUND
-  const textureLoader = new THREE.TextureLoader;
-  loader.load(__dirname + "/Ground/durtcube.glb", (gltf) => {
-    const ground = gltf.scene.children[0];
-    textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
-      const ground = gltf.scene.children[0];
-      const groundMaterial2 = new THREE.MeshStandardMaterial({
-        map: texture
-      });
-      const groundMesh2 = new THREE.Mesh(ground.geometry, groundMaterial2);
-      groundMesh2.rotateX(Math.PI);
-      // scene.add(groundMesh2);
-    });
-  });
+  scene.add(groundMesh);
 
   // -- GRASS
   let grassMaterial;
@@ -115,14 +117,13 @@ const sketch = async ({ context }) => {
     grassGeometry.attributes["color"].needsUpdate;
     grassGeometry.attributes["angle"].needsUpdate;
 
-    let uniforms = {
-      time: { value: 0 },
-      noiseTex: { value: noiseTex },
-      touchTex: { value: touchTracker.texture },
-    };
-    uniforms = THREE.UniformsUtils.merge([
+    const uniforms = THREE.UniformsUtils.merge([
       THREE.UniformsLib["lights"],
-      uniforms
+      {
+        time: { value: 0 },
+        noiseTex: { value: noiseTex },
+        touchTex: { value: touchTracker.texture },
+      }
     ]);
 
     grassMaterial = new THREE.ShaderMaterial({
@@ -132,7 +133,6 @@ const sketch = async ({ context }) => {
       side: THREE.DoubleSide,
       lights: true
     });
-
     grassMaterial.clipping = false;
     grassMaterial.uniformsNeedUpdate = true;
 
@@ -145,9 +145,13 @@ const sketch = async ({ context }) => {
     scene.add(grassMesh);
   });
 
-  const light = new THREE.DirectionalLight();
-  light.position.set(-30, 60, -30);
-  scene.add(light);
+
+  // -- LIGHTS
+  const directionalLight = new THREE.DirectionalLight();
+  directionalLight.position.set(-30, 60, -30);
+  scene.add(directionalLight);
+  const ambientLight = new THREE.AmbientLight(0x404040, 2); // soft white light
+  scene.add(ambientLight);
 
 
   // -- INTERSECTION BOX
@@ -159,10 +163,11 @@ const sketch = async ({ context }) => {
   */
   const boxGeom = new THREE.BoxGeometry(20, 0, 20);
   const boxMat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-  boxMat.transparent = true;
+  // boxMat.transparent = true;
   boxMat.opacity = 0;
   const boxMesh = new THREE.Mesh(boxGeom, boxMat);
   boxMesh.translateY(0.5);
+  boxMesh.name = "Intersector";
   scene.add(boxMesh);
 
   // -- STATS
@@ -190,7 +195,8 @@ const sketch = async ({ context }) => {
       // calculate objects intersecting the ray
       const intersects = raycaster.intersectObjects(scene.children);
       for (let i = 0; i < intersects.length; i++) {
-        if (!intersects[i]) return;
+        // if (!intersects[i] || intersects[i].name !== "Intersector") return;
+        console.log(intersects[i].object.name);
         const uvCoords = {
           x: intersects[i].uv.x,
           y: 1 - intersects[i].uv.y,

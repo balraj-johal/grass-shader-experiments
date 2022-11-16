@@ -35,7 +35,7 @@ void main () {
   lightContribution += specularContribution;
 
   gl_FragColor = vec4(color, 1.0);
-  gl_FragColor.rgb *= lightContribution;
+  // gl_FragColor.rgb *= lightContribution;
   
   gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
 }
