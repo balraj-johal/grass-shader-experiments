@@ -37,7 +37,7 @@ const _setupScene = (context) => {
   // WebGL background color
   renderer.setClearColor("#fff", 1);
   // Setup a camera
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 1000);
   camera.position.set(0, 8, -34);
   camera.lookAt(new THREE.Vector3());
   // Setup camera controller
@@ -72,18 +72,37 @@ const _setupLighting = (scene) => {
   scene.add(ambientLight);
 }
 
+const _setupSkybox = (scene, textureLoader, GLTFLoader) => {    
+  GLTFLoader.load(__dirname + "/Skybox/cube.glb", (gltf) => {
+    textureLoader.load(__dirname + "/Skybox/tex.png", (texture) => {
+      const skyboxGeom = gltf.scene.children[0].geometry;
+      console.log(skyboxGeom);
+      const skyboxMat = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.BackSide
+      });
+      const skyboxMesh = new THREE.Mesh(skyboxGeom, skyboxMat);
+      skyboxMesh.scale.set(500,500,500);
+      skyboxMesh.rotateX(Math.PI);
+      scene.add(skyboxMesh);
+    });
+  });
+}
+
 const sketch = async ({ context }) => {
+  const loader = new THREE.GLTFLoader();
+  const textureLoader = new THREE.TextureLoader;
+
   const {scene, renderer, camera, controls} = _setupScene(context);
   const {touchTracker, raycaster, pointer} = _setupTouchTracker();
   _setupLighting(scene);
+  _setupSkybox(scene, textureLoader, loader);
 
-  const loader = new THREE.GLTFLoader();
   
   const stats = threeStats();
   document.body.appendChild(stats.dom);
 
   // -- GROUND
-  const textureLoader = new THREE.TextureLoader;
   loader.load(__dirname + "/Ground/durtcube.glb", (gltf) => {
     textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
       const ground = gltf.scene.children[0];
