@@ -39,7 +39,7 @@ const _setupScene = (context) => {
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 1000);
   camera.position.set(0, 8, -34);
-  camera.lookAt(new THREE.Vector3());
+  camera.lookAt(new THREE.Vector3(0, 12, 0));
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
   // set max vertical camera rotation from top down
