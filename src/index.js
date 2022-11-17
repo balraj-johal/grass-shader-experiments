@@ -89,6 +89,24 @@ const _setupSkybox = (scene, textureLoader, GLTFLoader) => {
   });
 }
 
+const _setupOurLad = (scene, GLTFLoader) => {    
+  GLTFLoader.load(__dirname + "/Bloke/bloke.glb", (gltf) => {
+    console.log(gltf);
+    textureLoader.load(__dirname + "/Skybox/tex.png", (texture) => {
+      const skyboxGeom = gltf.scene.children[0].geometry;
+      console.log(skyboxGeom);
+      const skyboxMat = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.BackSide
+      });
+      const skyboxMesh = new THREE.Mesh(skyboxGeom, skyboxMat);
+      skyboxMesh.scale.set(500,500,500);
+      skyboxMesh.rotateX(Math.PI);
+      scene.add(skyboxMesh);
+    });
+  });
+}
+
 const sketch = async ({ context }) => {
   const loader = new THREE.GLTFLoader();
   const textureLoader = new THREE.TextureLoader;
@@ -103,7 +121,7 @@ const sketch = async ({ context }) => {
   document.body.appendChild(stats.dom);
 
   // -- GROUND
-  loader.load(__dirname + "/Ground/durtcube.glb", (gltf) => {
+  loader.load(__dirname + "/Ground/durtcube2.glb", (gltf) => {
     textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
       const ground = gltf.scene.children[0];
       const modelledGroundMat = new THREE.MeshStandardMaterial({
