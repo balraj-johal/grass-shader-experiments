@@ -72,11 +72,10 @@ const _setupLighting = (scene) => {
   scene.add(ambientLight);
 }
 
-const _setupSkybox = (scene, textureLoader, GLTFLoader) => {    
-  GLTFLoader.load(__dirname + "/Skybox/cube.glb", (gltf) => {
+const _setupSkybox = (scene, textureLoader, gltfLoader) => {    
+  gltfLoader.load(__dirname + "/Skybox/cube.glb", (gltf) => {
     textureLoader.load(__dirname + "/Skybox/tex.png", (texture) => {
       const skyboxGeom = gltf.scene.children[0].geometry;
-      console.log(skyboxGeom);
       const skyboxMat = new THREE.MeshBasicMaterial({
         map: texture,
         side: THREE.BackSide
@@ -89,39 +88,34 @@ const _setupSkybox = (scene, textureLoader, GLTFLoader) => {
   });
 }
 
-const _setupOurLad = (scene, GLTFLoader) => {    
-  GLTFLoader.load(__dirname + "/Bloke/bloke.glb", (gltf) => {
-    console.log(gltf);
-    textureLoader.load(__dirname + "/Skybox/tex.png", (texture) => {
-      const skyboxGeom = gltf.scene.children[0].geometry;
-      console.log(skyboxGeom);
-      const skyboxMat = new THREE.MeshBasicMaterial({
-        map: texture,
-        side: THREE.BackSide
-      });
-      const skyboxMesh = new THREE.Mesh(skyboxGeom, skyboxMat);
-      skyboxMesh.scale.set(500,500,500);
-      skyboxMesh.rotateX(Math.PI);
-      scene.add(skyboxMesh);
-    });
+const _setupOurLad = (scene, gltfLoader) => {    
+  gltfLoader.load(__dirname + "/Bloke/bloke2.glb", (gltf) => {
+      const bloke = gltf.scene.children[0];
+      console.log(bloke);
+      bloke.name = "Bloke";
+      bloke.scale.set(2.5, 2.5, 2.5);
+      bloke.translateY(2.5);
+      bloke.rotateX(Math.PI / 2);
+      scene.add(bloke);
   });
 }
 
 const sketch = async ({ context }) => {
-  const loader = new THREE.GLTFLoader();
+  const gltfLoader = new THREE.GLTFLoader();
   const textureLoader = new THREE.TextureLoader;
 
   const {scene, renderer, camera, controls} = _setupScene(context);
   const {touchTracker, raycaster, pointer} = _setupTouchTracker();
   _setupLighting(scene);
-  _setupSkybox(scene, textureLoader, loader);
+  _setupSkybox(scene, textureLoader, gltfLoader);
+  _setupOurLad(scene, gltfLoader);
 
   
   const stats = threeStats();
   document.body.appendChild(stats.dom);
 
   // -- GROUND
-  loader.load(__dirname + "/Ground/durtcube2.glb", (gltf) => {
+  gltfLoader.load(__dirname + "/Ground/durtcube2.glb", (gltf) => {
     textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
       const ground = gltf.scene.children[0];
       const modelledGroundMat = new THREE.MeshStandardMaterial({
@@ -160,7 +154,7 @@ const sketch = async ({ context }) => {
 
   // -- GRASS
   let grassMaterial;
-  loader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
+  gltfLoader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
     const grassGeometry = new GrassGeometry({
       grassCount: GRASS_COUNT,
       scene,
@@ -237,7 +231,6 @@ const sketch = async ({ context }) => {
       const intersects = raycaster.intersectObjects(scene.children);
       for (let i = 0; i < intersects.length; i++) {
         // if (!intersects[i] || intersects[i].name !== "Intersector") return;
-        console.log(intersects[i].object.name);
         const uvCoords = {
           x: intersects[i].uv.x,
           y: 1 - intersects[i].uv.y,
