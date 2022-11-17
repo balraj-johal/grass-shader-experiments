@@ -72,6 +72,34 @@ const _setupLighting = (scene) => {
   scene.add(ambientLight);
 }
 
+const _setupSkybox = (scene, textureLoader, gltfLoader) => {    
+  gltfLoader.load(__dirname + "/Skybox/cube.glb", (gltf) => {
+    textureLoader.load(__dirname + "/Skybox/tex.png", (texture) => {
+      const skyboxGeom = gltf.scene.children[0].geometry;
+      const skyboxMat = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.BackSide
+      });
+      const skyboxMesh = new THREE.Mesh(skyboxGeom, skyboxMat);
+      skyboxMesh.scale.set(500,500,500);
+      skyboxMesh.rotateX(Math.PI);
+      scene.add(skyboxMesh);
+    });
+  });
+}
+
+const _setupOurLad = (scene, gltfLoader) => {    
+  gltfLoader.load(__dirname + "/Bloke/bloke2.glb", (gltf) => {
+      const bloke = gltf.scene.children[0];
+      console.log(bloke);
+      bloke.name = "Bloke";
+      bloke.scale.set(2.5, 2.5, 2.5);
+      bloke.translateY(2.5);
+      bloke.rotateX(Math.PI / 2);
+      scene.add(bloke);
+  });
+}
+
 const sketch = async ({ context }) => {
   const gltfLoader = new THREE.GLTFLoader();
   const textureLoader = new THREE.TextureLoader;
@@ -79,10 +107,30 @@ const sketch = async ({ context }) => {
   const {scene, renderer, camera, controls} = _setupScene(context);
   const {touchTracker, raycaster, pointer} = _setupTouchTracker();
   _setupLighting(scene);
+  _setupSkybox(scene, textureLoader, gltfLoader);
+  _setupOurLad(scene, gltfLoader);
 
   
   const stats = threeStats();
   document.body.appendChild(stats.dom);
+
+  // -- GROUND
+  gltfLoader.load(__dirname + "/Ground/durtcube2.glb", (gltf) => {
+    textureLoader.load(__dirname + "/Ground/groundTexture.jpg", (texture) => {
+      const ground = gltf.scene.children[0];
+      const modelledGroundMat = new THREE.MeshStandardMaterial({
+        map: texture,
+        side: THREE.DoubleSide
+      });
+      const modelledGroundCube = new THREE.Mesh(ground.geometry, modelledGroundMat);
+      modelledGroundCube.rotateX(Math.PI);
+      modelledGroundCube.scale.set(2.1, 2, 2.1);
+      modelledGroundCube.translateY(2.8);
+
+      modelledGroundCube.name = "New Ground";
+      scene.add(modelledGroundCube);
+    });
+  });
 
   // -- GROUND OLD
   const groundGeometry = new GroundGeometry();
@@ -155,7 +203,7 @@ const sketch = async ({ context }) => {
   */
   const boxGeom = new THREE.BoxGeometry(20, 0, 20);
   const boxMat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-  boxMat.transparent = true;
+  // boxMat.transparent = true;
   boxMat.opacity = 0;
   const boxMesh = new THREE.Mesh(boxGeom, boxMat);
   boxMesh.translateY(0.5);
