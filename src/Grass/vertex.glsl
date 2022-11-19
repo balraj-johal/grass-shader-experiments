@@ -12,7 +12,7 @@ uniform sampler2D touchTex;
 uniform float count;
 uniform mat4 u_world;
 
-varying vec3 vViewPosition;
+varying vec3 vCameraPosition;
 varying vec3 vViewDirection;
 varying vec2 vUv;
 varying vec3 vGroundPosition;
@@ -234,7 +234,9 @@ void main () {
   // pass blade position to the fragment shader using a varying
   vGroundPosition = transformed;
   vNormal = normal;
+  // vNormal = rotatedNormal;
   // vNormal *= mat3(u_world);
   vViewDirection = normalize(cameraPosition.xyz - transformed.xyz);
+  vCameraPosition = normalize(cameraPosition.xyz);
   vUv = uv;
 }

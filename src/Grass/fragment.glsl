@@ -1,6 +1,7 @@
 varying vec2 vUv;
 varying vec3 vGroundPosition;
 varying vec3 vViewDirection;
+varying vec3 vCameraPosition;
 varying vec3 vNormal;
 
 uniform sampler2D touchTex;
@@ -19,10 +20,10 @@ void main () {
 
   // calculate the dot product of the lightVector to the vertex normal
   mediump vec3 lightContribution = vec3(0.0);
-  mediump float directionalLightContribution = max(0.0, dot(normal, lightVector));
-  float ambientLightContribution = 0.6;
-  lightContribution += directionalLightContribution;
-  lightContribution += ambientLightContribution;
+  // mediump float directionalLightContribution = max(0.0, dot(normal, lightVector));
+  // float ambientLightContribution = 0.6;
+  // lightContribution += directionalLightContribution;
+  // lightContribution += ambientLightContribution;
 
   // -- specular highlights - ref https://www.rastertek.com/dx10tut10.html
   vec4 specularColor = vec4(0.0);
@@ -34,7 +35,8 @@ void main () {
   lightContribution += specularContribution;
 
   gl_FragColor = vec4(gradientColor, 1.0);
-  // gl_FragColor.rgb *= lightContribution;
+  gl_FragColor.rgb *= lightContribution;
+  gl_FragColor.rgb = vCameraPosition;
   
   gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
 }
