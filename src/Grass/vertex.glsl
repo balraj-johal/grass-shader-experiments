@@ -233,10 +233,10 @@ void main () {
 
   // pass blade position to the fragment shader using a varying
   vGroundPosition = transformed;
-  vNormal = normal;
-  // vNormal = rotatedNormal;
+  // vNormal = normal;
+  vNormal = rotatedNormal;
   // vNormal *= mat3(u_world);
   vViewDirection = normalize(cameraPosition.xyz - transformed.xyz);
-  vCameraPosition = normalize(cameraPosition.xyz);
+  vCameraPosition = normalize(cameraPosition.xyz - transformed.xyz);
   vUv = uv;
 }

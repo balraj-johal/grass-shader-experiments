@@ -155,7 +155,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       scales.push(MIN_HEIGHT + Math.random() * HEIGHT_RANGE_FACTOR);
       scales.push(MIN_WIDTH + Math.random() * WIDTH_RANGE_FACTOR);
       // rotation
-      angles.push(360 * Math.random());
+      angles.push(90 * Math.random());
       // position
       const positions = {
         x: Math.random() * AREA_SIZE - AREA_SIZE / 2,

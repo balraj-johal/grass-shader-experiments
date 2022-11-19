@@ -86,7 +86,7 @@ const sketch = async ({ context }) => {
 
   // -- GROUND OLD
   const groundGeometry = new GroundGeometry();
-  const noiseTex = new THREE.TextureLoader().load(
+  const noiseTex = textureLoader.load(
     "./textures/noiseTexture.png"
   );
   const groundMaterial = new THREE.ShaderMaterial({
@@ -161,6 +161,15 @@ const sketch = async ({ context }) => {
   boxMesh.translateY(0.5);
   boxMesh.name = "Intersector";
   scene.add(boxMesh);
+
+  // -- SUN DEBUGGER
+  const sunGeom = new THREE.BoxGeometry(1, 1, 1);
+  const sunMat = new THREE.MeshStandardMaterial({ color: 0x00ffff });
+  const sunMesh = new THREE.Mesh(sunGeom, sunMat);
+  sunMesh.name = "Sun";
+  sunMesh.position.set(10.5, 10.2, 11.0);
+  scene.add(sunMesh);
+
 
   return {
     // Handle resize events
