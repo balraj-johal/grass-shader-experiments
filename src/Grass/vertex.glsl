@@ -17,11 +17,7 @@ varying vec3 vViewDirection;
 varying vec2 vUv;
 varying vec3 vGroundPosition;
 varying vec3 vNormal;
-varying vec2 vPosUV;
-varying float vOpacity;
-varying float vParticleType;
-varying float vAngle;
-varying float vStreak;
+varying float vDistanceRoot;
 
 const vec2 forwardVector = vec2(0.0, 1.0);
 
@@ -175,6 +171,11 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
+  
+  // -- get initial distance of each vertex to the blade's root
+  vec3 initialRoot = transformed;
+  vec3 toRoot = transformed.xyz - vec3(initialRoot.x, 0.0, initialRoot.z);
+  float initDistanceToRoot = length(toRoot);
 
   // -- move all blades of glass to the closest clump point
   // transformed.xz -= clumpDistance;
@@ -191,7 +192,8 @@ void main () {
     then divide by AREA_SIZE to get back to 0-1 
   */
   vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
-  transformed.y += texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0;
+  float groundYOffset = texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0;
+  transformed.y += groundYOffset;
 
   // -- generate first wind displacement
   vec3 totalDisplacement = vec3(0.0);
@@ -224,6 +226,11 @@ void main () {
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale);
   transformed.xz += totalDisplacement.xz * yInfluence;
+  
+  vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
+  float newDistanceToRoot = length(newToRoot);
+  float displacementAmount = initDistanceToRoot / newDistanceToRoot;
+  vDistanceRoot = displacementAmount;
 
   // -- get modelViewPosition
   vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); 
