@@ -229,7 +229,7 @@ void main () {
   
   vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
   float newDistanceToRoot = length(newToRoot);
-  float displacementAmount = initDistanceToRoot / newDistanceToRoot;
+  float displacementAmount = 1.0 - (initDistanceToRoot / newDistanceToRoot);
   vDistanceRoot = displacementAmount;
 
   // -- get modelViewPosition
