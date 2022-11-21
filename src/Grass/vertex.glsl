@@ -16,6 +16,7 @@ varying vec3 vCameraPosition;
 varying vec3 vViewDirection;
 varying vec2 vUv;
 varying vec3 vGroundPosition;
+varying float vClumpDistance;
 varying vec3 vNormal;
 varying float vColor;
 
@@ -251,4 +252,5 @@ void main () {
   vCameraPosition = normalize(cameraPosition.xyz - transformed.xyz);
   vUv = uv;
   vColor = color;
+  vClumpDistance = distanceToClump;
 }

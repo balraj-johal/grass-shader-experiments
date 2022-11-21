@@ -224,5 +224,13 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
         false
       )
     );
+    this.setAttribute(
+      "clumpHeightAddition",
+      new THREE.InstancedBufferAttribute(
+        new Float32Array(clumpHeightAdditions),
+        1,
+        false
+      )
+    );
   }
 }
