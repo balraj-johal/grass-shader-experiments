@@ -201,7 +201,7 @@ const sketch = async ({ context }) => {
         };
         touchTracker.addTouch(uvCoords);
         if (state.clicked) {
-          console.log(uvCoords);
+          window.localStorage.setItem("LAST_CLICK", JSON.stringify(uvCoords));
           state.clicked = false;
         }
       }
