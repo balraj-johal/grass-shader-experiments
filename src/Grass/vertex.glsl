@@ -226,11 +226,16 @@ void main () {
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale);
   transformed.xz += totalDisplacement.xz * yInfluence;
-  
+
+  // -- calculate displaced vertex's distance to blade root
   vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
   float newDistanceToRoot = length(newToRoot);
   float displacementAmount = 1.0 - (initDistanceToRoot / newDistanceToRoot);
   vDistanceRoot = displacementAmount;
+
+  // -- move vertex towards the root by the amount it's moved
+  float strechAmount = 0.2;
+  transformed.xyz -= (1.0 - strechAmount) * displacementAmount * newToRoot;
 
   // -- get modelViewPosition
   vec4 mvPosition = modelViewMatrix * vec4( transformed.xyz, 1.0 ); 
