@@ -6,6 +6,8 @@ global.THREE = THREE;
 require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
 
+import { degreesToRads } from "./utils";
+
 import canvasSketch from "canvas-sketch";
 
 import grassFrag from "./Grass/fragment.glsl";
@@ -18,17 +20,15 @@ import GroundGeometry from "./Ground/GroundGeometry";
 import RenderTexture from "./Interaction/RenderTexture";
 
 const settings = {
-  // Make the loop animated
   animate: true,
-  // Get a WebGL canvas rather than 2D
   context: "webgl",
 };
 
-const GRASS_COUNT = 20000;
+const state = {
+  clicked: false,
+}
 
-const degreesToRads = (degree) => {
-  return (degree * Math.PI) / 180;
-};
+const GRASS_COUNT = 20000;
 
 const _setupScene = (context) => {
   const renderer = new THREE.WebGLRenderer({
@@ -61,6 +61,9 @@ const _setupTouchTracker = () => {
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
   }
   window.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("click", () => {
+    if (!state.clicked) state.clicked = true;
+  })
   return {touchTracker, raycaster, pointer};
 }
 
@@ -197,6 +200,10 @@ const sketch = async ({ context }) => {
           y: 1 - intersects[i].uv.y,
         };
         touchTracker.addTouch(uvCoords);
+        if (state.clicked) {
+          console.log(uvCoords);
+          state.clicked = false;
+        }
       }
 
       controls.update();
