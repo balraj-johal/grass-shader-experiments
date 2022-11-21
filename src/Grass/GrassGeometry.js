@@ -135,6 +135,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
               z: jitterPoint(initialClumpPoint.z, TILE_SIZE),
             },
             heightAddition: Math.random() + 0.75 * 1.5,
+            colorInfluence: 0x000000,
           },
           id: `${worldCoords.x}.${worldCoords.z}`,
           x: worldCoords.x,
@@ -166,14 +167,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       offsets.push(positions.y);
       offsets.push(positions.z);
       // colours
-      const color = returnRGB(
-        colourPalette[
-          Math.floor(Math.random() * colourPalette.length)
-        ].toString()
-      );
-      colors.push(color.r);
-      colors.push(color.g);
-      colors.push(color.b);
+      colors.push(Math.random());
       // assign tile that the blade is in
       const tile = assignTile(positions.x, positions.z);
       // find closest clump point to the blade's current position,
@@ -196,7 +190,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
 
     this.setAttribute(
       "color",
-      new THREE.InstancedBufferAttribute(new Float32Array(colors), 3, false)
+      new THREE.InstancedBufferAttribute(new Float32Array(colors), 1, false)
     );
     this.setAttribute(
       "scale",

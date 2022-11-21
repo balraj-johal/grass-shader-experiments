@@ -17,7 +17,7 @@ varying vec3 vViewDirection;
 varying vec2 vUv;
 varying vec3 vGroundPosition;
 varying vec3 vNormal;
-varying float vDistanceRoot;
+varying float vColor;
 
 const vec2 forwardVector = vec2(0.0, 1.0);
 
@@ -231,7 +231,6 @@ void main () {
   vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
   float newDistanceToRoot = length(newToRoot);
   float displacementAmount = 1.0 - (initDistanceToRoot / newDistanceToRoot);
-  vDistanceRoot = displacementAmount;
 
   // -- move vertex towards the root by the amount it's moved
   float strechAmount = 0.2;
@@ -251,4 +250,5 @@ void main () {
   vViewDirection = normalize(cameraPosition.xyz - transformed.xyz);
   vCameraPosition = normalize(cameraPosition.xyz - transformed.xyz);
   vUv = uv;
+  vColor = color;
 }
