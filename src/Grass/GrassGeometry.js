@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import rand from "../utils/rand";
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = THREE;
@@ -23,7 +24,7 @@ const assignTile = (pointX, pointZ) => {
 };
 // given a point, randomly offset it, ensuring it stays within it's tile
 const jitterPoint = (point, step) => {
-  return point + ((Math.random() - 1) * step) / 2;
+  return point + ((rand.generate() - 1) * step) / 2;
 };
 // gets all the tiles surrounding a given one, including itself.
 const getSurroundingTiles = (tile) => {
@@ -104,6 +105,8 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
   constructor(params) {
     super();
 
+    console.log(rand.generate());
+
     this.copy(params.geometry);
 
     const GRASS_COUNT = params.grassCount;
@@ -134,7 +137,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
               x: jitterPoint(initialClumpPoint.x, TILE_SIZE),
               z: jitterPoint(initialClumpPoint.z, TILE_SIZE),
             },
-            heightAddition: Math.random() + 0.75 * 1.5,
+            heightAddition: rand.generate() + 0.75 * 1.5,
             colorInfluence: 0x000000,
           },
           id: `${worldCoords.x}.${worldCoords.z}`,
@@ -153,21 +156,21 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       refs.push(i);
       // scaling
       scales.push(1.0);
-      scales.push(MIN_HEIGHT + Math.random() * HEIGHT_RANGE_FACTOR);
-      scales.push(MIN_WIDTH + Math.random() * WIDTH_RANGE_FACTOR);
+      scales.push(MIN_HEIGHT + rand.generate() * HEIGHT_RANGE_FACTOR);
+      scales.push(MIN_WIDTH + rand.generate() * WIDTH_RANGE_FACTOR);
       // rotation
-      angles.push(90 * Math.random());
+      angles.push(90 * rand.generate());
       // position
       const positions = {
-        x: Math.random() * AREA_SIZE - AREA_SIZE / 2,
+        x: rand.generate() * AREA_SIZE - AREA_SIZE / 2,
         y: 0.0,
-        z: Math.random() * AREA_SIZE - AREA_SIZE / 2,
+        z: rand.generate() * AREA_SIZE - AREA_SIZE / 2,
       };
       offsets.push(positions.x);
       offsets.push(positions.y);
       offsets.push(positions.z);
       // colours
-      colors.push(Math.random());
+      colors.push(rand.generate());
       // assign tile that the blade is in
       const tile = assignTile(positions.x, positions.z);
       // find closest clump point to the blade's current position,

@@ -7,6 +7,7 @@ require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
 
 import { degreesToRads } from "./utils";
+import rand from "./utils/rand";
 
 import canvasSketch from "canvas-sketch";
 
@@ -28,6 +29,7 @@ const state = {
   clicked: false,
 }
 
+console.log(rand.generate());
 const GRASS_COUNT = 20000;
 
 const _setupScene = (context) => {
@@ -113,7 +115,7 @@ const sketch = async ({ context }) => {
     const grassGeometry = new GrassGeometry({
       grassCount: GRASS_COUNT,
       scene,
-      geometry: gltf.scene.children[0].geometry
+      geometry: gltf.scene.children[0].geometry,
     });
 
     grassGeometry.attributes["offset"].needsUpdate;
@@ -189,9 +191,7 @@ const sketch = async ({ context }) => {
       touchTracker.update();
 
       // -- CHECK RAYCAST
-      // update the ray with the camera and pointer position
       raycaster.setFromCamera(pointer, camera);
-      // calculate objects intersecting the ray
       const intersects = raycaster.intersectObjects(scene.children);
       for (let i = 0; i < intersects.length; i++) {
         // if (!intersects[i] || intersects[i].name !== "Intersector") return;
