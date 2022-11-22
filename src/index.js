@@ -25,12 +25,39 @@ const settings = {
   context: "webgl",
 };
 
+const getSavedPlants = () => {
+  let saved = window.localStorage.getItem("SAVED_PLANTS");
+  if (!saved) {
+    saved = [];
+    window.localStorage.setItem("SAVED_PLANTS", saved);
+    return saved;
+  }
+  return JSON.parse(saved);
+}
+
+const savePlant = (plant) => {
+  let saved = window.localStorage.getItem("SAVED_PLANTS");
+  if (!saved) {
+    saved = [];
+  } else {
+    saved = JSON.parse(saved);
+  }
+  saved.push(plant);
+  window.localStorage.setItem("SAVED_PLANTS", JSON.stringify(saved));
+}
+
+const mapUVToWorld = (coord) => {
+  return (coord * 20) - 10;
+}
+
 const state = {
   clicked: false,
+  savedPlants: getSavedPlants(),
 }
 
 console.log(rand.generate());
 const GRASS_COUNT = 20000;
+
 
 const _setupScene = (context) => {
   const renderer = new THREE.WebGLRenderer({
@@ -175,6 +202,21 @@ const sketch = async ({ context }) => {
   sunMesh.position.set(10.5, 10.2, 11.0);
   scene.add(sunMesh);
 
+  const plantsRoot = new THREE.Object3D();
+  for (const plant of state.savedPlants) {
+    console.log(plant);
+    const plantGeom = new THREE.BoxGeometry(3, 3, 3);
+    const plantMat = new THREE.MeshStandardMaterial({ color: 0x99ff00 });
+    const plantMesh = new THREE.Mesh(plantGeom, plantMat);
+    plantMesh.position.set(
+      plant.position.x,
+      plant.position.y,
+      plant.position.z,
+      );
+    scene.add(plantMesh);
+  }
+  scene.add(plantsRoot);
+  console.log(plantsRoot);
 
   return {
     // Handle resize events
@@ -201,7 +243,13 @@ const sketch = async ({ context }) => {
         };
         touchTracker.addTouch(uvCoords);
         if (state.clicked) {
-          window.localStorage.setItem("LAST_CLICK", JSON.stringify(uvCoords));
+          savePlant({
+            position: {
+              x: mapUVToWorld(uvCoords.x),
+              y: 0,
+              z: mapUVToWorld(uvCoords.y),
+            },
+          })
           state.clicked = false;
         }
       }
