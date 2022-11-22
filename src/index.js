@@ -263,17 +263,13 @@ const sketch = async ({ context }) => {
       const intersects = raycaster.intersectObjects(scene.children);
       for (let i = 0; i < intersects.length; i++) {
         if (intersects[i].object.name === "Intersector") {
-          const uvCoords = {
-            x: intersects[i].uv.x,
-            y: 1 - intersects[i].uv.y,
-          };
+          const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
           touchTracker.addTouch(uvCoords);
-          console.log(canAddPlant());
           if (state.clicked && canAddPlant()) {
             savePlant({
               position: {
                 x: mapUVToWorld(uvCoords.x),
-                y: 0,
+                y: 0.0,
                 z: mapUVToWorld(uvCoords.y),
               },
             })
