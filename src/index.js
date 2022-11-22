@@ -7,7 +7,6 @@ require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
 
 import { degreesToRads } from "./utils";
-import rand from "./utils/rand";
 
 import canvasSketch from "canvas-sketch";
 
@@ -47,6 +46,32 @@ const savePlant = (plant) => {
   window.localStorage.setItem("SAVED_PLANTS", JSON.stringify(saved));
 }
 
+const getStartOfDay = (date) => {
+  // const day = date.toLocaleString("default", { day: "2-digit" });
+  // const month = date.toLocaleString("default", { month: "2-digit" });
+  // const year = date.toLocaleString("default", { year: "numeric" });
+  return new Date(date.toDateString());
+}
+const canAddPlant = () => {
+  console.log();
+  let lastActionString = window.localStorage.getItem("LAST_ACTION");
+  let lastActionDate;
+  if (lastActionString) {
+    lastActionDate = new Date(lastActionString);
+  } else {
+    lastActionDate = new Date(1997, 10, 29);
+  }
+  console.log(lastActionDate);
+  return getStartOfDay(lastActionDate).getTime() <
+      getStartOfDay(new Date()).getTime();
+}
+const updateLastAction = () => {
+  window.localStorage.setItem(
+    "LAST_ACTION", 
+    JSON.stringify(new Date().toDateString())
+  );
+}
+
 const mapUVToWorld = (coord) => {
   return (coord * 20) - 10;
 }
@@ -57,7 +82,6 @@ const state = {
 }
 
 const GRASS_COUNT = 20000;
-
 
 const _setupScene = (context) => {
   const renderer = new THREE.WebGLRenderer({canvas: context.canvas});
@@ -252,7 +276,8 @@ const sketch = async ({ context }) => {
             y: 1 - intersects[i].uv.y,
           };
           touchTracker.addTouch(uvCoords);
-          if (state.clicked) {
+          console.log(canAddPlant());
+          if (state.clicked && canAddPlant()) {
             savePlant({
               position: {
                 x: mapUVToWorld(uvCoords.x),
@@ -260,6 +285,7 @@ const sketch = async ({ context }) => {
                 z: mapUVToWorld(uvCoords.y),
               },
             })
+            updateLastAction();
             state.clicked = false;
           }
         }
