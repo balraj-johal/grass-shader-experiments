@@ -60,22 +60,20 @@ const GRASS_COUNT = 20000;
 
 
 const _setupScene = (context) => {
-  const renderer = new THREE.WebGLRenderer({
-    canvas: context.canvas,
-  });
-  // WebGL background color
+  const renderer = new THREE.WebGLRenderer({canvas: context.canvas});
   renderer.setClearColor("#fff", 1);
-  // Setup a camera
+
+  // Setup camera controller
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 1000);
   camera.position.set(0, 8, -34);
-  // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
   controls.target = new THREE.Vector3(0.0, 3.0, 0.0);
-  // set max vertical camera rotation from top down
-  controls.minPolarAngle = degreesToRads(45);
-  controls.maxPolarAngle = degreesToRads(85);
-  const scene = new THREE.Scene();
 
+  // set max vertical camera rotation from top down
+  controls.minPolarAngle = degreesToRads(40);
+  controls.maxPolarAngle = degreesToRads(80);
+
+  const scene = new THREE.Scene();
   return {scene, renderer, camera, controls};
 }
 
@@ -207,6 +205,7 @@ const sketch = async ({ context }) => {
     const plantGeom = new THREE.BoxGeometry(3, 3, 3);
     const plantMat = new THREE.MeshStandardMaterial({ color: 0x99ff00 });
     const plantMesh = new THREE.Mesh(plantGeom, plantMat);
+    plantMesh.name = "Plant";
     plantMesh.position.set(
       plant.position.x,
       plant.position.y,
