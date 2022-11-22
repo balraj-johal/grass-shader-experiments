@@ -47,21 +47,13 @@ const savePlant = (plant) => {
 }
 
 const getStartOfDay = (date) => {
-  // const day = date.toLocaleString("default", { day: "2-digit" });
-  // const month = date.toLocaleString("default", { month: "2-digit" });
-  // const year = date.toLocaleString("default", { year: "numeric" });
   return new Date(date.toDateString());
 }
 const canAddPlant = () => {
-  console.log();
-  let lastActionString = window.localStorage.getItem("LAST_ACTION");
-  let lastActionDate;
-  if (lastActionString) {
-    lastActionDate = new Date(lastActionString);
-  } else {
-    lastActionDate = new Date(1997, 10, 29);
-  }
-  console.log(lastActionDate);
+  const lastActionString = window.localStorage.getItem("LAST_ACTION");
+  const lastActionDate = lastActionString ?
+      new Date(lastActionString) :
+      new Date(1997, 10, 29);
   return getStartOfDay(lastActionDate).getTime() <
       getStartOfDay(new Date()).getTime();
 }
