@@ -68,6 +68,15 @@ const _setupScene = (context) => {
   camera.position.set(0, 8, -34);
   const controls = new THREE.OrbitControls(camera, context.canvas);
   controls.target = new THREE.Vector3(0.0, 3.0, 0.0);
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.2;
+  controls.enableDamping = true;
+  document.querySelector("canvas").addEventListener("click", () => {
+    controls.autoRotate = false;
+    setTimeout(() => {
+      controls.autoRotate = true;
+    }, 1500);
+  })
 
   // set max vertical camera rotation from top down
   controls.minPolarAngle = degreesToRads(40);
@@ -238,7 +247,6 @@ const sketch = async ({ context }) => {
       const intersects = raycaster.intersectObjects(scene.children);
       for (let i = 0; i < intersects.length; i++) {
         if (intersects[i].object.name === "Intersector") {
-          console.log(intersects[i].object.name)
           const uvCoords = {
             x: intersects[i].uv.x,
             y: 1 - intersects[i].uv.y,
