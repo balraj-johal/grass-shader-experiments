@@ -238,23 +238,26 @@ const sketch = async ({ context }) => {
       raycaster.setFromCamera(pointer, camera);
       const intersects = raycaster.intersectObjects(scene.children);
       for (let i = 0; i < intersects.length; i++) {
-        // if (!intersects[i] || intersects[i].name !== "Intersector") return;
-        const uvCoords = {
-          x: intersects[i].uv.x,
-          y: 1 - intersects[i].uv.y,
-        };
-        touchTracker.addTouch(uvCoords);
-        if (state.clicked) {
-          savePlant({
-            position: {
-              x: mapUVToWorld(uvCoords.x),
-              y: 0,
-              z: mapUVToWorld(uvCoords.y),
-            },
-          })
-          state.clicked = false;
+        if (intersects[i].object.name === "Intersector") {
+          console.log(intersects[i].object.name)
+          const uvCoords = {
+            x: intersects[i].uv.x,
+            y: 1 - intersects[i].uv.y,
+          };
+          touchTracker.addTouch(uvCoords);
+          if (state.clicked) {
+            savePlant({
+              position: {
+                x: mapUVToWorld(uvCoords.x),
+                y: 0,
+                z: mapUVToWorld(uvCoords.y),
+              },
+            })
+            state.clicked = false;
+          }
         }
       }
+      state.clicked = false;
 
       controls.update();
       stats.update();
