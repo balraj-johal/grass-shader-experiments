@@ -19,6 +19,7 @@ import groundFrag from "./Ground/fragment.glsl";
 import groundVert from "./Ground/vertex.glsl";
 import GroundGeometry from "./Ground/GroundGeometry";
 import RenderTexture from "./Interaction/RenderTexture";
+import Skybox from "./Skybox/Skybox";
 
 const settings = {
   animate: true,
@@ -204,7 +205,6 @@ const sketch = async ({ context }) => {
 
   const plantsRoot = new THREE.Object3D();
   for (const plant of state.savedPlants) {
-    console.log(plant);
     const plantGeom = new THREE.BoxGeometry(3, 3, 3);
     const plantMat = new THREE.MeshStandardMaterial({ color: 0x99ff00 });
     const plantMesh = new THREE.Mesh(plantGeom, plantMat);
@@ -216,7 +216,13 @@ const sketch = async ({ context }) => {
     scene.add(plantMesh);
   }
   scene.add(plantsRoot);
-  console.log(plantsRoot);
+
+
+  const skybox = new Skybox();
+  skybox.getMesh().then(mesh => {
+    console.log("skibby", mesh);
+    scene.add(mesh);
+  })
 
   return {
     // Handle resize events
