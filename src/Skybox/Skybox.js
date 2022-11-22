@@ -1,9 +1,5 @@
-import {  } from "three";
-
-const AREA_SIZE = 20;
-const RESOLUTION = 2;
 export default class Skybox extends THREE.Object3D {
-  constructor(scene) {
+  constructor() {
     super();
   }
 
@@ -12,14 +8,13 @@ export default class Skybox extends THREE.Object3D {
       const gltfLoader = new THREE.GLTFLoader();
       gltfLoader.load(__dirname + "/GradientUVCube.glb", (gltf) => {
         const skyboxGeom = gltf.scene.children[0].geometry;
-        const testGeom = new THREE.BoxGeometry(3, 3, 3);
         const skyboxMat = new THREE.ShaderMaterial({
           uniforms: {
-            color1: {
-              value: new THREE.Color("red")
+            topColor: {
+              value: new THREE.Color(0xDEF3EF)
             },
-            color2: {
-              value: new THREE.Color("purple")
+            baseColor: {
+              value: new THREE.Color(0xAFC6C1)
             }
           },
           vertexShader: `
@@ -31,23 +26,21 @@ export default class Skybox extends THREE.Object3D {
             }
           `,
           fragmentShader: `
-            uniform vec3 color1;
-            uniform vec3 color2;
+            uniform vec3 topColor;
+            uniform vec3 baseColor;
           
             varying vec2 vUv;
             
             void main() {
               float mixer = smoothstep(0.364, 0.660, vUv.y);
-              gl_FragColor = vec4(mix(color1, color2, mixer), 1.0);
+              gl_FragColor = vec4(mix(topColor, baseColor, mixer), 1.0);
             }
           `,
           side: THREE.BackSide
         });
-        const testMat = new THREE.MeshStandardMaterial({ color: 0x0000ff });
         const mesh = new THREE.Mesh(skyboxGeom, skyboxMat);
         // const mesh = new THREE.Mesh(testGeom, testMat);
         mesh.scale.set(50,50,50);
-        console.log("awaited", mesh);
         resolve(mesh);
       });
     })

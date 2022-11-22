@@ -56,7 +56,6 @@ const state = {
   savedPlants: getSavedPlants(),
 }
 
-console.log(rand.generate());
 const GRASS_COUNT = 20000;
 
 
@@ -69,9 +68,9 @@ const _setupScene = (context) => {
   // Setup a camera
   const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 1000);
   camera.position.set(0, 8, -34);
-  camera.lookAt(new THREE.Vector3(0, 12, 0));
   // Setup camera controller
   const controls = new THREE.OrbitControls(camera, context.canvas);
+  controls.target = new THREE.Vector3(0.0, 3.0, 0.0);
   // set max vertical camera rotation from top down
   controls.minPolarAngle = degreesToRads(45);
   controls.maxPolarAngle = degreesToRads(85);
@@ -213,16 +212,13 @@ const sketch = async ({ context }) => {
       plant.position.y,
       plant.position.z,
       );
-    scene.add(plantMesh);
+    plantsRoot.add(plantMesh);
   }
   scene.add(plantsRoot);
 
 
   const skybox = new Skybox();
-  skybox.getMesh().then(mesh => {
-    console.log("skibby", mesh);
-    scene.add(mesh);
-  })
+  skybox.getMesh().then(mesh => scene.add(mesh));
 
   return {
     // Handle resize events

@@ -91,7 +91,6 @@ const _setupSkybox = (scene, textureLoader, gltfLoader) => {
 const _setupOurLad = (scene, gltfLoader) => {    
   gltfLoader.load(__dirname + "/Bloke/bloke2.glb", (gltf) => {
       const bloke = gltf.scene.children[0];
-      console.log(bloke);
       bloke.name = "Bloke";
       bloke.scale.set(2.5, 2.5, 2.5);
       bloke.translateY(2.5);

@@ -84,28 +84,12 @@ const getClosestClumpToPoint = (surroundingTiles, pointX, pointZ) => {
     }
   });
   if (!currentClosest) console.log("no closest clump");
-  console.log();
   return currentClosest;
 };
-
-function returnRGB(hexColor) {
-  var hex = Math.floor(hexColor);
-  let r = ((hex >> 16) & 255) / 255;
-  let g = ((hex >> 8) & 255) / 255;
-  let b = (hex & 255) / 255;
-
-  return {
-    r,
-    g,
-    b,
-  };
-}
 
 export default class GrassGeometry extends THREE.InstancedBufferGeometry {
   constructor(params) {
     super();
-
-    console.log(rand.generate());
 
     this.copy(params.geometry);
 
