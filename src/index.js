@@ -7,6 +7,12 @@ require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
 
 import { degreesToRads } from "./utils";
+import {
+  getSavedPlants,
+  updateLastAction,
+  savePlant,
+  canAddPlant,
+} from "./Logic/plants";
 
 import canvasSketch from "canvas-sketch";
 
@@ -25,58 +31,19 @@ const settings = {
   context: "webgl",
 };
 
-const getSavedPlants = () => {
-  let saved = window.localStorage.getItem("SAVED_PLANTS");
-  if (!saved) {
-    saved = [];
-    window.localStorage.setItem("SAVED_PLANTS", saved);
-    return saved;
-  }
-  return JSON.parse(saved);
-}
-
-const savePlant = (plant) => {
-  let saved = window.localStorage.getItem("SAVED_PLANTS");
-  if (!saved) {
-    saved = [];
-  } else {
-    saved = JSON.parse(saved);
-  }
-  saved.push(plant);
-  window.localStorage.setItem("SAVED_PLANTS", JSON.stringify(saved));
-}
-
-const getStartOfDay = (date) => {
-  return new Date(date.toDateString());
-}
-const canAddPlant = () => {
-  const lastActionString = window.localStorage.getItem("LAST_ACTION");
-  const lastActionDate = lastActionString ?
-      new Date(lastActionString) :
-      new Date(1997, 10, 29);
-  return getStartOfDay(lastActionDate).getTime() <
-      getStartOfDay(new Date()).getTime();
-}
-const updateLastAction = () => {
-  window.localStorage.setItem(
-    "LAST_ACTION", 
-    JSON.stringify(new Date().toDateString())
-  );
-}
-
 const mapUVToWorld = (coord) => {
-  return (coord * 20) - 10;
-}
+  return coord * 20 - 10;
+};
 
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
-}
+};
 
 const GRASS_COUNT = 20000;
 
 const _setupScene = (context) => {
-  const renderer = new THREE.WebGLRenderer({canvas: context.canvas});
+  const renderer = new THREE.WebGLRenderer({ canvas: context.canvas });
   renderer.setClearColor("#fff", 1);
 
   // Setup camera controller
@@ -92,15 +59,15 @@ const _setupScene = (context) => {
     setTimeout(() => {
       controls.autoRotate = true;
     }, 1500);
-  })
+  });
 
   // set max vertical camera rotation from top down
   controls.minPolarAngle = degreesToRads(40);
   controls.maxPolarAngle = degreesToRads(80);
 
   const scene = new THREE.Scene();
-  return {scene, renderer, camera, controls};
-}
+  return { scene, renderer, camera, controls };
+};
 
 const _setupTouchTracker = () => {
   const touchTracker = new RenderTexture();
@@ -115,9 +82,9 @@ const _setupTouchTracker = () => {
   window.addEventListener("pointermove", onPointerMove);
   window.addEventListener("click", () => {
     if (!state.clicked) state.clicked = true;
-  })
-  return {touchTracker, raycaster, pointer};
-}
+  });
+  return { touchTracker, raycaster, pointer };
+};
 
 const _setupLighting = (scene) => {
   const directionalLight = new THREE.DirectionalLight();
@@ -125,25 +92,22 @@ const _setupLighting = (scene) => {
   scene.add(directionalLight);
   const ambientLight = new THREE.AmbientLight(0x404040, 2); // soft white light
   scene.add(ambientLight);
-}
+};
 
 const sketch = async ({ context }) => {
   const gltfLoader = new THREE.GLTFLoader();
-  const textureLoader = new THREE.TextureLoader;
+  const textureLoader = new THREE.TextureLoader();
 
-  const {scene, renderer, camera, controls} = _setupScene(context);
-  const {touchTracker, raycaster, pointer} = _setupTouchTracker();
+  const { scene, renderer, camera, controls } = _setupScene(context);
+  const { touchTracker, raycaster, pointer } = _setupTouchTracker();
   _setupLighting(scene);
 
-  
   const stats = threeStats();
   document.body.appendChild(stats.dom);
 
   // -- GROUND OLD
   const groundGeometry = new GroundGeometry();
-  const noiseTex = textureLoader.load(
-    "./textures/noiseTexture.png"
-  );
+  const noiseTex = textureLoader.load("./textures/noiseTexture.png");
   const groundMaterial = new THREE.ShaderMaterial({
     vertexShader: groundVert,
     fragmentShader: groundFrag,
@@ -154,7 +118,11 @@ const sketch = async ({ context }) => {
     side: THREE.DoubleSide,
   });
   groundMaterial.uniformsNeedUpdate = true;
-  const groundPlane = new THREE.InstancedMesh(groundGeometry, groundMaterial, 1);
+  const groundPlane = new THREE.InstancedMesh(
+    groundGeometry,
+    groundMaterial,
+    1
+  );
   groundPlane.name = "Old Ground";
   groundPlane.rotateX(Math.PI / 2);
   scene.add(groundPlane);
@@ -179,7 +147,7 @@ const sketch = async ({ context }) => {
         time: { value: 0 },
         noiseTex: { value: noiseTex },
         touchTex: { value: touchTracker.texture },
-      }
+      },
     ]);
 
     grassMaterial = new THREE.ShaderMaterial({
@@ -187,7 +155,7 @@ const sketch = async ({ context }) => {
       fragmentShader: grassFrag,
       uniforms,
       side: THREE.DoubleSide,
-      lights: true
+      lights: true,
     });
     grassMaterial.clipping = false;
     grassMaterial.uniformsNeedUpdate = true;
@@ -234,15 +202,14 @@ const sketch = async ({ context }) => {
     plantMesh.position.set(
       plant.position.x,
       plant.position.y,
-      plant.position.z,
-      );
+      plant.position.z
+    );
     plantsRoot.add(plantMesh);
   }
   scene.add(plantsRoot);
 
-
   const skybox = new Skybox();
-  skybox.getMesh().then(mesh => scene.add(mesh));
+  skybox.getMesh().then((mesh) => scene.add(mesh));
 
   return {
     // Handle resize events
@@ -272,7 +239,7 @@ const sketch = async ({ context }) => {
                 y: 0.0,
                 z: mapUVToWorld(uvCoords.y),
               },
-            })
+            });
             updateLastAction();
             state.clicked = false;
           }
