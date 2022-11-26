@@ -1,4 +1,4 @@
-export const degreesToRads = (degree) => {
+const degreesToRads = (degree) => {
   return (degree * Math.PI) / 180;
 };
 

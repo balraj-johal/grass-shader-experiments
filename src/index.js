@@ -16,15 +16,13 @@ import {
 
 import canvasSketch from "canvas-sketch";
 
-import grassFrag from "./Grass/fragment.glsl";
-import grassVert from "./Grass/vertex.glsl";
-import GrassGeometry from "./Grass/GrassGeometry";
-
 import groundFrag from "./Ground/fragment.glsl";
 import groundVert from "./Ground/vertex.glsl";
 import GroundGeometry from "./Ground/GroundGeometry";
 import RenderTexture from "./Interaction/RenderTexture";
-import Skybox from "./Skybox/Skybox";
+
+import Grass from "./Grass";
+import Skybox from "./Skybox";
 
 const mapUVToWorld = (coord) => {
   return coord * 20 - 10;
@@ -34,8 +32,6 @@ const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
 };
-
-const GRASS_COUNT = 20000;
 
 const _setupScene = (context) => {
   const renderer = new THREE.WebGLRenderer({ canvas: context.canvas });
@@ -97,12 +93,13 @@ const sketch = async ({ context }) => {
   const { touchTracker, raycaster, pointer } = _setupTouchTracker();
   _setupLighting(scene);
 
+  const noiseTex = textureLoader.load("./textures/noiseTexture.png");
+
   const stats = threeStats();
   document.body.appendChild(stats.dom);
 
   // -- GROUND OLD
   const groundGeometry = new GroundGeometry();
-  const noiseTex = textureLoader.load("./textures/noiseTexture.png");
   const groundMaterial = new THREE.ShaderMaterial({
     vertexShader: groundVert,
     fragmentShader: groundFrag,
@@ -123,46 +120,46 @@ const sketch = async ({ context }) => {
   scene.add(groundPlane);
 
   // -- GRASS
-  let grassMaterial;
-  gltfLoader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
-    const grassGeometry = new GrassGeometry({
-      grassCount: GRASS_COUNT,
-      scene,
-      geometry: gltf.scene.children[0].geometry,
-    });
+  // let grassMaterial;
+  // gltfLoader.load(__dirname + "/Grass/GrassBlade.glb", (gltf) => {
+  //   const grassGeometry = new GrassGeometry({
+  //     grassCount: GRASS_COUNT,
+  //     scene,
+  //     geometry: gltf.scene.children[0].geometry,
+  //   });
 
-    grassGeometry.attributes["offset"].needsUpdate;
-    grassGeometry.attributes["scale"].needsUpdate;
-    grassGeometry.attributes["color"].needsUpdate;
-    grassGeometry.attributes["angle"].needsUpdate;
+  //   grassGeometry.attributes["offset"].needsUpdate;
+  //   grassGeometry.attributes["scale"].needsUpdate;
+  //   grassGeometry.attributes["color"].needsUpdate;
+  //   grassGeometry.attributes["angle"].needsUpdate;
 
-    const uniforms = THREE.UniformsUtils.merge([
-      THREE.UniformsLib["lights"],
-      {
-        time: { value: 0 },
-        noiseTex: { value: noiseTex },
-        touchTex: { value: touchTracker.texture },
-      },
-    ]);
+  //   const uniforms = THREE.UniformsUtils.merge([
+  //     THREE.UniformsLib["lights"],
+  //     {
+  //       time: { value: 0 },
+  //       noiseTex: { value: noiseTex },
+  //       touchTex: { value: touchTracker.texture },
+  //     },
+  //   ]);
 
-    grassMaterial = new THREE.ShaderMaterial({
-      vertexShader: grassVert,
-      fragmentShader: grassFrag,
-      uniforms,
-      side: THREE.DoubleSide,
-      lights: true,
-    });
-    grassMaterial.clipping = false;
-    grassMaterial.uniformsNeedUpdate = true;
+  //   grassMaterial = new THREE.ShaderMaterial({
+  //     vertexShader: grassVert,
+  //     fragmentShader: grassFrag,
+  //     uniforms,
+  //     side: THREE.DoubleSide,
+  //     lights: true,
+  //   });
+  //   grassMaterial.clipping = false;
+  //   grassMaterial.uniformsNeedUpdate = true;
 
-    const grassMesh = new THREE.InstancedMesh(
-      grassGeometry,
-      grassMaterial,
-      GRASS_COUNT
-    );
-    grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
-    scene.add(grassMesh);
-  });
+  //   const grassMesh = new THREE.InstancedMesh(
+  //     grassGeometry,
+  //     grassMaterial,
+  //     GRASS_COUNT
+  //   );
+  //   grassMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
+  //   scene.add(grassMesh);
+  // });
 
   // -- INTERSECTION BOX
   /* 
@@ -206,6 +203,14 @@ const sketch = async ({ context }) => {
   const skybox = new Skybox();
   skybox.getMesh().then((mesh) => scene.add(mesh));
 
+  let grassMaterial;
+  const grass = new Grass({
+    grassMaterial,
+    noiseTex,
+    touchTex: touchTracker.texture,
+  });
+  grass.getMesh().then((mesh) => scene.add(mesh));
+
   return {
     // Handle resize events
     resize({ pixelRatio, viewportWidth, viewportHeight }) {
@@ -216,7 +221,7 @@ const sketch = async ({ context }) => {
     },
     // Update & render scene
     render({ time }) {
-      if (grassMaterial?.uniforms) grassMaterial.uniforms.time.value = time;
+      grass.updateTime(time);
 
       touchTracker.update();
 
