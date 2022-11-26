@@ -22,9 +22,16 @@ import {
   canAddPlant,
 } from "./utils/plants";
 
+const InteractionState = {
+  None: "None",
+  Raining: "Raining",
+  Planting: "Planting",
+};
+
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
+  interactionState: InteractionState.None,
   touchTracker: null,
 };
 
