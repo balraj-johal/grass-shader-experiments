@@ -163,7 +163,7 @@ const sketch = async ({ context }) => {
       grass.updateTime(time);
 
       raycaster.setFromCamera(pointer, camera);
-      _checkRaycast(raycaster.intersectObjects(scene.children));
+      _checkInteraction(raycaster.intersectObjects(scene.children));
 
       state.clicked = false;
 
