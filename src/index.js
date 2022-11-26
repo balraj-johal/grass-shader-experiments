@@ -116,7 +116,7 @@ const _checkInteraction = (intersects) => {
         if (intersects[i].object.name === "Intersector") {
           if (!state.clicked) return;
           const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
-          // state.wateringTracker.addWater(uvCoords);
+          state.wateringTracker.drawTouch(uvCoords, false);
         }
       }
     default:
@@ -132,6 +132,7 @@ const sketch = async ({ context }) => {
   const { scene, renderer, camera, controls } = _setupScene(context);
   const { touchTracker, raycaster, pointer } = _setupTouchTracker();
   state.touchTracker = touchTracker;
+  state.wateringTracker = new RenderTexture();
 
   _setupLighting(scene);
 
