@@ -25,6 +25,7 @@ import {
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
+  touchTracker: null,
 };
 
 const _setupScene = (context) => {
@@ -85,7 +86,7 @@ const _checkRaycast = (intersects) => {
   for (let i = 0; i < intersects.length; i++) {
     if (intersects[i].object.name === "Intersector") {
       const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
-      touchTracker.addTouch(uvCoords);
+      state.touchTracker.addTouch(uvCoords);
       if (state.clicked && canAddPlant()) {
         savePlant({
           position: {
@@ -107,6 +108,8 @@ const sketch = async ({ context }) => {
 
   const { scene, renderer, camera, controls } = _setupScene(context);
   const { touchTracker, raycaster, pointer } = _setupTouchTracker();
+  state.touchTracker = touchTracker;
+
   _setupLighting(scene);
 
   const stats = threeStats();
