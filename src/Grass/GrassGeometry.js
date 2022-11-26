@@ -6,14 +6,14 @@ global.THREE = THREE;
 
 require("three/examples/js/loaders/GLTFLoader.js");
 
+import { getDistanceVector, getVectorMagnitude } from "../utils/vector";
+import { roundDownToNearestMultiple } from "../utils/assorted";
+
 const AREA_SIZE = 20;
 const CLUMP_DENSITY = 0.1; //per unit of area
 const TILE_SIZE = AREA_SIZE / (AREA_SIZE * CLUMP_DENSITY);
 const tileMap = {};
 
-const roundDownToNearestMultiple = (number, multiple) => {
-  return Math.floor(number / multiple) * multiple;
-};
 // given a point, return the tile containing that point
 const assignTile = (pointX, pointZ) => {
   const tileX = roundDownToNearestMultiple(pointX, TILE_SIZE);
@@ -51,15 +51,6 @@ const getSurroundingTiles = (tile) => {
   return surroundingTiles;
 };
 
-const getDistanceVector = (x1, z1, x2, z2) => {
-  return [x1 - x2, z1 - z2];
-};
-const getVectorMagnitude = (vector) => {
-  const aSquared = Math.pow(vector[0], 2);
-  const bSquared = Math.pow(vector[1], 2);
-  const cSquared = aSquared + bSquared;
-  return Math.sqrt(cSquared);
-};
 // given a list of tiles to check, calculates the distance vector
 // from the given point coords to the clump points of each tile,
 // returning the closest one (i.e. with the lowest magnitude)

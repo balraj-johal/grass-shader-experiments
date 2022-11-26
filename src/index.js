@@ -6,13 +6,13 @@ global.THREE = THREE;
 require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
 
-import { degreesToRads } from "./utils";
+import { degreesToRads } from "./utils/assorted";
 import {
   getSavedPlants,
   updateLastAction,
   savePlant,
   canAddPlant,
-} from "./Logic/plants";
+} from "./utils/plants";
 
 import canvasSketch from "canvas-sketch";
 
@@ -25,11 +25,6 @@ import groundVert from "./Ground/vertex.glsl";
 import GroundGeometry from "./Ground/GroundGeometry";
 import RenderTexture from "./Interaction/RenderTexture";
 import Skybox from "./Skybox/Skybox";
-
-const settings = {
-  animate: true,
-  context: "webgl",
-};
 
 const mapUVToWorld = (coord) => {
   return coord * 20 - 10;
@@ -259,4 +254,7 @@ const sketch = async ({ context }) => {
   };
 };
 
-canvasSketch(sketch, settings);
+canvasSketch(sketch, {
+  animate: true,
+  context: "webgl",
+});
