@@ -6,4 +6,8 @@ const roundDownToNearestMultiple = (number, multiple) => {
   return Math.floor(number / multiple) * multiple;
 };
 
-export { degreesToRads, roundDownToNearestMultiple };
+const mapUVToWorld = (coord, size) => {
+  return coord * size - size / 2;
+};
+
+export { degreesToRads, roundDownToNearestMultiple, mapUVToWorld };

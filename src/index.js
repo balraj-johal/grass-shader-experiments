@@ -6,7 +6,7 @@ global.THREE = THREE;
 require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
 
-import { degreesToRads } from "./utils/assorted";
+import { degreesToRads, mapUVToWorld } from "./utils/assorted";
 import {
   getSavedPlants,
   updateLastAction,
@@ -23,10 +23,6 @@ import Ground from "./Ground";
 import InteractionBox from "./Ground/InteractionBox";
 import Grass from "./Grass";
 import Plants from "./Plants";
-
-const mapUVToWorld = (coord) => {
-  return coord * 20 - 10;
-};
 
 const state = {
   clicked: false,
