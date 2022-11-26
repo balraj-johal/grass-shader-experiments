@@ -1,10 +1,18 @@
 import * as THREE from "three";
-
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = THREE;
 
 require("three/examples/js/controls/OrbitControls.js");
 const threeStats = require("three/examples/js/libs/stats.min.js");
+
+import canvasSketch from "canvas-sketch";
+
+import RenderTexture from "./Interaction/RenderTexture";
+import Skybox from "./Skybox";
+import Ground from "./Ground";
+import InteractionBox from "./Ground/InteractionBox";
+import Grass from "./Grass";
+import Plants from "./Plants";
 
 import { degreesToRads, mapUVToWorld } from "./utils/assorted";
 import {
@@ -13,16 +21,6 @@ import {
   savePlant,
   canAddPlant,
 } from "./utils/plants";
-
-import canvasSketch from "canvas-sketch";
-
-import RenderTexture from "./Interaction/RenderTexture";
-
-import Skybox from "./Skybox";
-import Ground from "./Ground";
-import InteractionBox from "./Ground/InteractionBox";
-import Grass from "./Grass";
-import Plants from "./Plants";
 
 const state = {
   clicked: false,
