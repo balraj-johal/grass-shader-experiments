@@ -125,6 +125,7 @@ const _checkInteraction = (intersects) => {
 };
 
 const sketch = async ({ context }) => {
+  // -- setup
   const textureLoader = new THREE.TextureLoader();
   const noiseTex = textureLoader.load("./textures/noiseTexture.png");
 
@@ -137,6 +138,7 @@ const sketch = async ({ context }) => {
   const stats = threeStats();
   document.body.appendChild(stats.dom);
 
+  // -- add scene elements
   const skybox = new Skybox();
   skybox.getMesh().then((mesh) => scene.add(mesh));
 
@@ -159,12 +161,12 @@ const sketch = async ({ context }) => {
       camera.aspect = viewportWidth / viewportHeight;
       camera.updateProjectionMatrix();
     },
+
     render({ time }) {
       grass.updateTime(time);
 
       raycaster.setFromCamera(pointer, camera);
       _checkInteraction(raycaster.intersectObjects(scene.children));
-
       state.clicked = false;
 
       touchTracker.update();
@@ -172,6 +174,7 @@ const sketch = async ({ context }) => {
       stats.update();
       renderer.render(scene, camera);
     },
+
     unload() {
       controls.dispose();
       renderer.dispose();
