@@ -8,7 +8,6 @@ const GRASS_COUNT = 20000;
 export default class Grass extends THREE.Object3D {
   noiseTex;
   touchTex;
-  grassMaterial;
 
   constructor(params) {
     super();
