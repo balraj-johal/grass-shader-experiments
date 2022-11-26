@@ -24,7 +24,7 @@ import {
 
 const InteractionState = {
   None: "None",
-  Raining: "Raining",
+  Watering: "Watering",
   Planting: "Planting",
 };
 
@@ -89,23 +89,38 @@ const _setupLighting = (scene) => {
   scene.add(ambientLight);
 };
 
-const _checkRaycast = (intersects) => {
-  for (let i = 0; i < intersects.length; i++) {
-    if (intersects[i].object.name === "Intersector") {
-      const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
-      state.touchTracker.addTouch(uvCoords);
-      if (state.clicked && canAddPlant()) {
-        savePlant({
-          position: {
-            x: mapUVToWorld(uvCoords.x),
-            y: 0.0,
-            z: mapUVToWorld(uvCoords.y),
-          },
-        });
-        updateLastAction();
-        state.clicked = false;
+const _checkInteraction = (intersects) => {
+  switch (state.interactionState) {
+    case InteractionState.None:
+      return;
+    case InteractionState.Planting:
+      for (let i = 0; i < intersects.length; i++) {
+        if (intersects[i].object.name === "Intersector") {
+          const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
+          state.touchTracker.addTouch(uvCoords);
+          if (state.clicked && canAddPlant()) {
+            savePlant({
+              position: {
+                x: mapUVToWorld(uvCoords.x),
+                y: 0.0,
+                z: mapUVToWorld(uvCoords.y),
+              },
+            });
+            updateLastAction();
+            state.clicked = false;
+          }
+        }
       }
-    }
+    case InteractionState.Watering:
+      for (let i = 0; i < intersects.length; i++) {
+        if (intersects[i].object.name === "Intersector") {
+          if (!state.clicked) return;
+          const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
+          // state.wateringTracker.addWater(uvCoords);
+        }
+      }
+    default:
+      break;
   }
 };
 
