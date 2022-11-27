@@ -106,6 +106,7 @@ export default class RenderTexture {
 
       let radius = this.size * this.radius * intensity;
       radius = Math.max(radius, 0);
+      if (isNaN(radius)) return;
       const grd = this.ctx.createRadialGradient(
         pos.x,
         pos.y,
@@ -123,19 +124,9 @@ export default class RenderTexture {
       this.ctx.fill();
     } else {
       let radius = 1;
-      const grd = this.ctx.createRadialGradient(
-        pos.x,
-        pos.y,
-        radius * 0.25,
-        pos.x,
-        pos.y,
-        radius
-      );
-      grd.addColorStop(0, `rgba(255, 255, 255, 0.2)`);
-      grd.addColorStop(1, "rgba(0, 0, 0, 0.0)");
 
       this.ctx.beginPath();
-      this.ctx.fillStyle = grd;
+      this.ctx.fillStyle = "white";
       this.ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
       this.ctx.fill();
     }

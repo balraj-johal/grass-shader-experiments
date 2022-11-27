@@ -31,7 +31,7 @@ const InteractionState = {
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
-  interactionState: InteractionState.None,
+  interactionState: InteractionState.Planting,
   touchTracker: null,
 };
 
