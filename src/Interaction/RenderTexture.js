@@ -51,7 +51,6 @@ export default class RenderTexture {
     if (this.falloff) {
       this.clear();
     } else {
-      console.log("saivng");
       localStorage.setItem("WATER_TEX", this.canvas.toDataURL());
     }
 
