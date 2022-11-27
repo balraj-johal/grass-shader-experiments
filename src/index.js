@@ -179,11 +179,11 @@ const sketch = async ({ context }) => {
   });
   rain.getMesh().then((mesh) => scene.add(mesh));
 
-  const dust = new Dust({
-    count: 150,
-    waterTex: state.wateringTracker.texture,
-  });
-  dust.getPoints().then((points) => scene.add(points));
+  // const dust = new Dust({
+  //   count: 150,
+  //   waterTex: state.wateringTracker.texture,
+  // });
+  // dust.getPoints().then((points) => scene.add(points));
 
   return {
     resize({ pixelRatio, viewportWidth, viewportHeight }) {
