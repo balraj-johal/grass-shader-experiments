@@ -49,12 +49,12 @@ void main () {
   // -- apply base gradient colors
   gl_FragColor = vec4(gradientColor, 1.0);
   // -- apply random desaturation
-  gl_FragColor.rgb -= vColor / 3.0;
+  gl_FragColor -= vColor / 3.0;
   // -- apply clump influence
   // gl_FragColor.rgb *= clamp(lightContribution, 0.0, 1.0);
 
   if (vRain > 0.0) {
-    gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.0), 0.2);
+    gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.0), 0.3 );
   }
   
   gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
