@@ -1,12 +1,13 @@
 {
   "name": "sketches",
-  "version": "1.0.0",
+  "version": "1.0.0", 
   "description": "",
   "main": "example.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lessgo": "npx canvas-sketch-cli --template=three --open src/index.js",
-    "lessgo:dumbfuck": "npx canvas-sketch-cli --template=three --open src/weird.js"
+    "lessgo:dumbfuck": "npx canvas-sketch-cli --template=three --open src/weird.js",
+    "build": "npx canvas-sketch-cli src/index.js --build"
   },
   "keywords": [],
   "author": "",
