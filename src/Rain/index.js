@@ -9,6 +9,7 @@ export default class Rain extends THREE.Object3D {
   height;
   count;
   material;
+  waterTex;
 
   constructor(params) {
     super();
@@ -16,11 +17,13 @@ export default class Rain extends THREE.Object3D {
     this.size = 0.1;
     this.height = 0.5;
     this.count = params.count;
+    this.waterTex = params.waterTex;
   }
 
   updateTime(time) {
     if (!this.material) return;
     this.material.uniforms.time.value = time;
+    console.log(this.waterTex);
   }
 
   getMesh() {
@@ -40,6 +43,7 @@ export default class Rain extends THREE.Object3D {
             topColor: { value: new THREE.Color(0xdef3ef) },
             baseColor: { value: new THREE.Color(0xafc6c1) },
             time: { value: 0 },
+            waterTex: { value: this.waterTex },
           },
           vertexShader: vert,
           fragmentShader: frag,

@@ -22,10 +22,12 @@ const assignTile = (pointX, pointZ) => {
   if (!tile) console.log("point is not within a registered tile.");
   return tileMap[`${tileX}.${tileZ}`];
 };
+
 // given a point, randomly offset it, ensuring it stays within it's tile
 const jitterPoint = (point, step) => {
   return point + ((rand.generate() - 1) * step) / 2;
 };
+
 // gets all the tiles surrounding a given one, including itself.
 const getSurroundingTiles = (tile) => {
   const surroundingTiles = [tile];

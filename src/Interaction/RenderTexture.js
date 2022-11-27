@@ -108,7 +108,6 @@ export default class RenderTexture {
       this.ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
       this.ctx.fill();
     } else {
-      console.log("here");
       let radius = 5;
 
       this.ctx.beginPath();

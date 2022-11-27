@@ -32,7 +32,7 @@ const InteractionState = {
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
-  interactionState: InteractionState.Watering,
+  interactionState: InteractionState.Planting,
   touchTracker: null,
 };
 
@@ -146,7 +146,7 @@ const sketch = async ({ context }) => {
 
   const ground = new Ground({
     noiseTex,
-    touchTex: state.wateringTracker.texture,
+    touchTex: touchTracker.texture,
   });
   ground.getMesh().then((mesh) => scene.add(mesh));
 
@@ -155,14 +155,17 @@ const sketch = async ({ context }) => {
 
   const grass = new Grass({
     noiseTex,
-    touchTex: state.wateringTracker.texture,
+    touchTex: touchTracker.texture,
   });
   grass.getMesh().then((mesh) => scene.add(mesh));
 
   const plants = new Plants();
   plants.getAll().then((root) => scene.add(root));
 
-  const rain = new Rain({ count: 100 });
+  const rain = new Rain({
+    count: 100,
+    waterTex: touchTracker.texture,
+  });
   rain.getMesh().then((mesh) => scene.add(mesh));
 
   return {

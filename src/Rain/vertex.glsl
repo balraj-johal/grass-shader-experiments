@@ -7,13 +7,13 @@ attribute float color;
 
 uniform float time;
 uniform sampler2D noiseTex;
-uniform sampler2D touchTex;
+uniform sampler2D waterTex;
 uniform float count;
 
 varying vec3 vCameraPosition;
 varying vec3 vViewDirection;
 varying vec2 vUv;
-varying vec3 vGroundPosition;
+varying float vVisible;
 varying vec3 vNormal;
 varying float vColor;
 
@@ -154,10 +154,12 @@ void main () {
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
 
+  // -- animate rain
   float rainHeight = 2.0;
   float rainSpeed = 1.5;
   float animatedY = mod((time * rainSpeed) + timeOffset, rainHeight);
   transformed.y -= animatedY;
+
 
   // -- ensure grass y position matches the displaced ground position
   /* 
@@ -180,8 +182,11 @@ void main () {
   // -- finalise position
   gl_Position = projectionMatrix * mvPosition;
 
+  // -- sample water texture
+  vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
+
   // pass blade position to the fragment shader using a varying
-  vGroundPosition = transformed;
+  vVisible = texture2D(waterTex, mappedToGroundUV.xz).z;
   vViewDirection = normalize(cameraPosition.xyz - transformed.xyz);
   vCameraPosition = normalize(cameraPosition.xyz - transformed.xyz);
   vUv = uv;
