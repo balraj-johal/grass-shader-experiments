@@ -2,7 +2,6 @@ import frag from "./fragment.glsl";
 import vert from "./vertex.glsl";
 
 import * as THREE from "three";
-import RainGeometry from "./DustGeometry";
 import DustGeometry from "./DustGeometry";
 
 export default class Dust extends THREE.Object3D {

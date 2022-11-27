@@ -109,6 +109,7 @@ const _checkInteraction = (intersects) => {
                 y: 0.0,
                 z: mapUVToWorld(uvCoords.y),
               },
+              type: "Red",
             });
             updateLastAction();
             state.clicked = false;
@@ -197,6 +198,7 @@ const sketch = async ({ context }) => {
       // update animated objects
       grass.updateTime(time);
       rain.updateTime(time);
+      plants.updateTime(time);
 
       // handle raycast interactions
       raycaster.setFromCamera(pointer, camera);
