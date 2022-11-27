@@ -1,4 +1,6 @@
 node_modules
 
+# hide build files
 *.html
 *.js.map
+index.js
