@@ -46,7 +46,7 @@ export default class Rain extends THREE.Object3D {
           },
           vertexShader: vert,
           fragmentShader: frag,
-          side: THREE.DoubleSide,
+          transparent: true,
         });
         const mesh = new THREE.InstancedMesh(
           geometry,
