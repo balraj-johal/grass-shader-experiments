@@ -29,10 +29,35 @@ export default class RenderTexture {
 
     this.canvas.style.width =
       this.canvas.style.height = `${this.canvas.width}px`;
+
+    if (!this.falloff) {
+      const dataURL = localStorage.getItem("WATER_TEX");
+      const img = new Image();
+      img.src = dataURL;
+      console.log("attempting to draw");
+      img.onload = () => {
+        console.log("load");
+        if (this.ctx) return this.ctx.drawImage(img, 0, 0);
+        console.log("no load");
+        let loadTexInterval = setInterval(() => {
+          console.log("testing");
+          if (this.ctx) {
+            console.log("drawing");
+            this.ctx.drawImage(img, 0, 0);
+            clearInterval(loadTexInterval);
+          }
+        }, 100);
+      };
+    }
   }
 
   update() {
-    if (this.falloff) this.clear();
+    if (this.falloff) {
+      this.clear();
+    } else {
+      console.log("saivng");
+      localStorage.setItem("WATER_TEX", this.canvas.toDataURL());
+    }
 
     // age points
     this.trail.forEach((point, i) => {
@@ -54,6 +79,7 @@ export default class RenderTexture {
   clear() {
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    if (!this.falloff) localStorage.setItem("WATER_TEX", "");
   }
 
   addTouch(point) {
@@ -66,7 +92,6 @@ export default class RenderTexture {
       force = Math.min(dd * 10000, 1);
     }
     if (!this.falloff) force = 1;
-    console.log(force);
     this.trail.push({ x: point.x, y: point.y, age: 0, force });
   }
 

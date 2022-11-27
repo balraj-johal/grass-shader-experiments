@@ -23,7 +23,6 @@ export default class Rain extends THREE.Object3D {
   updateTime(time) {
     if (!this.material) return;
     this.material.uniforms.time.value = time;
-    console.log(this.waterTex);
   }
 
   getMesh() {

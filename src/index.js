@@ -32,8 +32,9 @@ const InteractionState = {
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
-  interactionState: InteractionState.Planting,
+  interactionState: InteractionState.Watering,
   touchTracker: null,
+  wateringTracker: null,
 };
 
 const _setupScene = (context) => {
@@ -112,14 +113,17 @@ const _checkInteraction = (intersects) => {
           }
         }
       }
+      break;
     case InteractionState.Watering:
       for (let i = 0; i < intersects.length; i++) {
         if (intersects[i].object.name === "Intersector") {
           // if (!state.clicked) return;
+          console;
           const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
           state.wateringTracker.drawTouch(uvCoords, false);
         }
       }
+      break;
     default:
       break;
   }
@@ -164,7 +168,7 @@ const sketch = async ({ context }) => {
 
   const rain = new Rain({
     count: 100,
-    waterTex: touchTracker.texture,
+    waterTex: state.wateringTracker.texture,
   });
   rain.getMesh().then((mesh) => scene.add(mesh));
 
@@ -184,6 +188,7 @@ const sketch = async ({ context }) => {
       _checkInteraction(raycaster.intersectObjects(scene.children));
       state.clicked = false;
 
+      state.wateringTracker.update();
       touchTracker.update();
       controls.update();
       stats.update();
