@@ -47,12 +47,17 @@ const _setupScene = (context) => {
   controls.enableDamping = true;
 
   // pause auto rotate on interact
-  document.querySelector("canvas").addEventListener("click", () => {
+  if (state.interactionState !== InteractionState.None) {
     controls.autoRotate = false;
-    setTimeout(() => {
-      controls.autoRotate = true;
-    }, 1500);
-  });
+  } else {
+    controls.autoRotate = true;
+  }
+  // document.querySelector("canvas").addEventListener("click", () => {
+  //   controls.autoRotate = false;
+  //   setTimeout(() => {
+  //     controls.autoRotate = true;
+  //   }, 1500);
+  // });
 
   // set max vertical camera rotation from top down
   controls.minPolarAngle = degreesToRads(40);
