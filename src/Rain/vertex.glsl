@@ -1,6 +1,7 @@
 attribute float ref;
 attribute vec3 scale;
 attribute vec3 offset;
+attribute float timeOffset;
 attribute float angle;
 attribute float color;
 
@@ -154,8 +155,8 @@ void main () {
   vec3 transformed = rotated + offset;
 
   float rainHeight = 2.0;
-  float rainSpeed = 2.0;
-  float animatedY = mod(time * rainSpeed, rainHeight);
+  float rainSpeed = 1.5;
+  float animatedY = mod((time * rainSpeed) + timeOffset, rainHeight);
   transformed.y -= animatedY;
 
   // -- ensure grass y position matches the displaced ground position

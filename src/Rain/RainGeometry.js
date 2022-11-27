@@ -17,6 +17,7 @@ export default class RainGeometry extends THREE.InstancedBufferGeometry {
     const count = params.count;
     const refs = [];
     const offsets = [];
+    const timeOffsets = [];
     const scales = [];
     const colors = [];
     const angles = [];
@@ -45,6 +46,8 @@ export default class RainGeometry extends THREE.InstancedBufferGeometry {
       offsets.push(positions.x);
       offsets.push(positions.y);
       offsets.push(positions.z);
+      // time offset
+      timeOffsets.push(2.0 * rand.generate());
       // colours
       colors.push(rand.generate());
     }
@@ -66,6 +69,14 @@ export default class RainGeometry extends THREE.InstancedBufferGeometry {
     this.setAttribute(
       "offset",
       new THREE.InstancedBufferAttribute(new Float32Array(offsets), 3, false)
+    );
+    this.setAttribute(
+      "timeOffset",
+      new THREE.InstancedBufferAttribute(
+        new Float32Array(timeOffsets),
+        1,
+        false
+      )
     );
     this.setAttribute(
       "angle",
