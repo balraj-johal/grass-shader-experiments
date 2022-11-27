@@ -123,6 +123,10 @@ const _checkInteraction = (intersects) => {
   }
 };
 
+const refreshStorage = () => {
+  localStorage.setItem("WATER_TEX", "");
+};
+
 const sketch = async ({ context }) => {
   // -- setup
   const textureLoader = new THREE.TextureLoader();
@@ -132,6 +136,8 @@ const sketch = async ({ context }) => {
   const { touchTracker, raycaster, pointer } = _setupTouchTracker();
   state.touchTracker = touchTracker;
   state.wateringTracker = new RenderTexture(false, "wateringTexture");
+
+  if (isNewDay()) refreshStorage();
 
   _setupLighting(scene);
 
