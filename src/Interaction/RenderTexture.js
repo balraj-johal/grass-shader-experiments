@@ -34,15 +34,11 @@ export default class RenderTexture {
       const dataURL = localStorage.getItem("WATER_TEX");
       const img = new Image();
       img.src = dataURL;
-      console.log("attempting to draw");
       img.onload = () => {
-        console.log("load");
         if (this.ctx) return this.ctx.drawImage(img, 0, 0);
-        console.log("no load");
+        // fallback if context not ready yet
         let loadTexInterval = setInterval(() => {
-          console.log("testing");
           if (this.ctx) {
-            console.log("drawing");
             this.ctx.drawImage(img, 0, 0);
             clearInterval(loadTexInterval);
           }
@@ -63,10 +59,7 @@ export default class RenderTexture {
     this.trail.forEach((point, i) => {
       if (!this.falloff) return;
       point.age += this.agingRate;
-      // remove old
-      if (point.age > this.maxAge) {
-        this.trail.splice(i, 1);
-      }
+      if (point.age > this.maxAge) this.trail.splice(i, 1); // remove
     });
 
     this.trail.forEach((point, i) => {

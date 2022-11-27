@@ -19,21 +19,6 @@ const savePlant = (plant) => {
   window.localStorage.setItem("SAVED_PLANTS", JSON.stringify(saved));
 };
 
-const getStartOfDay = (date) => {
-  return new Date(date.toDateString());
-};
-
-const canAddPlant = () => {
-  const lastActionString = window.localStorage.getItem("LAST_ACTION");
-  const lastActionDate = lastActionString
-    ? new Date(lastActionString)
-    : new Date(1997, 10, 29);
-  return (
-    getStartOfDay(lastActionDate).getTime() <
-    getStartOfDay(new Date()).getTime()
-  );
-};
-
 const updateLastAction = () => {
   window.localStorage.setItem(
     "LAST_ACTION",
@@ -41,4 +26,4 @@ const updateLastAction = () => {
   );
 };
 
-export { getSavedPlants, updateLastAction, savePlant, canAddPlant };
+export { getSavedPlants, updateLastAction, savePlant };

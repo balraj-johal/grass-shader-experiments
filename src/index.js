@@ -16,12 +16,8 @@ import Plants from "./Plants";
 import Rain from "./Rain";
 
 import { degreesToRads, mapUVToWorld } from "./utils/assorted";
-import {
-  getSavedPlants,
-  updateLastAction,
-  savePlant,
-  canAddPlant,
-} from "./utils/plants";
+import { getSavedPlants, updateLastAction, savePlant } from "./utils/plants";
+import { isNewDay } from "./utils/date";
 
 const InteractionState = {
   None: "None",
@@ -100,7 +96,7 @@ const _checkInteraction = (intersects) => {
         if (intersects[i].object.name === "Intersector") {
           const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
           state.touchTracker.addTouch(uvCoords);
-          if (state.clicked && canAddPlant()) {
+          if (state.clicked && isNewDay()) {
             savePlant({
               position: {
                 x: mapUVToWorld(uvCoords.x),
@@ -117,8 +113,6 @@ const _checkInteraction = (intersects) => {
     case InteractionState.Watering:
       for (let i = 0; i < intersects.length; i++) {
         if (intersects[i].object.name === "Intersector") {
-          // if (!state.clicked) return;
-          console;
           const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
           state.wateringTracker.drawTouch(uvCoords, false);
         }
@@ -167,7 +161,7 @@ const sketch = async ({ context }) => {
   plants.getAll().then((root) => scene.add(root));
 
   const rain = new Rain({
-    count: 100,
+    count: 150,
     waterTex: state.wateringTracker.texture,
   });
   rain.getMesh().then((mesh) => scene.add(mesh));
