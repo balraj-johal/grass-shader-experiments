@@ -61,7 +61,7 @@ export default class RenderTexture {
       if (point.age > this.maxAge) this.trail.splice(i, 1); // remove
     });
 
-    this.trail.forEach((point, i) => {
+    this.trail.forEach((point) => {
       this.drawTouch(point);
     });
 
