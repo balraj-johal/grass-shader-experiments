@@ -1,37 +1,25 @@
 import bezier from "bezier-easing";
 import * as THREE from "three";
 
-const easingDuration = 4;
-const easingChange = 1; // ?
-const easeOutSine = (t, b, c) => {
-  return c * Math.sin((t / easingDuration) * (Math.PI / 2)) + b;
-};
-const easeInOutQuad = (t, b, c) => {
-  t /= easingDuration / 2;
-  if (t < 1) return (c / 2) * t * t + b;
-  t--;
-  return (-c / 2) * (t * (t - 2) - 1) + b;
-};
-// const easeInOutSine = (t, b, c) => {
-// 	return -c / 2 * (Math.cos(Math.PI * t / easingDuration) - 1) + b;
-// };
 const customEase = bezier(0.08, 0.9, 0.83, 1.08);
 
 export default class RenderTexture {
-  constructor(parent, falloff = true) {
-    this.parent = parent;
+  constructor(falloff = true, id = "touchTexture") {
     this.size = 64;
     this.maxAge = 40;
     this.agingRate = 0.25;
     this.radius = 0.15 * 3;
     this.trail = [];
     this.falloff = falloff;
+    this.id = id;
 
     this.initTexture();
   }
 
   initTexture() {
     this.canvas = document.createElement("canvas");
+    document.body.appendChild(this.canvas);
+    this.canvas.id = this.id;
     this.canvas.width = this.canvas.height = this.size;
     this.ctx = this.canvas.getContext("2d");
     this.ctx.fillStyle = "black";
@@ -39,12 +27,11 @@ export default class RenderTexture {
 
     this.texture = new THREE.Texture(this.canvas);
 
-    this.canvas.id = "touchTexture";
     this.canvas.style.width =
       this.canvas.style.height = `${this.canvas.width}px`;
   }
 
-  update(delta) {
+  update() {
     if (this.falloff) this.clear();
 
     // age points
@@ -54,10 +41,6 @@ export default class RenderTexture {
       // remove old
       if (point.age > this.maxAge) {
         this.trail.splice(i, 1);
-      } else if (point.age < this.maxAge / 3) {
-        // point.age += this.agingRate;
-      } else {
-        // point.age += this.agingRate / 3;
       }
     });
 
@@ -82,6 +65,8 @@ export default class RenderTexture {
       const dd = dx * dx + dy * dy;
       force = Math.min(dd * 10000, 1);
     }
+    if (!this.falloff) force = 1;
+    console.log(force);
     this.trail.push({ x: point.x, y: point.y, age: 0, force });
   }
 
@@ -123,7 +108,8 @@ export default class RenderTexture {
       this.ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
       this.ctx.fill();
     } else {
-      let radius = 1;
+      console.log("here");
+      let radius = 5;
 
       this.ctx.beginPath();
       this.ctx.fillStyle = "white";

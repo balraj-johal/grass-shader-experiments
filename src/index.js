@@ -13,6 +13,7 @@ import Ground from "./Ground";
 import InteractionBox from "./Ground/InteractionBox";
 import Grass from "./Grass";
 import Plants from "./Plants";
+import Rain from "./Rain";
 
 import { degreesToRads, mapUVToWorld } from "./utils/assorted";
 import {
@@ -31,7 +32,7 @@ const InteractionState = {
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
-  interactionState: InteractionState.Planting,
+  interactionState: InteractionState.Watering,
   touchTracker: null,
 };
 
@@ -114,7 +115,7 @@ const _checkInteraction = (intersects) => {
     case InteractionState.Watering:
       for (let i = 0; i < intersects.length; i++) {
         if (intersects[i].object.name === "Intersector") {
-          if (!state.clicked) return;
+          // if (!state.clicked) return;
           const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
           state.wateringTracker.drawTouch(uvCoords, false);
         }
@@ -132,7 +133,7 @@ const sketch = async ({ context }) => {
   const { scene, renderer, camera, controls } = _setupScene(context);
   const { touchTracker, raycaster, pointer } = _setupTouchTracker();
   state.touchTracker = touchTracker;
-  state.wateringTracker = new RenderTexture();
+  state.wateringTracker = new RenderTexture(false, "wateringTexture");
 
   _setupLighting(scene);
 
@@ -143,17 +144,26 @@ const sketch = async ({ context }) => {
   const skybox = new Skybox();
   skybox.getMesh().then((mesh) => scene.add(mesh));
 
-  const ground = new Ground({ noiseTex, touchTex: touchTracker.texture });
+  const ground = new Ground({
+    noiseTex,
+    touchTex: state.wateringTracker.texture,
+  });
   ground.getMesh().then((mesh) => scene.add(mesh));
 
   const interactionBox = new InteractionBox();
   interactionBox.getMesh().then((mesh) => scene.add(mesh));
 
-  const grass = new Grass({ noiseTex, touchTex: touchTracker.texture });
+  const grass = new Grass({
+    noiseTex,
+    touchTex: state.wateringTracker.texture,
+  });
   grass.getMesh().then((mesh) => scene.add(mesh));
 
   const plants = new Plants();
   plants.getAll().then((root) => scene.add(root));
+
+  const rain = new Rain({ count: 100 });
+  rain.getMesh().then((mesh) => scene.add(mesh));
 
   return {
     resize({ pixelRatio, viewportWidth, viewportHeight }) {
