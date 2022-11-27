@@ -14,6 +14,7 @@ import InteractionBox from "./Ground/InteractionBox";
 import Grass from "./Grass";
 import Plants from "./Plants";
 import Rain from "./Rain";
+import Dust from "./Dust";
 
 import { degreesToRads, mapUVToWorld } from "./utils/assorted";
 import { getSavedPlants, updateLastAction, savePlant } from "./utils/plants";
@@ -177,6 +178,12 @@ const sketch = async ({ context }) => {
     waterTex: state.wateringTracker.texture,
   });
   rain.getMesh().then((mesh) => scene.add(mesh));
+
+  const dust = new Dust({
+    count: 150,
+    waterTex: state.wateringTracker.texture,
+  });
+  dust.getPoints().then((points) => scene.add(points));
 
   return {
     resize({ pixelRatio, viewportWidth, viewportHeight }) {
