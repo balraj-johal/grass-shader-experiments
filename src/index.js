@@ -186,15 +186,20 @@ const sketch = async ({ context }) => {
     },
 
     render({ time }) {
+      // update animated objects
       grass.updateTime(time);
       rain.updateTime(time);
 
+      // handle raycast interactions
       raycaster.setFromCamera(pointer, camera);
       _checkInteraction(raycaster.intersectObjects(scene.children));
       state.clicked = false;
 
+      // update interaction canvases
       state.wateringTracker.update();
       touchTracker.update();
+
+      // general
       controls.update();
       stats.update();
       renderer.render(scene, camera);
@@ -207,6 +212,7 @@ const sketch = async ({ context }) => {
   };
 };
 
+// launch app
 canvasSketch(sketch, {
   animate: true,
   context: "webgl",
