@@ -175,6 +175,7 @@ const sketch = async ({ context }) => {
 
     render({ time }) {
       grass.updateTime(time);
+      rain.updateTime(time);
 
       raycaster.setFromCamera(pointer, camera);
       _checkInteraction(raycaster.intersectObjects(scene.children));

@@ -3,24 +3,18 @@ attribute vec3 scale;
 attribute vec3 offset;
 attribute float angle;
 attribute float color;
-attribute vec2 clumpDistance;
-attribute float clumpHeightAddition;
 
 uniform float time;
 uniform sampler2D noiseTex;
 uniform sampler2D touchTex;
 uniform float count;
-uniform mat4 u_world;
 
 varying vec3 vCameraPosition;
 varying vec3 vViewDirection;
 varying vec2 vUv;
 varying vec3 vGroundPosition;
-varying float vClumpDistance;
 varying vec3 vNormal;
 varying float vColor;
-
-const vec2 forwardVector = vec2(0.0, 1.0);
 
 #define PI 3.1415926
 
@@ -158,6 +152,11 @@ void main () {
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
+
+  float rainHeight = 2.0;
+  float rainSpeed = 2.0;
+  float animatedY = mod(time * rainSpeed, rainHeight);
+  transformed.y -= animatedY;
 
   // -- ensure grass y position matches the displaced ground position
   /* 
