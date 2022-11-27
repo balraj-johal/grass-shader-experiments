@@ -8,12 +8,14 @@ const GRASS_COUNT = 20000;
 export default class Grass extends THREE.Object3D {
   noiseTex;
   touchTex;
+  waterTex;
 
   constructor(params) {
     super();
 
     this.noiseTex = params.noiseTex;
     this.touchTex = params.touchTex;
+    this.waterTex = params.waterTex;
   }
 
   updateTime(time) {
@@ -42,6 +44,7 @@ export default class Grass extends THREE.Object3D {
               time: { value: 0 },
               noiseTex: { value: this.noiseTex },
               touchTex: { value: this.touchTex },
+              waterTex: { value: this.waterTex },
             },
           ]);
 

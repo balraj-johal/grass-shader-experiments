@@ -9,6 +9,7 @@ attribute float clumpHeightAddition;
 uniform float time;
 uniform sampler2D noiseTex;
 uniform sampler2D touchTex;
+uniform sampler2D waterTex;
 uniform float count;
 uniform mat4 u_world;
 
@@ -19,6 +20,7 @@ varying vec3 vGroundPosition;
 varying float vClumpDistance;
 varying vec3 vNormal;
 varying float vColor;
+varying float vRain;
 
 const vec2 forwardVector = vec2(0.0, 1.0);
 
@@ -193,8 +195,11 @@ void main () {
     then divide by AREA_SIZE to get back to 0-1 
   */
   vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
-  float groundYOffset = texture2D(noiseTex, mappedToGroundUV.xz).z * 1.0;
+  float groundYOffset = texture2D(noiseTex, mappedToGroundUV.xz).z;
   transformed.y += groundYOffset;
+
+  // -- check if blade has been rained on
+  float rain = texture2D(waterTex, mappedToGroundUV.xz).z;
 
   // -- generate first wind displacement
   vec3 totalDisplacement = vec3(0.0);
@@ -243,13 +248,12 @@ void main () {
   // -- finalise position
   gl_Position = projectionMatrix * mvPosition;
 
-  // pass blade position to the fragment shader using a varying
+  // pass varyings to fragment shader
   vGroundPosition = transformed;
-  // vNormal = normal;
   vNormal = rotatedNormal;
-  // vNormal *= mat3(u_world);
   vViewDirection = normalize(cameraPosition.xyz - transformed.xyz);
   vCameraPosition = normalize(cameraPosition.xyz - transformed.xyz);
+  vRain = rain;
   vUv = uv;
   vColor = color;
   vClumpDistance = distanceToClump;

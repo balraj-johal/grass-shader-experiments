@@ -165,6 +165,7 @@ const sketch = async ({ context }) => {
   const grass = new Grass({
     noiseTex,
     touchTex: touchTracker.texture,
+    waterTex: state.wateringTracker.texture,
   });
   grass.getMesh().then((mesh) => scene.add(mesh));
 
