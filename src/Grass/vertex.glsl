@@ -154,6 +154,7 @@ float getVectorMagnitude(vec2 vector) {
 void main () {
   // -- apply scale
   vec3 scaled = position * scale;
+  vec3 newNormal = normal * scale;
 
   // -- apply clump influence on blade height
   float distanceToClump = getVectorMagnitude(clumpDistance);
@@ -166,14 +167,17 @@ void main () {
     normalisedDistanceFromClump = clamp(normalisedDistanceFromClump, 0.0, 0.4);
     float clumpHeightInfluence = clumpHeightAddition * normalisedDistanceFromClump;
     scaled.y *= 1.0 + clumpHeightInfluence;
+    newNormal.y *= 1.0 + clumpHeightInfluence;
   } 
 
   // -- apply y rotation
   vec3 rotated = applyRotationTransform(scaled, vec2(0.0, angle));
-  vec3 rotatedNormal = applyRotationTransform(normal, vec2(0.0, angle));
+  newNormal = applyRotationTransform(newNormal, vec2(0.0, angle));
 
   // -- apply z/y/z offset
   vec3 transformed = rotated + offset;
+  newNormal = newNormal + offset;
+
   
   // -- get initial distance of each vertex to the blade's root
   vec3 initialRoot = transformed;
@@ -250,11 +254,13 @@ void main () {
 
   // pass varyings to fragment shader
   vGroundPosition = transformed;
-  vNormal = rotatedNormal;
   vViewDirection = normalize(cameraPosition.xyz - transformed.xyz);
   vCameraPosition = normalize(cameraPosition.xyz - transformed.xyz);
   vRain = rain;
   vUv = uv;
   vColor = color;
   vClumpDistance = distanceToClump;
+  vNormal = normalize(normal * scale);
+  vNormal = applyRotationTransform(vNormal, vec2(0.0, angle));
+  vNormal = normalize(vNormal);
 }

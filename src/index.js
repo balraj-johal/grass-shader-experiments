@@ -178,7 +178,7 @@ const sketch = async ({ context }) => {
     count: 150,
     waterTex: state.wateringTracker.texture,
   });
-  rain.getMesh().then((mesh) => scene.add(mesh));
+  // rain.getMesh().then((mesh) => scene.add(mesh));
 
   // const dust = new Dust({
   //   count: 150,

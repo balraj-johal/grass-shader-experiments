@@ -24,7 +24,7 @@ void main () {
   );
   vec3 gradientColor = mix(baseColor, tipColor, vUv.y);
 
-  mediump vec3 lightVector = vec3(10.5, 10.2, 11.0);
+  mediump vec3 lightVector = vec3(10.5, 15.2, 10.0);
 
   // ensure it's normalized
   lightVector = normalize(lightVector);
@@ -32,8 +32,8 @@ void main () {
 
   // calculate the dot product of the lightVector to the vertex normal
   mediump vec3 lightContribution = vec3(0.0);
-  float ambientLightContribution = 0.0;
-  lightContribution += ambientLightContribution;
+  // float ambientLightContribution = 0.5;
+  // lightContribution += ambientLightContribution;
   mediump float directionalLightContribution = max(0.0, dot(normal, lightVector));
   lightContribution += directionalLightContribution;
 
@@ -49,13 +49,14 @@ void main () {
   // -- apply base gradient colors
   gl_FragColor = vec4(gradientColor, 1.0);
   // -- apply random desaturation
-  gl_FragColor -= vColor / 3.0;
-  // -- apply clump influence
-  // gl_FragColor.rgb *= clamp(lightContribution, 0.0, 1.0);
+  // gl_FragColor -= vColor / 3.0;
+  // -- apply light influence
+  gl_FragColor.rgb *= clamp(lightContribution, 0.0, 1.0);
 
-  if (vRain > 0.0) {
-    gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.0), 0.3 );
-  }
+  // if (vRain > 0.0) {
+  //   gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.0), 0.3 );
+  // }
   
   gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
+  gl_FragColor = clamp(vec4(normal, 1.0), 0.0, 1.0);
 }
