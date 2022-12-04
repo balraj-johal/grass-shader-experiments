@@ -135,6 +135,7 @@ const refreshStorage = () => {
 };
 
 const sketch = async ({ context }) => {
+  if (isNewDay()) refreshStorage();
   // -- setup
   const textureLoader = new THREE.TextureLoader();
   const noiseTex = textureLoader.load("./textures/noiseTexture.png");
@@ -144,7 +145,6 @@ const sketch = async ({ context }) => {
   state.touchTracker = touchTracker;
   state.wateringTracker = new RenderTexture(false, "wateringTexture");
 
-  if (isNewDay()) refreshStorage();
 
   _setupLighting(scene);
 
