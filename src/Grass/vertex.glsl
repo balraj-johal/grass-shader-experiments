@@ -232,8 +232,8 @@ void main () {
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale);
 
-  float randomFactor = 1.0 + (sin(time * 2.0 + (ref * 10.0)) / 2.0);
-  transformed.xz += totalDisplacement.xz * yInfluence * randomFactor;
+  float perBladeRando = 1.0 + (sin(time * 2.0 + (ref * 10.0)) / 2.0);
+  transformed.xz += totalDisplacement.xz * yInfluence * perBladeRando;
 
   // -- calculate displaced vertex's distance to blade root
   vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
