@@ -29,7 +29,7 @@ const InteractionState = {
 const state = {
   clicked: false,
   savedPlants: getSavedPlants(),
-  interactionState: InteractionState.Watering,
+  interactionState: InteractionState.None,
   touchTracker: null,
   wateringTracker: null,
 };
@@ -145,6 +145,16 @@ const sketch = async ({ context }) => {
   state.touchTracker = touchTracker;
   state.wateringTracker = new RenderTexture(false, "wateringTexture");
 
+  document.addEventListener('keyup', (event) => {
+    const keyName = event.key;
+    if (keyName === 'p') {
+      wwwwppstate.interactionState = InteractionState.Planting;
+      console.log("Planting");
+    } else if (keyName === 'w') {
+      wwwwppstate.interactionState = InteractionState.Watering;
+      console.log("Watering");
+    }
+  }, false);
 
   _setupLighting(scene);
 
