@@ -21,6 +21,7 @@ varying float vClumpDistance;
 varying vec3 vNormal;
 varying float vColor;
 varying float vRain;
+varying float vDebug;
 
 const vec2 forwardVector = vec2(0.0, 1.0);
 
@@ -207,8 +208,12 @@ void main () {
   float noiseTimeScale = 0.15;
   float windPower = 0.5;
   float scrollByTime = time * noiseTimeScale;
-  float primaryWindDirection = 45.0;
+  float primaryWindDirection = 45.0; // in degrees away from forwards
   vec2 windVector = rotate2d(primaryWindDirection * PI / 180.0) * forwardVector;
+
+  // -- get dot product of angle and wind vector
+  vec2 angleVector = rotate2d(angle * PI / 180.0) * forwardVector;
+  float amountFacingWind = abs(dot(windVector, angleVector));
 
   // -- apply first wind displacement
   totalDisplacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
@@ -231,12 +236,14 @@ void main () {
   // -- apply total displacement - primarily to uv top, none to bottom
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale) * 0.75;
-  transformed.xz += totalDisplacement.xz * yInfluence;
+  // transformed.xz += totalDisplacement.xz * yInfluence;
 
   // -- apply per blade sin based displacement
   float perBladeRando = (sin(time * 1.5 + ref) * uv.y) / 9.0 * length(normalize(totalDisplacement));
-  transformed.xz += perBladeRando;
+  // transformed.xz += perBladeRando;
   // transformed.xz += clamp(perBladeRando, 0.0, 1.0);
+
+  // transformed.xz *= amountFacingWind;
 
   // -- calculate displaced vertex's distance to blade root
   vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
@@ -262,4 +269,5 @@ void main () {
   vUv = uv;
   vColor = color;
   vClumpDistance = distanceToClump;
+  vDebug = clamp(amountFacingWind, 0.011, 1.0);
 }

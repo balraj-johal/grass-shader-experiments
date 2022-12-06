@@ -6,6 +6,7 @@ varying vec3 vNormal;
 varying float vColor;
 varying float vRain;
 varying float vClumpDistance;
+varying float vDebug;
 
 uniform sampler2D touchTex;
 
@@ -58,4 +59,7 @@ void main () {
   }
   
   gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
+  if (vDebug > 0.01) {
+    gl_FragColor = vec4(vec3(vDebug), 1.0);
+  }
 }
