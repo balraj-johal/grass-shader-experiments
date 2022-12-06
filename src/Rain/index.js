@@ -14,12 +14,12 @@ export default class Rain extends THREE.Object3D {
   constructor(params) {
     super();
 
-    this.size = 0.1;
+    this.size = 0.01;
     this.height = 0.5;
     this.count = params.count;
     this.waterTex = params.waterTex;
   }
-
+w
   updateTime(time) {
     if (!this.material) return;
     this.material.uniforms.time.value = time;
@@ -34,7 +34,7 @@ export default class Rain extends THREE.Object3D {
           this.size
         );
         const geometry = new RainGeometry({
-          count: 200,
+          count: this.count,
           geometry: baseGeometry,
         });
         this.material = new THREE.ShaderMaterial({

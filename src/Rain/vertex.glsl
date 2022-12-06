@@ -160,6 +160,14 @@ void main () {
   float animatedY = mod((time * rainSpeed) + timeOffset, rainHeight);
   transformed.y -= animatedY;
 
+  // -- animate at angle w.r.t wind speed
+  vec2 forwardVector = vec2(0.0, 1.0);
+  float primaryWindDirection = 45.0;
+  vec2 windVector = rotate2d(primaryWindDirection * PI / 180.0) * forwardVector;
+  float angleFactor = 0.2;
+  // transformed.xz += windVector * (1.0 - uv.y) * angleFactor;
+  // transformed.xz += animatedY * angleFactor;
+
 
   // -- ensure grass y position matches the displaced ground position
   /* 

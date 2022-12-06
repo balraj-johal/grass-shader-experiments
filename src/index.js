@@ -148,10 +148,10 @@ const sketch = async ({ context }) => {
   document.addEventListener('keyup', (event) => {
     const keyName = event.key;
     if (keyName === 'p') {
-      wwwwppstate.interactionState = InteractionState.Planting;
+      state.interactionState = InteractionState.Planting;
       console.log("Planting");
     } else if (keyName === 'w') {
-      wwwwppstate.interactionState = InteractionState.Watering;
+      state.interactionState = InteractionState.Watering;
       console.log("Watering");
     }
   }, false);
@@ -185,7 +185,7 @@ const sketch = async ({ context }) => {
   plants.getAll().then((root) => scene.add(root));
 
   const rain = new Rain({
-    count: 150,
+    count: 2000,
     waterTex: state.wateringTracker.texture,
   });
   rain.getMesh().then((mesh) => scene.add(mesh));
