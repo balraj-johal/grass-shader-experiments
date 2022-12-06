@@ -185,7 +185,7 @@ const sketch = async ({ context }) => {
   plants.getAll().then((root) => scene.add(root));
 
   const rain = new Rain({
-    count: 2000,
+    count: 1200,
     waterTex: state.wateringTracker.texture,
   });
   rain.getMesh().then((mesh) => scene.add(mesh));
