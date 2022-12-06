@@ -232,6 +232,8 @@ void main () {
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale) * 0.75;
   transformed.xz += totalDisplacement.xz * yInfluence;
+
+  // -- apply per blade sin based displacement
   float perBladeRando = (sin(time * 1.5 + ref) * uv.y) / 9.0 * length(normalize(totalDisplacement));
   transformed.xz += perBladeRando;
   // transformed.xz += clamp(perBladeRando, 0.0, 1.0);
