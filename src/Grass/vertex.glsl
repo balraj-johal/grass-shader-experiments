@@ -232,7 +232,7 @@ void main () {
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale);
 
-  float perBladeRando = 1.0 + (sin(time * 1.5 + (ref * 10.0)) / 2.0);
+  float perBladeRando = 0.5 + (sin(time * 1.5 + (ref)) / 2.0);
   transformed.xz += totalDisplacement.xz * yInfluence * perBladeRando;
 
   // -- calculate displaced vertex's distance to blade root
