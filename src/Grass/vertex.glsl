@@ -230,10 +230,10 @@ void main () {
 
   // -- apply total displacement - primarily to uv top, none to bottom
   float bendScale = 2.0;
-  float yInfluence = pow(uv.y, bendScale);
-
-  float perBladeRando = 0.5 + (sin(time * 1.5 + (ref)) / 2.0);
-  transformed.xz += totalDisplacement.xz * yInfluence * perBladeRando;
+  float yInfluence = pow(uv.y, bendScale) * 0.5;
+  float perBladeRando = (sin(time * 1.5 + ref) * uv.y) / 10.0 * length(normalize(totalDisplacement));
+  transformed.xz += totalDisplacement.xz * yInfluence;
+  transformed.xz += clamp(perBladeRando, 0.0, 1.0);
 
   // -- calculate displaced vertex's distance to blade root
   vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
