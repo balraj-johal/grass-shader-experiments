@@ -27,7 +27,7 @@ export default class Grass extends THREE.Object3D {
     return new Promise((resolve, reject) => {
       try {
         const gltfLoader = new THREE.GLTFLoader();
-        gltfLoader.load(__dirname + "/GrassBladeBentMore.glb", (gltf) => {
+        gltfLoader.load(__dirname + "/GrassBladeBent.glb", (gltf) => {
           const geometry = new GrassGeometry({
             grassCount: GRASS_COUNT,
             geometry: gltf.scene.children[0].geometry,
