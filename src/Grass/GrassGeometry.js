@@ -10,7 +10,7 @@ import { getDistanceVector, getVectorMagnitude } from "../utils/vector";
 import { roundDownToNearestMultiple } from "../utils/assorted";
 
 const AREA_SIZE = 20;
-const CLUMP_DENSITY = 0.1; //per unit of area
+const CLUMP_DENSITY = 0.2; //per unit of area
 const TILE_SIZE = AREA_SIZE / (AREA_SIZE * CLUMP_DENSITY);
 const tileMap = {};
 
@@ -125,10 +125,10 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
     }
 
     // apply randomness to each instance
-    const MIN_HEIGHT = 1.2;
-    const HEIGHT_RANGE_FACTOR = 0.9;
-    const MIN_WIDTH = 3.5;
-    const WIDTH_RANGE_FACTOR = 1.2;
+    const MIN_HEIGHT = 0.6;
+    const HEIGHT_RANGE_FACTOR = 1.9;
+    const MIN_WIDTH = 3.2;
+    const WIDTH_RANGE_FACTOR = 1.8;
     for (let i = 0; i < GRASS_COUNT; i++) {
       refs.push(i);
       // scaling
@@ -136,7 +136,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
       scales.push(MIN_HEIGHT + rand.generate() * HEIGHT_RANGE_FACTOR);
       scales.push(MIN_WIDTH + rand.generate() * WIDTH_RANGE_FACTOR);
       // rotation
-      angles.push(140 * rand.generate() - 270);
+      angles.push(100 * rand.generate() - 270);
       // position
       const positions = {
         x: rand.generate() * AREA_SIZE - AREA_SIZE / 2,

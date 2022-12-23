@@ -185,16 +185,6 @@ void main () {
   // transformed.xz -= clumpDistance;
 
   // -- ensure grass y position matches the displaced ground position
-  /* 
-    ok this is some real dodgy stuff
-    as I'm sampling from the noise texture using the ground mesh's UV's
-    I need to make the instanced grass blade's locations map to the ground's UV
-
-    this should be fixed to have them both sample from world space coords but...
-
-    so right now I add half the AREA_SIZE to map from 0-AREA_SIZE, 
-    then divide by AREA_SIZE to get back to 0-1 
-  */
   vec3 mappedToGroundUV = (transformed.xyz + vec3(10.0)) / 20.0;
   float groundYOffset = texture2D(noiseTex, mappedToGroundUV.xz).z;
   transformed.y += groundYOffset;
@@ -206,7 +196,7 @@ void main () {
   vec3 totalDisplacement = vec3(0.0);
   float noiseScale = 0.045;
   float noiseTimeScale = 0.15;
-  float windPower = 0.5;
+  float windPower = 0.235;
   float scrollByTime = time * noiseTimeScale;
   float primaryWindDirection = 45.0; // in degrees away from forwards
   vec2 windVector = rotate2d(primaryWindDirection * PI / 180.0) * forwardVector;
@@ -214,6 +204,7 @@ void main () {
   // -- get dot product of angle and wind vector
   vec2 angleVector = rotate2d(angle * PI / 180.0) * forwardVector;
   float amountFacingWind = abs(dot(windVector, angleVector));
+  amountFacingWind = clamp(amountFacingWind, 0.85, 1.0);
 
   // -- apply first wind displacement
   totalDisplacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
@@ -232,18 +223,21 @@ void main () {
   vec3 totalTouchDisplacement = vec3(xTouchDisplacement, 0.0, zTouchDisplacement);
   totalTouchDisplacement *= touchInfluencePower;
   totalDisplacement += totalTouchDisplacement;
+  
+  totalDisplacement *= amountFacingWind;
 
   // -- apply total displacement - primarily to uv top, none to bottom
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale) * 0.75;
   transformed.xz += totalDisplacement.xz * yInfluence;
 
-  // -- apply per blade sin based displacement
-  float perBladeRando = (sin(time * 1.5 + ref) * uv.y) / 9.0 * length(normalize(totalDisplacement));
-  transformed.xz += perBladeRando;
-  // transformed.xz += clamp(perBladeRando, 0.0, 1.0);
+  // totalDisplacement = vec3(0.0);
 
-  // transformed.xz *= amountFacingWind;
+  float perBladeSinSpeed = 1.5;
+  float perBladeSinPower = 1.0 / 5.0;
+  // -- apply per blade sin based displacement
+  float perBladeSin = (sin(time * perBladeSinSpeed + ref) * length(totalDisplacement) * perBladeSinPower);
+  transformed.xz += perBladeSin * yInfluence;
 
   // -- calculate displaced vertex's distance to blade root
   vec3 newToRoot = transformed.xyz - vec3(initialRoot.x, groundYOffset, initialRoot.z);
