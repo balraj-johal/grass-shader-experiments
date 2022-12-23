@@ -236,11 +236,11 @@ void main () {
   // -- apply total displacement - primarily to uv top, none to bottom
   float bendScale = 2.0;
   float yInfluence = pow(uv.y, bendScale) * 0.75;
-  // transformed.xz += totalDisplacement.xz * yInfluence;
+  transformed.xz += totalDisplacement.xz * yInfluence;
 
   // -- apply per blade sin based displacement
   float perBladeRando = (sin(time * 1.5 + ref) * uv.y) / 9.0 * length(normalize(totalDisplacement));
-  // transformed.xz += perBladeRando;
+  transformed.xz += perBladeRando;
   // transformed.xz += clamp(perBladeRando, 0.0, 1.0);
 
   // transformed.xz *= amountFacingWind;
@@ -269,5 +269,5 @@ void main () {
   vUv = uv;
   vColor = color;
   vClumpDistance = distanceToClump;
-  vDebug = clamp(amountFacingWind, 0.011, 1.0);
+  // vDebug = clamp(amountFacingWind, 0.011, 1.0);
 }
