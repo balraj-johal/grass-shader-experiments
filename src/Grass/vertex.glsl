@@ -195,8 +195,8 @@ void main () {
   // -- generate first wind displacement
   vec3 totalDisplacement = vec3(0.0);
   float noiseScale = 0.045;
-  float noiseTimeScale = 0.15;
-  float windPower = 0.235;
+  float noiseTimeScale = 0.275;
+  float windPower = 0.35;
   float scrollByTime = time * noiseTimeScale;
   float primaryWindDirection = 45.0; // in degrees away from forwards
   vec2 windVector = rotate2d(primaryWindDirection * PI / 180.0) * forwardVector;
@@ -204,7 +204,7 @@ void main () {
   // -- get dot product of angle and wind vector
   vec2 angleVector = rotate2d(angle * PI / 180.0) * forwardVector;
   float amountFacingWind = abs(dot(windVector, angleVector));
-  amountFacingWind = clamp(amountFacingWind, 0.85, 1.0);
+  amountFacingWind = clamp(amountFacingWind, 0.75, 1.0);
 
   // -- apply first wind displacement
   totalDisplacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
