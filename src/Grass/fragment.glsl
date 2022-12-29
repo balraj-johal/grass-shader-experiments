@@ -11,7 +11,7 @@ varying float vDebug;
 uniform sampler2D touchTex;
 
 void main () {
-  float clumpColorInfluence = clamp(vClumpDistance / 12.0, 0.0, 1.0);
+  float clumpColorInfluence = clamp(vClumpDistance / 9.5, 0.0, 1.0);
 
   vec3 baseColor = mix(
     vec3(0.192, 0.431, 0.216), //healthy
