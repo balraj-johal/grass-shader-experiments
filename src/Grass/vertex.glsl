@@ -196,9 +196,9 @@ void main () {
   vec3 totalDisplacement = vec3(0.0);
   float noiseScale = 0.045;
   float noiseTimeScale = 0.275;
-  float windPower = 0.35;
+  float windPower = 0.45;
   float scrollByTime = time * noiseTimeScale;
-  float primaryWindDirection = 45.0; // in degrees away from forwards
+  float primaryWindDirection = 35.0; // in degrees away from forwards
   vec2 windVector = rotate2d(primaryWindDirection * PI / 180.0) * forwardVector;
 
   // -- get dot product of angle and wind vector
@@ -207,8 +207,8 @@ void main () {
   amountFacingWind = clamp(amountFacingWind, 0.75, 1.0);
 
   // -- apply first wind displacement
-  totalDisplacement.xz = vec2(snoise(transformed.xz * noiseScale + scrollByTime)) * windVector;
-  totalDisplacement += 0.5; // ensure wind only pushes forwards
+  totalDisplacement.xz = vec2(snoise(transformed.xz * noiseScale - scrollByTime)) * windVector;
+  totalDisplacement += 0.35; // ensure wind only pushes forwards
   totalDisplacement *= windPower;
   totalDisplacement *= scale.y; // Make displacement proportional to height
 

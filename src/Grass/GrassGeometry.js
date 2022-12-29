@@ -114,7 +114,7 @@ export default class GrassGeometry extends THREE.InstancedBufferGeometry {
               x: jitterPoint(initialClumpPoint.x, TILE_SIZE),
               z: jitterPoint(initialClumpPoint.z, TILE_SIZE),
             },
-            heightAddition: rand.generate() + 0.75 * 1.5,
+            heightAddition: rand.generate() + 0.25 * 2.5,
             colorInfluence: 0x000000,
           },
           id: `${worldCoords.x}.${worldCoords.z}`,
