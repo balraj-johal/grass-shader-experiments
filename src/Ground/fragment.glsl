@@ -14,6 +14,7 @@ void main () {
 
   // // show touch tex
   color = mix(color, touchTex, 0.5);
+  vec3 colorPink = vec3(0.882,0.635,0.631);
 
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = vec4(colorPink, 1.0);
 }

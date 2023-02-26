@@ -13,16 +13,18 @@ uniform sampler2D touchTex;
 void main () {
   float clumpColorInfluence = clamp(vClumpDistance / 9.5, 0.0, 1.0);
 
-  vec3 baseColor = mix(
-    vec3(0.192, 0.431, 0.216), //healthy
-    vec3(0.74, 0.65, 0.35), //dry
-    clumpColorInfluence
-  );
-  vec3 tipColor = mix(
-    vec3(0.296, 0.665, 0.333), //healthy
-    vec3(1.00, 0.90, 0.57), //dry
-    clumpColorInfluence
-  );
+  vec3 baseColor = vec3(0.882,0.635,0.631);
+  vec3 tipColor = vec3(0.984, 0.706, 0.702);
+  // vec3 baseColor = mix(
+  //   vec3(0.192, 0.431, 0.216), //healthy
+  //   vec3(0.74, 0.65, 0.35), //dry
+  //   clumpColorInfluence
+  // );
+  // vec3 tipColor = mix(
+  //   vec3(0.296, 0.665, 0.333), //healthy
+  //   vec3(1.00, 0.90, 0.57), //dry
+  //   clumpColorInfluence
+  // );
   vec3 gradientColor = mix(baseColor, tipColor, vUv.y);
 
   mediump vec3 lightVector = vec3(10.5, 10.2, 11.0);

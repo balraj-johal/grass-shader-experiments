@@ -18,7 +18,6 @@ export default class RenderTexture {
 
   initTexture() {
     this.canvas = document.createElement("canvas");
-    document.body.appendChild(this.canvas);
     this.canvas.id = this.id;
     this.canvas.width = this.canvas.height = this.size;
     this.ctx = this.canvas.getContext("2d");

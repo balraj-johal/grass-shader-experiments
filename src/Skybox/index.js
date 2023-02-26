@@ -16,8 +16,8 @@ export default class Skybox extends THREE.Object3D {
           const skyboxGeom = gltf.scene.children[0].geometry;
           const skyboxMat = new THREE.ShaderMaterial({
             uniforms: {
-              topColor: { value: new THREE.Color(0xdef3ef) },
-              baseColor: { value: new THREE.Color(0xafc6c1) },
+              topColor: { value: new THREE.Color(0xfde9e5) },
+              baseColor: { value: new THREE.Color(0xfde9e5) },
             },
             vertexShader: vert,
             fragmentShader: frag,
