@@ -12,9 +12,9 @@ import Skybox from "./Skybox";
 import Ground from "./Ground";
 import InteractionBox from "./Ground/InteractionBox";
 import Grass from "./Grass";
+import Tree from "./Tree";
 import Plants from "./Plants";
 import Rain from "./Rain";
-import Dust from "./Dust";
 
 import { degreesToRads, mapUVToWorld } from "./utils/assorted";
 import { getSavedPlants, updateLastAction, savePlant } from "./utils/plants";
@@ -173,6 +173,9 @@ const sketch = async ({ context }) => {
 
   const interactionBox = new InteractionBox();
   interactionBox.getMesh().then((mesh) => scene.add(mesh));
+
+  const tree = new Tree();
+  tree.getMesh().then((mesh) => scene.add(mesh));
 
   const grass = new Grass({
     noiseTex,
