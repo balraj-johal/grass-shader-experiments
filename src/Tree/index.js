@@ -3,7 +3,7 @@ import vert from "./vertex.glsl";
 
 import * as THREE from "three";
 
-export default class Skybox extends THREE.Object3D {
+export default class Tree extends THREE.Object3D {
   constructor() {
     super();
   }

@@ -19,6 +19,7 @@ import Rain from "./Rain";
 import { degreesToRads, mapUVToWorld } from "./utils/assorted";
 import { getSavedPlants, updateLastAction, savePlant } from "./utils/plants";
 import { isNewDay } from "./utils/date";
+import Cat from "./Cat";
 
 const InteractionState = {
   None: "None",
@@ -184,8 +185,11 @@ const sketch = async ({ context }) => {
   });
   grass.getMesh().then((mesh) => scene.add(mesh));
 
-  const plants = new Plants();
-  plants.getAll().then((root) => scene.add(root));
+  // const plants = new Plants();
+  // plants.getAll().then((root) => scene.add(root));
+  
+  const cat = new Cat();
+  cat.getMesh().then((mesh) => scene.add(mesh));
 
   const rain = new Rain({
     count: 1200,
@@ -211,7 +215,7 @@ const sketch = async ({ context }) => {
       // update animated objects
       grass.updateTime(time);
       rain.updateTime(time);
-      plants.updateTime(time);
+      // plants.updateTime(time);
 
       // handle raycast interactions
       raycaster.setFromCamera(pointer, camera);
