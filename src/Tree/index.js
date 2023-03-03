@@ -21,15 +21,15 @@ export default class Tree extends THREE.Object3D {
           const treetopMat = new THREE.ShaderMaterial({
             uniforms: {
               lightDirection: { value: new THREE.Vector3(15, 15, 15) },
-              colors: { 
+              colors: {
                 value: [
-                  new THREE.Color('#d1654f').convertLinearToSRGB(),
-                  new THREE.Color('#e8b0af').convertLinearToSRGB(),
-                  new THREE.Color('#eed0bd').convertLinearToSRGB(),
-                  new THREE.Color('#ffffff').convertLinearToSRGB(),
-                ] 
+                  new THREE.Color("#d1654f").convertLinearToSRGB(),
+                  new THREE.Color("#e8b0af").convertLinearToSRGB(),
+                  new THREE.Color("#eed0bd").convertLinearToSRGB(),
+                  new THREE.Color("#ffffff").convertLinearToSRGB(),
+                ],
               },
-              thresholds: { value: [0.2, 0.925, 1] }
+              thresholds: { value: [0.2, 0.925, 1] },
             },
             vertexShader: vert,
             fragmentShader: frag,
@@ -40,15 +40,15 @@ export default class Tree extends THREE.Object3D {
           const trunkMat = new THREE.ShaderMaterial({
             uniforms: {
               lightDirection: { value: new THREE.Vector3(15, 15, 15) },
-              colors: { 
+              colors: {
                 value: [
-                  new THREE.Color('#d1654f').convertLinearToSRGB(),
-                  new THREE.Color('#e8b0af').convertLinearToSRGB(),
-                  new THREE.Color('#eed0bd').convertLinearToSRGB(),
-                  new THREE.Color('#ffffff').convertLinearToSRGB(),
-                ] 
+                  new THREE.Color("#d1654f").convertLinearToSRGB(),
+                  new THREE.Color("#e8b0af").convertLinearToSRGB(),
+                  new THREE.Color("#eed0bd").convertLinearToSRGB(),
+                  new THREE.Color("#ffffff").convertLinearToSRGB(),
+                ],
               },
-              thresholds: { value: [0.2, 0.925, 1] }
+              thresholds: { value: [0.2, 0.925, 1] },
             },
             vertexShader: vert,
             fragmentShader: frag,
@@ -57,6 +57,8 @@ export default class Tree extends THREE.Object3D {
           treeRoot.add(Trunk);
           treeRoot.add(Treetop0);
           treeRoot.add(Treetop1);
+          treeRoot.scale.set(2, 2, 2);
+          treeRoot.position.set(-8, 0, -8);
           resolve(treeRoot);
         });
       } catch (error) {

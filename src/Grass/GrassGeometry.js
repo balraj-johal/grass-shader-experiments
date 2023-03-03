@@ -9,7 +9,7 @@ require("three/examples/js/loaders/GLTFLoader.js");
 import { getDistanceVector, getVectorMagnitude } from "../utils/vector";
 import { roundDownToNearestMultiple } from "../utils/assorted";
 
-const AREA_SIZE = 20;
+const AREA_SIZE = 40;
 const CLUMP_DENSITY = 0.4; //per unit of area
 const TILE_SIZE = AREA_SIZE / (AREA_SIZE * CLUMP_DENSITY);
 const tileMap = {};

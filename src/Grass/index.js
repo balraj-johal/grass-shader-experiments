@@ -3,7 +3,7 @@ import vert from "./vertex.glsl";
 
 import GrassGeometry from "./GrassGeometry";
 
-const GRASS_COUNT = 10000;
+const GRASS_COUNT = 30000;
 
 export default class Grass extends THREE.Object3D {
   noiseTex;

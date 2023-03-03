@@ -146,16 +146,20 @@ const sketch = async ({ context }) => {
   state.touchTracker = touchTracker;
   state.wateringTracker = new RenderTexture(false, "wateringTexture");
 
-  document.addEventListener('keyup', (event) => {
-    const keyName = event.key;
-    if (keyName === 'p') {
-      state.interactionState = InteractionState.Planting;
-      console.log("Planting");
-    } else if (keyName === 'w') {
-      state.interactionState = InteractionState.Watering;
-      console.log("Watering");
-    }
-  }, false);
+  document.addEventListener(
+    "keyup",
+    (event) => {
+      const keyName = event.key;
+      if (keyName === "p") {
+        state.interactionState = InteractionState.Planting;
+        console.log("Planting");
+      } else if (keyName === "w") {
+        state.interactionState = InteractionState.Watering;
+        console.log("Watering");
+      }
+    },
+    false
+  );
 
   _setupLighting(scene);
 
@@ -187,7 +191,7 @@ const sketch = async ({ context }) => {
 
   // const plants = new Plants();
   // plants.getAll().then((root) => scene.add(root));
-  
+
   const cat = new Cat();
   cat.getMesh().then((mesh) => scene.add(mesh));
 
@@ -215,6 +219,7 @@ const sketch = async ({ context }) => {
       // update animated objects
       grass.updateTime(time);
       rain.updateTime(time);
+      cat.updateAnimation();
       // plants.updateTime(time);
 
       // handle raycast interactions

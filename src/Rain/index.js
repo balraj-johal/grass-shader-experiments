@@ -19,7 +19,7 @@ export default class Rain extends THREE.Object3D {
     this.count = params.count;
     this.waterTex = params.waterTex;
   }
-w
+
   updateTime(time) {
     if (!this.material) return;
     this.material.uniforms.time.value = time;
