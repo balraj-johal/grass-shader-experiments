@@ -15,7 +15,7 @@ export default class InteractionBox extends THREE.Object3D {
   getMesh() {
     return new Promise((resolve, reject) => {
       try {
-        const boxGeom = new THREE.BoxGeometry(20, 0, 20);
+        const boxGeom = new THREE.BoxGeometry(40, 0, 40);
         const boxMat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
         boxMat.transparent = true;
         boxMat.opacity = 0;

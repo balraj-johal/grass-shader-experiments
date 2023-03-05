@@ -13,7 +13,6 @@ import Ground from "./Ground";
 import InteractionBox from "./Ground/InteractionBox";
 import Grass from "./Grass";
 import Tree from "./Tree";
-import Plants from "./Plants";
 import Rain from "./Rain";
 
 import { degreesToRads, mapUVToWorld } from "./utils/assorted";
@@ -96,27 +95,26 @@ const _setupLighting = (scene) => {
 
 const _checkInteraction = (intersects) => {
   switch (state.interactionState) {
-    case InteractionState.None:
-      return;
     case InteractionState.Planting:
-      for (let i = 0; i < intersects.length; i++) {
-        if (intersects[i].object.name === "Intersector") {
-          const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
-          state.touchTracker.addTouch(uvCoords);
-          if (state.clicked && isNewDay()) {
-            savePlant({
-              position: {
-                x: mapUVToWorld(uvCoords.x),
-                y: 0.0,
-                z: mapUVToWorld(uvCoords.y),
-              },
-              type: "Red",
-            });
-            updateLastAction();
-            state.clicked = false;
-          }
-        }
-      }
+      // for (let i = 0; i < intersects.length; i++) {
+      //   if (intersects[i].object.name === "Intersector") {
+      //     const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
+      //     console.log(uvCoords);
+      //     state.touchTracker.addTouch(uvCoords);
+      //     if (state.clicked && isNewDay()) {
+      //       savePlant({
+      //         position: {
+      //           x: mapUVToWorld(uvCoords.x),
+      //           y: 0.0,
+      //           z: mapUVToWorld(uvCoords.y),
+      //         },
+      //         type: "Red",
+      //       });
+      //       updateLastAction();
+      //       state.clicked = false;
+      //     }
+      //   }
+      // }
       break;
     case InteractionState.Watering:
       for (let i = 0; i < intersects.length; i++) {
@@ -127,6 +125,18 @@ const _checkInteraction = (intersects) => {
       }
       break;
     default:
+      for (let i = 0; i < intersects.length; i++) {
+        if (intersects[i].object.name === "Intersector") {
+          const uvCoords = { x: intersects[i].uv.x, y: 1 - intersects[i].uv.y };
+          if (state.clicked) {
+            state.clicked = false;
+            return {
+              x: mapUVToWorld(uvCoords.x, 40),
+              y: mapUVToWorld(uvCoords.y, 40),
+            };
+          }
+        }
+      }
       break;
   }
 };
@@ -189,9 +199,6 @@ const sketch = async ({ context }) => {
   });
   grass.getMesh().then((mesh) => scene.add(mesh));
 
-  // const plants = new Plants();
-  // plants.getAll().then((root) => scene.add(root));
-
   const cat = new Cat();
   cat.getMesh().then((mesh) => scene.add(mesh));
 
@@ -200,12 +207,6 @@ const sketch = async ({ context }) => {
     waterTex: state.wateringTracker.texture,
   });
   rain.getMesh().then((mesh) => scene.add(mesh));
-
-  // const dust = new Dust({
-  //   count: 150,
-  //   waterTex: state.wateringTracker.texture,
-  // });
-  // dust.getPoints().then((points) => scene.add(points));
 
   return {
     resize({ pixelRatio, viewportWidth, viewportHeight }) {
@@ -224,7 +225,18 @@ const sketch = async ({ context }) => {
 
       // handle raycast interactions
       raycaster.setFromCamera(pointer, camera);
-      _checkInteraction(raycaster.intersectObjects(scene.children));
+      const click = _checkInteraction(
+        raycaster.intersectObjects(scene.children)
+      );
+      if (click) {
+        const catPos = cat.getPosition();
+        console.log(click, catPos);
+
+        console.log("ForwardZ", cat.getForwardZ());
+        const angleBetweenVectors =
+          (Math.atan2(catPos.y - click.y, catPos.x - click.x) * 180) / Math.PI;
+        console.log(angleBetweenVectors);
+      }
       state.clicked = false;
 
       // update interaction canvases

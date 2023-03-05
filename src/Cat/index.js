@@ -22,6 +22,17 @@ export default class Cat extends THREE.Object3D {
     // this.cat.position.set(0, 0, this.cat.position.z + speed * delta);
   }
 
+  getPosition() {
+    return {
+      x: this.cat.position.x,
+      y: this.cat.position.y,
+    };
+  }
+
+  getForwardZ() {
+    return this.cat.getWorldDirection(new THREE.Vector3(0, 0, 0));
+  }
+
   getMesh() {
     return new Promise((resolve, reject) => {
       try {
