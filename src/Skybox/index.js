@@ -25,7 +25,7 @@ export default class Skybox extends THREE.Object3D {
           });
           const mesh = new THREE.Mesh(skyboxGeom, skyboxMat);
           mesh.name = "Skybox";
-          mesh.scale.set(50, 50, 50);
+          mesh.scale.set(500, 500, 500);
           resolve(mesh);
         });
       } catch (error) {

@@ -19,7 +19,7 @@ export default class Cat extends THREE.Object3D {
     const delta = this.clock.getDelta();
     this.mixer.update(delta);
 
-    this.cat.position.set(0, 0, this.cat.position.z + speed * delta);
+    // this.cat.position.set(0, 0, this.cat.position.z + speed * delta);
   }
 
   getMesh() {
@@ -40,26 +40,27 @@ export default class Cat extends THREE.Object3D {
           console.log(this.mixer);
           action.play();
 
-          console.log(cat);
-
           const catMat = new THREE.ShaderMaterial({
             uniforms: {
               lightDirection: { value: new THREE.Vector3(15, 15, 15) },
               colors: {
                 value: [
-                  new THREE.Color("#d1654f").convertLinearToSRGB(),
-                  new THREE.Color("#e8b0af").convertLinearToSRGB(),
-                  new THREE.Color("#eed0bd").convertLinearToSRGB(),
+                  new THREE.Color("#e8d9af").convertLinearToSRGB(),
+                  new THREE.Color("#ffffdf").convertLinearToSRGB(),
+                  new THREE.Color("#ffffdf").convertLinearToSRGB(),
                   new THREE.Color("#ffffff").convertLinearToSRGB(),
                 ],
               },
-              thresholds: { value: [0.2, 0.925, 1] },
+              thresholds: { value: [0.05, 0.925, 1] },
             },
             vertexShader: vert,
             fragmentShader: frag,
           });
-          cat.material = catMat;
+
+          cat.children[1].material = catMat;
           this.cat = cat;
+
+          console.log("cat", cat);
           resolve(cat);
         });
       } catch (error) {
