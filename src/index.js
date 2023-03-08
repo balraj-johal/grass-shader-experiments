@@ -230,12 +230,14 @@ const sketch = async ({ context }) => {
       );
       if (click) {
         const catPos = cat.getPosition();
-        console.log(click, catPos);
+        // console.log(click, catPos);
 
-        console.log("ForwardZ", cat.getForwardZ());
         const angleBetweenVectors =
-          (Math.atan2(catPos.y - click.y, catPos.x - click.x) * 180) / Math.PI;
-        console.log(angleBetweenVectors);
+          (Math.atan2(catPos.y - click.y, catPos.x - click.x) * 180) / Math.PI +
+          75;
+        // console.log(angleBetweenVectors);
+        cat.setTargetRotation(-angleBetweenVectors);
+        cat.setTargetPosition(click.x, click.y);
       }
       state.clicked = false;
 

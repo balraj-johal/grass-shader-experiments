@@ -2,16 +2,38 @@ import frag from "./fragment.glsl";
 import vert from "./vertex.glsl";
 
 import * as THREE from "three";
-const speed = 3;
+const speed = 5;
+
+const lerp = (a, b, t) => {
+  return a + (b - a) * t;
+};
 
 export default class Cat extends THREE.Object3D {
   mixer;
   clock;
   cat;
 
+  targetRotation = 0;
+  targetPosition = {
+    x: 0,
+    z: 0,
+  };
+  moving = false;
+
   constructor() {
     super();
     this.clock = new THREE.Clock();
+  }
+
+  setTargetRotation(angle) {
+    this.targetRotation = angle * (Math.PI / 180);
+  }
+
+  setTargetPosition(x, z) {
+    this.targetPosition = {
+      x: x,
+      z: z,
+    };
   }
 
   updateAnimation() {
@@ -19,7 +41,25 @@ export default class Cat extends THREE.Object3D {
     const delta = this.clock.getDelta();
     this.mixer.update(delta);
 
-    // this.cat.position.set(0, 0, this.cat.position.z + speed * delta);
+    if (Math.abs(this.cat.rotation.y - this.targetRotation) > 0.1) {
+      this.moving = true;
+      const newRotation = lerp(this.cat.rotation.y, this.targetRotation, 0.05);
+      this.cat.rotation.set(0, newRotation, 0);
+    } else {
+      console.log("dun rotating");
+    }
+
+    if (this.moving) {
+      const xDiff = Math.abs(this.cat.position.x - this.targetPosition.x);
+      console.log(xDiff, this.cat.position.x, this.targetPosition.x);
+      const zDiff = Math.abs(this.cat.position.z - this.targetPosition.z);
+      if (xDiff > 0.1) {
+        console.log("forward", this.cat.position.x, this.targetPosition.x);
+        this.cat.position.addScaledVector(this.getForwardZ(), speed * delta);
+      } else {
+        // console.log("no forward");
+      }
+    }
   }
 
   getPosition() {
