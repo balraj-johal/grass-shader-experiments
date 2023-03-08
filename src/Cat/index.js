@@ -53,7 +53,7 @@ export default class Cat extends THREE.Object3D {
       const xDiff = Math.abs(this.cat.position.x - this.targetPosition.x);
       console.log(xDiff, this.cat.position.x, this.targetPosition.x);
       const zDiff = Math.abs(this.cat.position.z - this.targetPosition.z);
-      if (xDiff > 0.1) {
+      if (xDiff > 0.1 && zDiff > 0.1) {
         console.log("forward", this.cat.position.x, this.targetPosition.x);
         this.cat.position.addScaledVector(this.getForwardZ(), speed * delta);
       } else {
