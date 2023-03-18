@@ -41,19 +41,6 @@ export default class Cat extends THREE.Object3D {
     };
   }
 
-  handleWalk(wantToWalk) {
-    if (wantToWalk) {
-      if (this.walking) return;
-      console.log("begin fade in");
-      this.walking = true;
-    } else {
-      if (!this.walking) return;
-      console.log("begin fade out");
-      this.walkAction.fadeOut(0.5);
-      this.walking = false;
-    }
-  }
-
   updateAnimation() {
     if (!this.mixer) return;
     const delta = this.clock.getDelta();
@@ -72,10 +59,9 @@ export default class Cat extends THREE.Object3D {
       const zDiff = Math.abs(this.cat.position.z - this.targetPosition.z);
       if (xDiff > 0.1 && zDiff > 0.1) {
         this.cat.position.addScaledVector(this.getForwardZ(), speed * delta);
-        this.handleWalk(true);
-        // this.walkAction.setEffectiveWeight(1);
+        this.walking = true;
       } else {
-        this.handleWalk(false);
+        this.walking = false;
       }
     }
 
@@ -142,7 +128,6 @@ export default class Cat extends THREE.Object3D {
           cat.children[1].material = catMat;
           this.cat = cat;
 
-          console.log("cat", cat);
           resolve(cat);
         });
       } catch (error) {
