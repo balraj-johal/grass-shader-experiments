@@ -48,7 +48,7 @@ export default class Cat extends THREE.Object3D {
 
     if (Math.abs(this.cat.rotation.y - this.targetRotation) > 0.1) {
       this.moving = true;
-      const newRotation = lerp(this.cat.rotation.y, this.targetRotation, 0.05);
+      const newRotation = lerp(this.cat.rotation.y, this.targetRotation, 0.025);
       this.cat.rotation.set(0, newRotation, 0);
     } else {
       console.log("dun rotating");

@@ -15,7 +15,6 @@
   "dependencies": {
     "bezier-easing": "^2.1.0",
     "canvas-sketch": "^0.7.6",
-    "gsap": "^3.11.5",
     "seedrandom": "^3.0.5",
     "three": "^0.145.0"
   }
