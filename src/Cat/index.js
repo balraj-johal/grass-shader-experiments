@@ -10,6 +10,7 @@ const lerp = (a, b, t) => {
 
 export default class Cat extends THREE.Object3D {
   mixer;
+  animationBlendSpeed = 0.15;
 
   walkAction;
   walking;
@@ -98,7 +99,7 @@ export default class Cat extends THREE.Object3D {
       walkTarget = 1;
     }
     const currentWeight = this.walkAction.getEffectiveWeight();
-    const newWeight = lerp(currentWeight, walkTarget, 0.2);
+    const newWeight = lerp(currentWeight, walkTarget, this.animationBlendSpeed);
     this.walkAction.setEffectiveWeight(newWeight);
   }
 
