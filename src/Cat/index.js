@@ -10,6 +10,10 @@ const lerp = (a, b, t) => {
 
 export default class Cat extends THREE.Object3D {
   mixer;
+
+  walkAction;
+  walking;
+
   clock;
   cat;
 
@@ -36,6 +40,19 @@ export default class Cat extends THREE.Object3D {
     };
   }
 
+  handleWalk(wantToWalk) {
+    if (wantToWalk) {
+      if (this.walking) return;
+      console.log("begin fade in");
+      this.walking = true;
+    } else {
+      if (!this.walking) return;
+      console.log("begin fade out");
+      this.walkAction.fadeOut(0.5);
+      this.walking = false;
+    }
+  }
+
   updateAnimation() {
     if (!this.mixer) return;
     const delta = this.clock.getDelta();
@@ -51,15 +68,17 @@ export default class Cat extends THREE.Object3D {
 
     if (this.moving) {
       const xDiff = Math.abs(this.cat.position.x - this.targetPosition.x);
-      console.log(xDiff, this.cat.position.x, this.targetPosition.x);
       const zDiff = Math.abs(this.cat.position.z - this.targetPosition.z);
       if (xDiff > 0.1 && zDiff > 0.1) {
-        console.log("forward", this.cat.position.x, this.targetPosition.x);
         this.cat.position.addScaledVector(this.getForwardZ(), speed * delta);
+        this.handleWalk(true);
+        // this.walkAction.setEffectiveWeight(1);
       } else {
-        // console.log("no forward");
+        this.handleWalk(false);
       }
     }
+
+    this.updateBlendValues();
   }
 
   getPosition() {
@@ -71,6 +90,16 @@ export default class Cat extends THREE.Object3D {
 
   getForwardZ() {
     return this.cat.getWorldDirection(new THREE.Vector3(0, 0, 0));
+  }
+
+  updateBlendValues() {
+    let walkTarget = 0;
+    if (this.walking) {
+      walkTarget = 1;
+    }
+    const currentWeight = this.walkAction.getEffectiveWeight();
+    const newWeight = lerp(currentWeight, walkTarget, 0.2);
+    this.walkAction.setEffectiveWeight(newWeight);
   }
 
   getMesh() {
@@ -87,9 +116,10 @@ export default class Cat extends THREE.Object3D {
             gltf.animations,
             "a_walk"
           );
-          const action = this.mixer.clipAction(walkClip);
-          console.log(this.mixer);
-          action.play();
+          this.walkAction = this.mixer.clipAction(walkClip);
+          this.walkAction.setEffectiveWeight(0);
+          this.walkAction.enablefd = true;
+          this.walkAction.play();
 
           const catMat = new THREE.ShaderMaterial({
             uniforms: {
