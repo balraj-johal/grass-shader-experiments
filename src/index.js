@@ -221,7 +221,6 @@ const sketch = async ({ context }) => {
       grass.updateTime(time);
       rain.updateTime(time);
       cat.updateAnimation();
-      // plants.updateTime(time);
 
       // handle raycast interactions
       raycaster.setFromCamera(pointer, camera);
@@ -230,12 +229,10 @@ const sketch = async ({ context }) => {
       );
       if (click) {
         const catPos = cat.getPosition();
-        // console.log(click, catPos);
 
         const angleBetweenVectors =
           (Math.atan2(catPos.y - click.y, catPos.x - click.x) * 180) / Math.PI +
           75;
-        // console.log(angleBetweenVectors);
         cat.setTargetRotation(-angleBetweenVectors);
         cat.setTargetPosition(click.x, click.y);
       }
