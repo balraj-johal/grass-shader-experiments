@@ -15,6 +15,8 @@ export default class Cat extends THREE.Object3D {
   walkAction;
   walking;
 
+  idleAction;
+
   clock;
   cat;
 
@@ -105,8 +107,17 @@ export default class Cat extends THREE.Object3D {
           );
           this.walkAction = this.mixer.clipAction(walkClip);
           this.walkAction.setEffectiveWeight(0);
-          this.walkAction.enablefd = true;
+          this.walkAction.enabled = true;
           this.walkAction.play();
+
+          const idleClip = THREE.AnimationClip.findByName(
+            gltf.animations,
+            "a_idle"
+          );
+          this.idleAction = this.mixer.clipAction(idleClip);
+          this.idleAction.setEffectiveWeight(1);
+          this.idleAction.enabled = true;
+          this.idleAction.play();
 
           const catMat = new THREE.ShaderMaterial({
             uniforms: {
